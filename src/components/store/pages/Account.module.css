@@ -1,0 +1,81 @@
+.page { min-height: 100vh; background: #fff; display: flex; flex-direction: column; }
+.authMain { flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); }
+.side { position: relative; min-height: 320px; background: #0b0b0b; overflow: hidden; }
+.sideImg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.sideShade { position: absolute; inset: auto 0 0 0; height: 60%; background: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0)); }
+.sideBody { position: absolute; left: clamp(20px, 4vw, 48px); right: clamp(20px, 4vw, 48px); bottom: 40px; display: flex; flex-direction: column; gap: 14px; color: #fff; }
+.sideH { font-family: var(--font-display); font-size: clamp(40px, 5vw, 64px); line-height: 0.9; text-transform: uppercase; }
+.perks { display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+.perk { display: flex; gap: 10px; align-items: center; }
+.perkDot { width: 6px; height: 6px; background: #9ef2ff; flex-shrink: 0; }
+.formCol { padding: 64px clamp(20px, 5vw, 72px) 96px; display: flex; justify-content: center; }
+.formInner { max-width: 440px; width: 100%; display: flex; flex-direction: column; gap: 28px; }
+.tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid #111; }
+.tab { height: 52px; border: 0; background: #fff; color: #111; font-stretch: 125%; font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; }
+.tabActive { background: #111; color: #fff; }
+.h1 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(40px, 5vw, 56px); line-height: 0.9; text-transform: uppercase; }
+.p { margin: 0; font-size: 14px; line-height: 1.6; color: #555; }
+.google { height: 52px; border: 1px solid #111; background: #fff; color: #111; display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.or { display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #8a8a8a; }
+.orLine { flex: 1; height: 1px; background: #e4e4e4; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.label { font-size: 12px; color: #555; }
+.input { height: 52px; border: 1px solid #cfcfcf; padding: 0 14px; font-size: 16px; background: #fff; color: #111; box-sizing: border-box; width: 100%; border-radius: 0; }
+.inputErr { border-color: #c2183b; }
+.select { height: 52px; border: 1px solid #cfcfcf; padding: 0 12px; font-size: 16px; background: #fff; color: #111; border-radius: 0; }
+.err { font-size: 12px; color: #c2183b; }
+.linkBtn { align-self: flex-start; background: transparent; border: 0; padding: 0; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; color: #111; }
+.small { margin: 0; font-size: 12px; line-height: 1.6; color: #555; }
+.ul { text-decoration: underline; text-underline-offset: 3px; }
+.ok { font-size: 13px; color: #1f7a4d; }
+.bad { font-size: 13px; color: #c2183b; }
+.submit { height: 60px; border: 0; background: #111; color: #fff; font-stretch: 125%; font-size: 13px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; }
+.submit:hover:not(:disabled) { background: #9ef2ff; color: #111; }
+.submit:disabled { opacity: 0.7; cursor: progress; }
+.guest { border-top: 1px solid #e4e4e4; padding-top: 24px; display: flex; flex-direction: column; gap: 8px; }
+.guestH { font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
+.guestP { font-size: 14px; color: #555; line-height: 1.5; }
+.guestLink { text-decoration: underline; text-underline-offset: 3px; color: #111; }
+
+.dash { flex: 1; padding: 56px clamp(20px, 5vw, 70px) 120px; display: flex; flex-direction: column; gap: 40px; }
+.dashHead { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; border-bottom: 2px solid #111; padding-bottom: 28px; }
+.dashHeadL { display: flex; flex-direction: column; gap: 12px; }
+.eyebrow { font-family: ui-monospace, Menlo, monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: #6e6e6e; }
+.hello { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(44px, 8vw, 96px); line-height: 0.88; text-transform: uppercase; }
+.logout { background: transparent; border: 1px solid #111; padding: 12px 24px; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; color: #111; }
+.dtabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.dtab { padding: 10px 18px; border: 1px solid #111; background: #fff; color: #111; font-stretch: 125%; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; }
+.dtabActive { background: #111; color: #fff; }
+.orders { display: flex; flex-direction: column; border-top: 1px solid #111; }
+.orderRow { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px 24px; align-items: center; padding: 22px 0; border-bottom: 1px solid #e4e4e4; }
+.orderNo { display: flex; flex-direction: column; gap: 4px; }
+.mono { font-family: ui-monospace, Menlo, monospace; font-size: 13px; font-weight: 700; }
+.date { font-size: 12px; color: #6e6e6e; }
+.itemsTxt { font-size: 13px; color: #444; line-height: 1.4; }
+.status { justify-self: start; padding: 6px 12px; color: #111; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
+.totalRow { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.total { font-size: 15px; font-weight: 600; }
+.track { font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+.emptyNote { padding: 22px 0; font-size: 14px; color: #6e6e6e; }
+.addrGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 16px; }
+.addrCard { border: 2px solid #111; padding: 22px; display: flex; flex-direction: column; gap: 12px; }
+.addrCardPlain { border: 1px solid #cfcfcf; padding: 22px; display: flex; flex-direction: column; gap: 12px; }
+.addrLabel { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #5fc7d6; }
+.addrText { font-size: 14px; line-height: 1.6; white-space: pre-line; }
+.addrBtns { display: flex; gap: 16px; flex-wrap: wrap; }
+.smallLink { align-self: flex-start; background: transparent; border: 0; padding: 0; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; color: #111; }
+.addAddr { border: 1px dashed #9a9a9a; background: #fff; min-height: 160px; font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; color: #111; }
+.addrForm { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.addrForm .input, .addrForm .select { height: 44px; font-size: 14px; }
+.addrFormBtns { grid-column: span 2; display: flex; gap: 10px; }
+.btnDark { height: 44px; padding: 0 20px; border: 0; background: #111; color: #fff; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; }
+.btnLight { height: 44px; padding: 0 20px; border: 1px solid #111; background: #fff; color: #111; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; }
+.span2 { grid-column: span 2; }
+.data { max-width: 560px; display: flex; flex-direction: column; border-top: 1px solid #111; }
+.dataRow { display: flex; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid #e4e4e4; font-size: 14px; }
+.dataK { color: #6e6e6e; }
+.dataV { text-align: right; overflow-wrap: anywhere; }
+.dataBtns { display: flex; gap: 20px; flex-wrap: wrap; padding-top: 20px; font-size: 12px; align-items: center; }
+.dataBtn { background: transparent; border: 0; padding: 0; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; color: #111; font-size: 12px; }
+.dataBtnDanger { composes: dataBtn; color: #c2183b; }

@@ -1,0 +1,6 @@
+.box { position: fixed; right: 16px; bottom: 16px; left: 16px; z-index: 60; max-width: 520px; margin-left: auto; box-sizing: border-box; background: #111; color: #fff; border: 1px solid #333; padding: 22px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35); }
+.h { font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; }
+.p { margin: 0; font-size: 13px; line-height: 1.55; color: #cfcfcf; text-wrap: pretty; }
+.link { text-decoration: underline; text-underline-offset: 3px; }
+.btns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 4px; }
+.btn { height: 48px; border: 1px solid #fff; background: transparent; color: #fff; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; }
