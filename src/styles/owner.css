@@ -1,0 +1,54 @@
+/* Owner dashboard base styles (dark). Scoped to .owner-root; storefront styles are separate. */
+body:has(.owner-root) {
+  margin: 0;
+  background: #14161a;
+}
+.owner-root {
+  min-height: 100vh;
+  background: #14161a;
+  font-family: var(--font-sans-owner);
+  -webkit-font-smoothing: antialiased;
+  color: #eceef1;
+}
+:where(.owner-root) a { color: inherit; text-decoration: none; }
+:where(.owner-root) a:where(:hover) { color: #a9bcff; }
+:where(.owner-root) :is(button, input, select, textarea) { font-family: inherit; }
+.owner-root input::placeholder,
+.owner-root textarea::placeholder { color: #6b727d; }
+.owner-root input[type='date'],
+.owner-root input[type='time'] { color-scheme: dark; }
+.owner-root ::selection { background: #33406b; }
+
+/* Hover states from the reference (style-hover); !important beats the inline styles. */
+.o-hov-text:hover { color: #eceef1 !important; }
+.o-hov-card:hover { background: #23272e !important; }
+.o-hov-row:hover { background: #21252c !important; }
+.o-hov-pal:hover { background: #23272e !important; }
+.o-hov-cell:hover { outline: 1px solid #7c9cff !important; }
+.o-btn:hover:not(:disabled) { filter: brightness(1.12); }
+.owner-root button:disabled { cursor: progress; opacity: 0.7; }
+
+/* Keyboard focus (not in the designs). */
+.owner-root :is(a, button, [role='button'], input, select, textarea):focus-visible {
+  outline: 2px solid #7c9cff;
+  outline-offset: 2px;
+}
+.owner-root :is(input, select, textarea):focus-visible { outline-offset: 0; }
+
+@keyframes o-spin { to { transform: rotate(360deg); } }
+.o-spinner { width: 14px; height: 14px; border: 2px solid #2a2e36; border-top-color: #7c9cff; border-radius: 50%; animation: o-spin 0.8s linear infinite; display: inline-block; }
+
+/* Packing list: print only the list. */
+@media print {
+  body:has(.owner-root) { background: #fff; }
+  .owner-root > *:not(.o-print-root) { display: none !important; }
+  .o-print-root { position: static !important; transform: none !important; width: auto !important; max-height: none !important; box-shadow: none !important; background: #fff !important; color: #000 !important; }
+  .o-print-root * { color: #000 !important; }
+  .o-no-print { display: none !important; }
+}
+
+@media (max-width: 860px) {
+  .o-header { flex-wrap: wrap; height: auto !important; padding: 12px 16px !important; }
+  .o-nav { order: 3; width: 100%; overflow-x: auto; scrollbar-width: none; }
+  .o-content { padding: 24px 16px 64px !important; }
+}

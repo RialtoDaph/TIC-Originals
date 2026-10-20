@@ -1,0 +1,65 @@
+/* Home footer */
+.home { background: #1a1a1a; color: #fff; padding: 36px 0 40px; display: flex; flex-direction: column; }
+.commWrap { padding: 0 clamp(20px, 4vw, 48px); }
+.comm { max-width: 1100px; margin: 0 auto; border: 1px solid #333; border-radius: 14px; padding: 18px 20px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.commIcon { width: 56px; height: 56px; border-radius: 12px; background: #9ef2ff; color: #111; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.commText { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 4px; }
+.commTitle { font-size: 17px; font-weight: 700; }
+.commSub { font-size: 14px; color: #bdbdbd; }
+.join { background: #9ef2ff; color: #111; padding: 16px 28px; border-radius: 8px; font-size: 14px; font-weight: 700; white-space: nowrap; }
+.galleryWrap { position: relative; margin-top: 36px; }
+.galleryClip { overflow: hidden; }
+.galleryTrack { display: flex; gap: 16px; width: max-content; animation: tic-gal 60s linear infinite; }
+.galleryImg { width: 400px; height: 540px; flex-shrink: 0; object-fit: cover; display: block; }
+.galleryLabel { position: absolute; left: 50%; bottom: -36px; transform: translateX(-50%); background: #fff; color: #111; padding: 24px clamp(20px, 4vw, 56px); font-size: 17px; max-width: calc(100% - 40px); box-sizing: border-box; text-align: center; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4); }
+.bottom { padding: 150px clamp(20px, 8vw, 140px) 0; display: flex; flex-direction: column; gap: 56px; }
+.brand { display: flex; flex-direction: column; gap: 32px; }
+.brandLine { margin: 0; max-width: 640px; font-size: 17px; line-height: 1.6; color: #cfcfcf; }
+.socials { display: flex; gap: 16px; }
+.social { width: 64px; height: 64px; border: 1px solid #3a3a3a; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.acc { border-top: 1px solid #333; display: flex; flex-direction: column; }
+.accItem { border-bottom: 1px solid #333; }
+.accBtn { width: 100%; background: transparent; border: 0; color: #fff; padding: 32px 0; display: flex; justify-content: space-between; align-items: center; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; }
+.accCaret { font-size: 13px; transition: transform 0.2s; }
+.accLinks { padding: 0 0 28px; display: flex; flex-direction: column; gap: 14px; }
+.accLink { font-size: 14px; color: #bdbdbd; }
+.move { display: flex; flex-direction: column; gap: 20px; max-width: 640px; }
+.moveH { font-size: 12px; letter-spacing: 0.35em; text-transform: uppercase; color: #8a8a8a; }
+.moveSub { font-size: 15px; color: #bdbdbd; }
+.pill { height: 76px; border: 1px solid #3a3a3a; border-radius: 38px; display: flex; align-items: center; padding: 0 8px 0 32px; gap: 12px; }
+.pillInput { flex: 1; min-width: 0; background: transparent; border: 0; outline: none; color: #fff; font-family: inherit; font-size: 14px; letter-spacing: 0.2em; }
+.pillInput:focus-visible { outline: none; }
+.pill:focus-within { border-color: #9ef2ff; }
+.pillBtn { width: 60px; height: 60px; border-radius: 50%; border: 0; background: #fff; color: #111; font-size: 19px; cursor: pointer; flex-shrink: 0; }
+.pillMsg { font-size: 13px; color: #9ef2ff; }
+.legalRow { border-top: 1px solid #333; padding-top: 28px; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+.badges { display: flex; gap: 6px; flex-wrap: wrap; }
+.badge { height: 28px; padding: 0 10px; border: 1px solid #3a3a3a; display: flex; align-items: center; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; color: #dadada; }
+.addr { font-size: 11px; color: #8a8a8a; }
+.copy { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #8a8a8a; }
+
+/* Shop footer */
+.shop { background: #1a1a1a; color: #fff; padding: 56px clamp(20px, 5vw, 70px) 36px; display: flex; flex-direction: column; gap: 48px; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 36px; }
+.col { display: flex; flex-direction: column; gap: 14px; }
+.colH { font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #8a8a8a; }
+.colLink { font-size: 14px; color: #dadada; }
+.shopLegal { border-top: 1px solid #333; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+
+/* Checkout footer */
+.checkout { border-top: 1px solid #e4e4e4; padding: 20px clamp(20px, 4vw, 48px); display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; font-size: 12px; color: #6e6e6e; }
+
+/* Account footer */
+.account { background: #1a1a1a; color: #8a8a8a; padding: 24px clamp(20px, 4vw, 48px); display: flex; gap: 20px; flex-wrap: wrap; justify-content: space-between; font-size: 12px; }
+.accountLinks { display: flex; gap: 20px; flex-wrap: wrap; }
+.accountLink { color: #dadada; }
+.accountCopy { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; }
+
+/* Policies footer */
+.policies { background: #1a1a1a; color: #8a8a8a; padding: 28px 48px; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; font-size: 11px; }
+.policiesCopy { letter-spacing: 0.2em; text-transform: uppercase; }
+
+@media (max-width: 600px) {
+  .policies { padding: 28px 20px; }
+  .galleryImg { width: 280px; height: 378px; }
+}

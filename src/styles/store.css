@@ -1,0 +1,85 @@
+/* Storefront base styles (light). Scoped to .store-root so the dashboard stays independent. */
+body:has(.store-root) {
+  margin: 0;
+  background: #fff;
+}
+
+.store-root {
+  min-height: 100vh;
+  background: #fff;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  color: #111;
+}
+
+:where(.store-root) a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Same specificity as the rule above (wins by order) but below any component class, so links
+   that set their own colour keep it on hover, as in the reference. */
+:where(.store-root) a:where(:hover) {
+  color: #5fc7d6;
+}
+
+:where(.store-root) :is(button, input, select, textarea) {
+  font-family: inherit;
+}
+
+:where(.store-root) :is(input, select, textarea):focus {
+  outline: 2px solid #9ef2ff;
+  outline-offset: 0;
+}
+
+/* Keyboard focus (not in the designs): cyan ring with a dark inner ring so it shows on light and dark surfaces. */
+.store-root a:focus-visible,
+.store-root button:focus-visible,
+.store-root [role='button']:focus-visible,
+.store-root summary:focus-visible {
+  outline: 2px solid #9ef2ff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px #111;
+}
+
+.store-root .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@keyframes tic-kb {
+  from { transform: scale(1); }
+  to { transform: scale(1.08) translateX(-1.5%); }
+}
+
+@keyframes tic-glitch {
+  0% { opacity: 0; transform: translateX(-6px); clip-path: inset(0 0 60% 0); text-shadow: 3px 0 #9ef2ff, -3px 0 #c2183b; }
+  15% { opacity: 1; transform: translateX(5px); clip-path: inset(40% 0 20% 0); }
+  30% { transform: translateX(-3px); clip-path: inset(10% 0 55% 0); text-shadow: -3px 0 #9ef2ff, 3px 0 #c2183b; }
+  45% { transform: translateX(2px); clip-path: inset(65% 0 0 0); }
+  60% { transform: translateX(-1px); clip-path: inset(0 0 0 0); text-shadow: 1px 0 #9ef2ff, -1px 0 #c2183b; }
+  100% { opacity: 1; transform: none; clip-path: inset(0 0 0 0); text-shadow: none; }
+}
+
+@keyframes tic-gal {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes tic-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .store-root *,
+  .store-root *::before,
+  .store-root *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

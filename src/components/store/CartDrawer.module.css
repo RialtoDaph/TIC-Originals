@@ -1,0 +1,26 @@
+.backdrop { position: fixed; inset: 0; z-index: 40; background: rgba(0, 0, 0, 0.5); }
+.aside { position: fixed; top: 0; right: 0; bottom: 0; width: 440px; max-width: 100%; z-index: 41; background: #fff; display: flex; flex-direction: column; color: #111; }
+.head { padding: 24px 28px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eaeaea; }
+.title { font-stretch: 125%; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; }
+.close { background: transparent; border: 0; font-size: 22px; cursor: pointer; color: #111; }
+.ship { padding: 20px 28px; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid #eaeaea; }
+.shipMsg { font-size: 12px; }
+.track { height: 4px; background: #ededed; }
+.bar { height: 4px; background: #5fc7d6; }
+.list { flex: 1; overflow: auto; padding: 8px 28px; display: flex; flex-direction: column; }
+.line { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid #f0f0f0; }
+.thumb { width: 72px; height: 80px; object-fit: cover; background: #0b0b0b; flex-shrink: 0; }
+.info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.infoEdit { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.name { font-stretch: 125%; font-weight: 300; font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+.meta { font-size: 11px; color: #6e6e6e; }
+.qtyRow { display: flex; align-items: center; gap: 12px; }
+.stepper { display: flex; align-items: center; border: 1px solid #d6d6d6; }
+.stepBtn { width: 32px; height: 32px; border: 0; background: transparent; cursor: pointer; font-size: 15px; color: #111; }
+.qty { min-width: 24px; text-align: center; font-size: 12px; }
+.remove { background: transparent; border: 0; padding: 0; font-size: 11px; color: #6e6e6e; text-decoration: underline; cursor: pointer; }
+.price { font-size: 12px; }
+.empty { padding: 40px 0; text-align: center; font-size: 13px; color: #8a8a8a; }
+.foot { padding: 24px 28px; border-top: 1px solid #eaeaea; display: flex; flex-direction: column; gap: 16px; }
+.sub { display: flex; justify-content: space-between; font-size: 14px; }
+.checkout { height: 52px; background: #9ef2ff; color: #111; display: flex; align-items: center; justify-content: center; font-stretch: 125%; font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; }

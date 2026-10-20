@@ -1,0 +1,64 @@
+.page { min-height: 100vh; background: #fff; position: relative; display: flex; flex-direction: column; }
+.main { flex: 1; padding: 56px clamp(20px, 5vw, 70px) 120px; display: flex; flex-direction: column; gap: 40px; }
+.top { display: flex; flex-direction: column; gap: 28px; border-bottom: 2px solid #111; padding-bottom: 28px; }
+.titleRow { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.h1 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(48px, 9vw, 112px); line-height: 0.88; text-transform: uppercase; }
+.count { font-family: ui-monospace, Menlo, monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #6e6e6e; }
+.filterRow { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; flex: 1 1 420px; min-width: 0; }
+.chip { padding: 10px 16px; border: 1px solid #111; background: #fff; color: #111; font-stretch: 125%; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
+.chipActive { background: #111; color: #fff; }
+.sortLabel { display: flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #6e6e6e; }
+.select { height: 40px; border: 1px solid #111; background: #fff; color: #111; padding: 0 12px; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); column-gap: clamp(20px, 3vw, 48px); row-gap: 72px; }
+.card { display: flex; flex-direction: column; gap: 12px; color: #111; }
+.imgBox { aspect-ratio: 1 / 1.12; position: relative; background: #fff; overflow: hidden; isolation: isolate; }
+.img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 0.35s ease; }
+.name { font-stretch: 125%; font-weight: 300; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1.25; text-wrap: pretty; }
+.price { font-stretch: 125%; font-weight: 300; font-size: 14px; letter-spacing: 0.04em; margin-top: -4px; }
+.nameSm { font-stretch: 125%; font-weight: 300; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1.25; }
+.priceSm { font-stretch: 125%; font-weight: 300; font-size: 13px; margin-top: -4px; }
+.empty { font-size: 14px; color: #6e6e6e; }
+
+/* PDP */
+.pdpMain { flex: 1; padding: 28px clamp(20px, 5vw, 70px) 120px; display: flex; flex-direction: column; gap: 96px; }
+.pdpTop { display: flex; flex-direction: column; gap: 24px; }
+.crumbs { display: flex; gap: 10px; flex-wrap: wrap; font-family: ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #6e6e6e; }
+.crumbCurrent { color: #111; }
+.pdpGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: clamp(28px, 5vw, 72px); align-items: start; }
+.gallery { display: flex; flex-direction: column; gap: 12px; }
+.thumbs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.thumb { aspect-ratio: 1 / 1.12; position: relative; background: #0b0b0b; border: 2px solid transparent; padding: 0; cursor: pointer; overflow: hidden; isolation: isolate; }
+.thumbActive { border-color: #111; }
+.buy { position: sticky; top: 112px; display: flex; flex-direction: column; gap: 28px; }
+.head { display: flex; flex-direction: column; gap: 14px; }
+.eyebrow { font-family: ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #6e6e6e; }
+.pdpH1 { margin: 0; font-stretch: 110%; font-weight: 700; font-size: clamp(24px, 2.6vw, 34px); line-height: 1.05; letter-spacing: 0.01em; text-transform: uppercase; text-wrap: balance; }
+.priceBlock { display: flex; flex-direction: column; gap: 4px; }
+.pdpPrice { font-stretch: 125%; font-size: 20px; letter-spacing: 0.02em; }
+.vat { font-size: 12px; color: #6e6e6e; }
+.ul { text-decoration: underline; text-underline-offset: 3px; }
+.sizeBlock { display: flex; flex-direction: column; gap: 12px; }
+.sizeHead { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.sizeLabel { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
+.guide { font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+.sizes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.sizeBtn { height: 48px; border: 1px solid #d6d6d6; background: #fff; color: #111; font-stretch: 125%; font-size: 12px; letter-spacing: 0.06em; cursor: pointer; padding: 0; }
+.sizeBtnActive { border-color: #111; background: #111; color: #fff; }
+.sizeBtn:disabled { color: #bdbdbd; text-decoration: line-through; cursor: not-allowed; }
+.err { font-size: 12px; color: #c2183b; }
+.addBtn { height: 60px; border: 0; background: #9ef2ff; color: #111; font-stretch: 125%; font-size: 13px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; }
+.addBtnAdded { background: #111; color: #9ef2ff; }
+.perks { display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: #444; }
+.perk { display: flex; gap: 10px; align-items: center; }
+.perkDot { width: 6px; height: 6px; background: #5fc7d6; flex-shrink: 0; }
+.acc { border-top: 1px solid #111; display: flex; flex-direction: column; }
+.accItem { border-bottom: 1px solid #e4e4e4; }
+.accBtn { width: 100%; background: transparent; border: 0; color: #111; padding: 20px 0; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; }
+.accSign { font-size: 16px; font-weight: 300; }
+.accP { margin: 0; padding: 0 0 20px; font-size: 14px; line-height: 1.6; color: #444; text-wrap: pretty; }
+.related { display: flex; flex-direction: column; gap: 32px; }
+.relatedHead { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.relatedH { font-family: var(--font-display); font-size: clamp(36px, 5vw, 52px); line-height: 0.9; text-transform: uppercase; }
+.underlineLink { font-stretch: 125%; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; border-bottom: 2px solid #9ef2ff; padding-bottom: 4px; }
+.relatedGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 48px clamp(20px, 3vw, 48px); }

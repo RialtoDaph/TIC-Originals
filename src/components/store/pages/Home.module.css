@@ -1,0 +1,75 @@
+.page { min-height: 100vh; background: #fff; position: relative; }
+.hero { position: relative; height: 760px; background: #0b0b0b; overflow: hidden; }
+.heroImg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; animation: tic-kb 18s ease-in-out infinite alternate; }
+.noise { position: absolute; inset: 0; opacity: 0.18; mix-blend-mode: screen; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.fade { position: absolute; left: 0; right: 0; bottom: 0; height: 420px; background: linear-gradient(to bottom, rgba(11, 11, 11, 0) 0%, #000 55%, #fff 100%); }
+.heroContent { position: absolute; left: clamp(0px, 2vw, 28px); right: clamp(20px, 4vw, 48px); bottom: 36px; display: flex; flex-direction: column; gap: 120px; }
+.heroTop { padding-left: clamp(20px, 3vw, 42px); display: flex; flex-direction: column; gap: 24px; align-items: flex-start; }
+.h1 { margin: 0; font-family: var(--font-body); font-stretch: 110%; font-weight: 700; font-size: 32px; line-height: 1; letter-spacing: 0.01em; text-transform: uppercase; color: #fff; }
+.cta { background: #9ef2ff; color: #111; padding: 14px 58px; font-family: ui-monospace, Menlo, monospace; font-size: 15px; letter-spacing: 0.2em; text-transform: uppercase; }
+.heroBottom { display: flex; align-items: flex-end; column-gap: 120px; row-gap: 16px; flex-wrap: wrap; }
+.available { font-family: var(--font-display); font-size: 69px; line-height: 0.9; text-transform: uppercase; color: #111; }
+.limited { border: 2px solid #111; background: #9ef2ff; padding: 8px 22px; min-width: 270px; box-sizing: border-box; font-family: ui-monospace, Menlo, monospace; font-size: 17px; letter-spacing: 0.08em; text-transform: uppercase; color: #111; }
+
+.shop { padding: 72px clamp(20px, 5vw, 70px) 120px; scroll-margin-top: 96px; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: clamp(16px, 4vw, 56px); row-gap: clamp(48px, 8vw, 96px); }
+.card { display: flex; flex-direction: column; gap: 14px; cursor: pointer; }
+.imgLink { aspect-ratio: 1 / 1.12; position: relative; display: flex; align-items: center; justify-content: center; background: #fff; overflow: hidden; isolation: isolate; }
+.img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 0.35s ease; }
+.added { position: absolute; bottom: 0; left: 0; right: 0; text-align: center; background: #111; color: #9ef2ff; padding: 10px; font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; }
+.name { font-stretch: 125%; font-weight: 300; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1.25; text-wrap: pretty; }
+.details { display: flex; flex-direction: column; gap: 10px; margin-top: -4px; }
+.price { font-stretch: 125%; font-weight: 300; font-size: 14px; letter-spacing: 0.04em; color: #111; }
+.sizes { display: flex; gap: 14px; flex-wrap: wrap; }
+.size { background: transparent; border: 0; padding: 4px 0; font-stretch: 125%; font-weight: 300; font-size: 11px; letter-spacing: 0.08em; color: #6e6e6e; cursor: pointer; }
+.size:hover:not(:disabled) { color: #111; text-decoration: underline; }
+.size:disabled { cursor: not-allowed; text-decoration: line-through; color: #bdbdbd; }
+.viewAllWrap { display: flex; justify-content: center; margin-top: 96px; }
+.viewAll { border: 1px solid #111; padding: 16px 64px; font-stretch: 125%; font-weight: 400; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; }
+
+.cats { padding: 0 clamp(20px, 5vw, 70px) 120px; display: flex; flex-direction: column; gap: 40px; }
+.catsHead { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+.catsH { font-family: var(--font-display); font-size: 52px; line-height: 0.9; text-transform: uppercase; }
+.underlineLink { font-stretch: 125%; font-weight: 400; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; border-bottom: 2px solid #9ef2ff; padding-bottom: 4px; }
+.catGrid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+.cat { position: relative; background: #0b0b0b; overflow: hidden; display: block; color: #fff; }
+.cat:hover { color: #9ef2ff; }
+.catShade { position: absolute; left: 0; right: 0; bottom: 0; height: 60%; background: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0)); }
+.catBody { position: absolute; left: 28px; right: 28px; bottom: 24px; display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+.catName { font-family: var(--font-display); line-height: 0.9; text-transform: uppercase; max-width: 100%; overflow-wrap: anywhere; }
+.catCta { background: #9ef2ff; color: #111; padding: 10px 16px; font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; white-space: nowrap; }
+
+.trust { background: #9ef2ff; padding: 40px clamp(20px, 5vw, 70px); display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; }
+.trustItem { display: flex; flex-direction: column; gap: 6px; }
+.trustH { font-stretch: 125%; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+.trustP { font-size: 13px; color: #1a3a3e; }
+
+.tab { position: fixed; left: 24px; bottom: 0; z-index: 25; background: #fff; color: #111; border: 0; padding: 18px 48px; font-family: var(--font-body); font-size: 19px; font-weight: 700; cursor: pointer; box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.25); }
+.popup { position: fixed; inset: 0; z-index: 50; background: #000; color: #fff; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); }
+.popupImgWrap { position: relative; min-height: 280px; background: #000; }
+.popupBody { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: safe center; gap: 22px; padding: 56px 32px 40px; text-align: center; }
+.popupClose { position: absolute; top: 20px; right: 28px; background: transparent; border: 0; color: #fff; font-size: 23px; font-weight: 300; cursor: pointer; }
+.popupLogo { height: 110px; width: 200px; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.popupLogoImg { height: 260px; width: 260px; filter: invert(1); }
+.popupText { display: flex; flex-direction: column; gap: 4px; font-stretch: 110%; text-transform: uppercase; line-height: 1; }
+.got { font-weight: 300; font-size: 30px; }
+.excl { font-weight: 700; font-size: 36px; }
+.pct { margin-top: 14px; font-weight: 600; font-size: 17px; letter-spacing: 0.15em; color: #9ef2ff; }
+.popupCol { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+.expires { font-size: 15px; }
+.claim { width: 340px; max-width: 100%; height: 64px; border-radius: 10px; border: 0; background: #fff; color: #111; font-family: var(--font-body); font-stretch: 110%; font-size: 19px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; }
+.claim:hover { background: #9ef2ff; }
+.noThanks { background: transparent; border: 0; color: #fff; font-style: italic; font-size: 14px; cursor: pointer; }
+.yourCode { font-size: 14px; color: #bdbdbd; }
+.code { border: 2px dashed #9ef2ff; padding: 18px 48px; font-family: ui-monospace, Menlo, monospace; font-size: 26px; letter-spacing: 0.2em; color: #9ef2ff; }
+.claimShop { width: 340px; max-width: 100%; height: 64px; border-radius: 10px; border: 0; background: #9ef2ff; color: #111; font-family: var(--font-body); font-stretch: 110%; font-size: 17px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; }
+
+@media (max-width: 700px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .catGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .catGrid > * { grid-column: span 2 !important; }
+  .available { font-size: 52px; }
+  .heroContent { gap: 72px; }
+  .limited { min-width: 0; }
+  .tab { left: 12px; padding: 14px 28px; font-size: 16px; }
+}

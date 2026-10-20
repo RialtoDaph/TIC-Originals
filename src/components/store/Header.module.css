@@ -1,0 +1,67 @@
+/* Shared header pieces */
+.logoLink { height: 64px; width: 130px; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.logoImg { height: 150px; width: 150px; display: block; filter: invert(1); }
+.nav { display: flex; gap: clamp(14px, 1.8vw, 26px); flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+.navLink { white-space: nowrap; }
+.navLinkLine { white-space: nowrap; padding: 6px 0; border-bottom: 2px solid transparent; }
+.navLinkActive { border-bottom-color: #9ef2ff; }
+.right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+.lang { display: flex; gap: 6px; cursor: pointer; font-size: 12px; font-weight: 600; background: transparent; border: 0; padding: 0; color: inherit; }
+.langSep { color: #555; }
+.iconLink { display: flex; }
+.cartBtn { background: transparent; color: #fff; border: 0; font-size: 15px; cursor: pointer; white-space: nowrap; padding: 0; }
+.cartLink15 { font-size: 15px; white-space: nowrap; }
+.cartLink14 { font-size: 14px; white-space: nowrap; }
+
+/* Shop strip */
+.strip { background: #111; color: #fff; padding: 10px clamp(20px, 4vw, 48px); display: flex; justify-content: center; gap: 12px 40px; flex-wrap: wrap; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.stripItem { display: flex; gap: 8px; align-items: center; }
+.stripDot { width: 6px; height: 6px; background: #9ef2ff; }
+
+/* Shop / Account / Policies header */
+.header { background: #111; color: #fff; border-bottom: 1px solid #2b2b2b; padding: 0 clamp(20px, 4vw, 48px); min-height: 84px; display: flex; align-items: center; gap: clamp(20px, 4vw, 48px); }
+.sticky { position: sticky; top: 0; z-index: 20; }
+.policiesGap { gap: clamp(20px, 4vw, 40px); }
+
+/* Home header */
+.ticker { background: #111; color: #fff; padding: 12px clamp(20px, 4vw, 48px); display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+.tickerSlot { min-height: 34px; display: flex; align-items: center; overflow: hidden; }
+.tickerL { animation: tic-glitch 0.45s linear; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
+.tickerLb { font-size: 11px; font-weight: 400; color: #bdbdbd; }
+.tickerR { animation: tic-glitch 0.45s linear; display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.homeHeader { background: #111; color: #fff; border-bottom: 1px solid #2b2b2b; padding: 0 clamp(20px, 4vw, 48px); min-height: 96px; display: flex; align-items: center; gap: clamp(20px, 4vw, 48px); flex-wrap: wrap; position: sticky; top: 0; z-index: 20; }
+.homeLogo { height: 72px; width: 150px; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.homeLogoImg { height: 170px; width: 170px; display: block; filter: invert(1); }
+.homeNavLink { white-space: nowrap; color: #fff; }
+.cur { position: relative; }
+.curBtn { background: transparent; color: #fff; border: 1px solid #444; padding: 9px 14px; min-width: 140px; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; cursor: pointer; }
+.curCaret { font-size: 10px; }
+.curMenu { position: absolute; top: 100%; left: 0; right: 0; background: #111; border: 1px solid #444; border-top: 0; display: flex; flex-direction: column; z-index: 1; }
+.curOpt { background: #111; color: #fff; border: 0; padding: 10px 14px; text-align: left; font-size: 13px; cursor: pointer; }
+.curOptActive { background: #222; }
+
+/* Checkout header */
+.checkoutHeader { background: #111; color: #fff; padding: 0 clamp(20px, 4vw, 48px); min-height: 84px; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 16px; }
+.back { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #bdbdbd; white-space: nowrap; }
+.checkoutLogo { height: 64px; width: 130px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.checkoutRight { display: flex; justify-content: flex-end; align-items: center; gap: 20px; }
+.secure { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #9ef2ff; white-space: nowrap; }
+
+@media (max-width: 560px) {
+  .back { white-space: normal; }
+  .secure span { display: none; }
+}
+
+/* Phones (not in the designs): logo + actions on the first row, scrollable nav below. */
+@media (max-width: 700px) {
+  .header,
+  .homeHeader { flex-wrap: wrap; row-gap: 0; column-gap: 16px; padding-bottom: 12px; }
+  .header .nav,
+  .homeHeader .nav { order: 3; flex: 1 0 100%; }
+  .right { margin-left: auto; gap: 14px; }
+  .homeHeader { row-gap: 10px; padding-top: 10px; }
+  .curBtn { min-width: 0; padding: 8px 10px; }
+  .homeLogo { width: 120px; height: 64px; }
+  .homeLogoImg { width: 140px; height: 140px; }
+  .logoLink { width: 110px; }
+}
