@@ -18,6 +18,8 @@ const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || 'whsec_test';
 const OTP = '123456';
 
 const db = new pg.Pool({ connectionString: process.env.DATABASE_URL || 'postgres://postgres@127.0.0.1:54322/tic' });
+// The tests drop and recreate the database; idle connections are then terminated. Don't crash.
+db.on('error', (e) => console.warn('[gateway] idle db connection closed:', e.message));
 
 const b64url = (b) => Buffer.from(b).toString('base64url');
 export function signJwt(payload) {
