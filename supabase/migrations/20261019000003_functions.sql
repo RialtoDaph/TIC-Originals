@@ -263,3 +263,13 @@ grant execute on function public.owner_return_stock(uuid) to authenticated;
 grant execute on function public.track_order(text) to anon, authenticated;
 grant execute on function public.gen_order_no() to service_role;
 grant execute on function public.finalize_checkout(text, text, text) to service_role;
+
+-- Local shop time (Europe/Berlin, DST-aware) to timestamptz, for the drop schedule.
+create or replace function public.berlin_timestamp(p_date text, p_time text)
+returns timestamptz
+language sql
+immutable
+as $$
+  select ((p_date || ' ' || p_time)::timestamp at time zone 'Europe/Berlin');
+$$;
+grant execute on function public.berlin_timestamp(text, text) to authenticated;

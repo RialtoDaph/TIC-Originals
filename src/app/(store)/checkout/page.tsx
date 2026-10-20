@@ -14,8 +14,9 @@ export default async function Page() {
 
   // Prefill from the signed-in account (replaces the prototype's tic-user localStorage entry).
   const prefill: CheckoutPrefill = { email: '', first: '', last: '', street: '', extra: '', zip: '', city: '', country: 'DE', phone: '' };
+  // Read the session outside try/catch: Next.js signals dynamic rendering by throwing here.
+  const { supabase, user } = await getSessionUser();
   try {
-    const { supabase, user } = await getSessionUser();
     if (user) {
       prefill.email = user.email ?? '';
       const [{ data: profile }, { data: addr }] = await Promise.all([

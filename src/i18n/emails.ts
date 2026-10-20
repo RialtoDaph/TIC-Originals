@@ -172,3 +172,15 @@ export function invoiceEmail(o: EmailOrder, invoiceNo: string, lang: Lang): Emai
         text: [`Hey ${o.first_name},`, '', `please find attached invoice ${invoiceNo} for your order ${o.order_no}.`, '', sig].join('\n'),
       };
 }
+
+export function paymentReminderEmail(o: EmailOrder, lang: Lang): Email {
+  return lang === 'de'
+    ? {
+        subject: `Zahlung ausstehend · ${o.order_no}`,
+        text: [`Hey ${o.first_name},`, '', `für deine Bestellung ${o.order_no} ist die Zahlung noch nicht bei uns eingegangen. Bitte sorge dafür, dass die Lastschrift über ${fmtCents(o.total_cents, lang)} eingelöst werden kann. Wir halten deine Artikel so lange für dich reserviert.`, '', sig].join('\n'),
+      }
+    : {
+        subject: `Payment pending · ${o.order_no}`,
+        text: [`Hey ${o.first_name},`, '', `we haven't received the payment for your order ${o.order_no} yet. Please make sure the direct debit of ${fmtCents(o.total_cents, lang)} can be collected. We keep your items reserved until then.`, '', sig].join('\n'),
+      };
+}
