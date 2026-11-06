@@ -12,3 +12,5 @@ next-env.d.ts
 supabase/.branches
 supabase/.temp
 .DS_Store
+.env*
+!.env.example

@@ -227,7 +227,7 @@ function CheckoutForm({
       const res = await fetch('/api/discount', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: c, email: f.email, items, country }),
+        body: JSON.stringify({ code: c, items, country }),
       });
       const r = await res.json();
       if (r.ok) {
@@ -294,7 +294,7 @@ function CheckoutForm({
         } else if (r.error === 'stock') setFormError(r.name ? t.outOfStock(r.name, r.size) : t.pricesChanged);
         else if (r.error === 'code') {
           setCode(null);
-          setFormError(t.pricesChanged);
+          setFormError(r.problem === 'first' ? t.codeProblem.first : t.pricesChanged);
         } else if (r.error === 'locked') location.reload();
         else setFormError(t.genericError);
         setBusy(false);

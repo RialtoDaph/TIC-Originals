@@ -72,6 +72,9 @@ export function OrderDrawer() {
         {od.flags.includes('oversold') && (
           <div style={{ ...sx('margin:0 22px 12px;padding:10px 14px;border-radius:12px;font-size:13px'), background: TONE.red[0], color: TONE.red[1] }}>{t.flags.oversold}</div>
         )}
+        {od.flags.includes('amount_mismatch') && (
+          <div style={{ ...sx('margin:0 22px 12px;padding:10px 14px;border-radius:12px;font-size:13px'), background: TONE.red[0], color: TONE.red[1] }}>{t.flags.amountMismatch}</div>
+        )}
         {primary && (
           <div style={{ ...sx('margin:0 22px 18px;padding:14px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:12px'), background: primary[3] }}>
             <span style={sx('font-size:13px;color:#ECEEF1')}>{primary[0]}</span>

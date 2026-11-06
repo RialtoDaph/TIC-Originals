@@ -91,7 +91,7 @@ const en = {
     cancelled: 'Cancelled',
     returned: 'Returned',
   },
-  flags: { refundDue: 'Refund due', reminderSent: 'Reminder sent', since: (d: string) => `Since ${d}`, repeat: (n: number) => `Repeat ×${n}`, oversold: 'Oversold' },
+  flags: { refundDue: 'Refund due', reminderSent: 'Reminder sent', since: (d: string) => `Since ${d}`, repeat: (n: number) => `Repeat ×${n}`, oversold: 'Oversold', amountMismatch: 'Paid amount differs from order total' },
   next: { remind: 'Send reminder', remindAgain: 'Remind again', label: 'Create DHL label', delivered: 'Mark delivered', refund: (amt: string) => `Refund ${amt}` },
   // Order drawer
   steps: ['Placed', 'Paid', 'Shipped', 'Delivered'],
@@ -393,7 +393,7 @@ const de: Dict = {
     cancelled: 'Storniert',
     returned: 'Retourniert',
   },
-  flags: { refundDue: 'Erstattung fällig', reminderSent: 'Erinnerung gesendet', since: (d) => `Seit ${d}`, repeat: (n) => `Wiederholt ×${n}`, oversold: 'Überverkauft' },
+  flags: { refundDue: 'Erstattung fällig', reminderSent: 'Erinnerung gesendet', since: (d) => `Seit ${d}`, repeat: (n) => `Wiederholt ×${n}`, oversold: 'Überverkauft', amountMismatch: 'Bezahlter Betrag weicht von der Bestellsumme ab' },
   next: { remind: 'Erinnerung senden', remindAgain: 'Erneut erinnern', label: 'DHL-Label erstellen', delivered: 'Als zugestellt markieren', refund: (amt) => `${amt} erstatten` },
   steps: ['Bestellt', 'Bezahlt', 'Versendet', 'Zugestellt'],
   primary: {

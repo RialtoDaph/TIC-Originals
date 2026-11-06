@@ -6,6 +6,7 @@ import { addressErrors, cleanAddress } from '@/lib/validation';
 import { stripe } from '@/lib/stripe';
 import { loadCurrentDrop } from '@/lib/catalog';
 import { isShopLocked } from '@/lib/drops';
+import { allowRequest } from '@/lib/rate-limit';
 
 /**
  * Called when the shopper clicks "Zahlungspflichtig bestellen". Re-prices the cart on the server,
@@ -23,6 +24,10 @@ export async function POST(req: Request) {
 }
 
 async function handle(req: Request) {
+  const admin = createAdminClient();
+  if (!(await allowRequest(admin, 'checkout', req.headers, 30, 600))) {
+    return NextResponse.json({ error: 'rate_limited' }, { status: 429 });
+  }
   const body = await req.json().catch(() => null);
   if (!body || typeof body !== 'object') return NextResponse.json({ error: 'bad_request' }, { status: 400 });
 
@@ -30,7 +35,6 @@ async function handle(req: Request) {
   if (Object.keys(addressErrors(addr)).length) return NextResponse.json({ error: 'invalid' }, { status: 400 });
   const lang = body.lang === 'en' ? 'en' : 'de';
   const items = sanitizeItems(body.items);
-  const admin = createAdminClient();
 
   if (isShopLocked(await loadCurrentDrop(admin))) return NextResponse.json({ error: 'locked' }, { status: 409 });
 

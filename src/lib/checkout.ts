@@ -76,7 +76,7 @@ export async function priceCart(
       const { count } = await admin
         .from('orders')
         .select('id', { count: 'exact', head: true })
-        .ilike('email', input.email.trim())
+        .eq('email', input.email.trim().toLowerCase())
         .in('payment_status', ['paid', 'pending']);
       isFirstOrder = (count ?? 0) === 0;
     }

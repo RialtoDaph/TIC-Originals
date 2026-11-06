@@ -29,6 +29,31 @@ function formatUntil(v: string, lang: Lang) {
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 }
 
+/** Looping hero video; the poster stays visible when it can't play or the visitor prefers reduced motion. */
+function HeroVideo() {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    // React sets `muted` as a property only, so browsers won't autoplay from the server HTML.
+    v.muted = true;
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) v.play().catch(() => {});
+  }, []);
+  return (
+    <video
+      ref={ref}
+      src={img(SITE_IMAGES.heroVideo)}
+      poster={img(SITE_IMAGES.hero)}
+      className={s.heroVideo}
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      aria-hidden="true"
+    />
+  );
+}
+
 function ProductTile({ p }: { p: Product }) {
   const { addToCart, price, t } = useStore();
   const [hover, setHover] = useState(false);
@@ -154,8 +179,7 @@ export function HomePage() {
     <div className={s.page}>
       <HomeHeader />
       <section className={s.hero}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={img(SITE_IMAGES.hero)} alt="" className={s.heroImg} />
+        <HeroVideo />
         <div className={s.noise} />
         <div className={s.fade} />
         <div className={s.heroContent}>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addressErrors, cleanAddress } from '@/lib/validation';
+import { addressErrors, cleanAddress, safeNextPath } from '@/lib/validation';
 import { sanitizeItems } from '@/lib/checkout-items';
 import { sx } from '@/components/owner/sx';
 
@@ -46,5 +46,14 @@ describe('sx', () => {
       background: 'url(data:x;y)',
       '--x': '1',
     });
+  });
+});
+
+describe('safeNextPath (redirect after sign-in)', () => {
+  it('keeps same-site paths with their query', () => expect(safeNextPath('/account?tab=orders', '/account')).toBe('/account?tab=orders'));
+  it('falls back for anything that leaves the site', () => {
+    for (const next of ['//evil.com', '/\\evil.com', '/\t/evil.com', 'https://evil.com', 'evil.com', null]) {
+      expect(safeNextPath(next, '/account')).toBe('/account');
+    }
   });
 });

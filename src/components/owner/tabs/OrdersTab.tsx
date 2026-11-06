@@ -21,7 +21,7 @@ const LF: Record<UiState['lf'], (o: OOrder) => boolean> = {
   ship: toShip,
   way: (o) => o.status === 'shipped',
   done: (o) => o.status === 'delivered',
-  issue: (o) => needsAtt(o) || awaiting(o) || o.status === 'cancelled' || o.status === 'returned' || o.flags.includes('oversold'),
+  issue: (o) => needsAtt(o) || awaiting(o) || o.status === 'cancelled' || o.status === 'returned' || o.flags.includes('oversold') || o.flags.includes('amount_mismatch'),
 };
 
 export function matchSearch(o: OOrder, q: string) {

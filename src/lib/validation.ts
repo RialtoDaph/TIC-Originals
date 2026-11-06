@@ -2,6 +2,18 @@ import { COUNTRY_CODES } from './countries';
 
 export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/** Same-site path to continue to after sign-in; anything that would leave the site falls back. */
+export function safeNextPath(next: string | null, fallback: string): string {
+  if (!next) return fallback;
+  const origin = 'https://same-site.invalid';
+  try {
+    const url = new URL(next, origin);
+    return next.startsWith('/') && url.origin === origin ? url.pathname + url.search + url.hash : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 export interface AddressInput {
   email: string;
   first: string;

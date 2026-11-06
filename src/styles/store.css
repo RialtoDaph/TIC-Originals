@@ -51,11 +51,6 @@ body:has(.store-root) {
   white-space: nowrap;
 }
 
-@keyframes tic-kb {
-  from { transform: scale(1); }
-  to { transform: scale(1.08) translateX(-1.5%); }
-}
-
 @keyframes tic-glitch {
   0% { opacity: 0; transform: translateX(-6px); clip-path: inset(0 0 60% 0); text-shadow: 3px 0 #9ef2ff, -3px 0 #c2183b; }
   15% { opacity: 1; transform: translateX(5px); clip-path: inset(40% 0 20% 0); }

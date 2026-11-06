@@ -31,12 +31,17 @@ export async function POST(req: Request) {
           const pm = typeof pi.payment_method === 'string' ? await stripe().paymentMethods.retrieve(pi.payment_method) : pi.payment_method;
           method = paymentMethodLabel(pm);
         }
-        const { data: exists } = await admin.from('checkouts').select('id').eq('payment_intent_id', pi.id).maybeSingle();
-        if (!exists) break; // Not one of ours (e.g. created in the Stripe dashboard).
+        const { data: checkout } = await admin.from('checkouts').select('total_cents').eq('payment_intent_id', pi.id).maybeSingle();
+        if (!checkout) break; // Not one of ours (e.g. created in the Stripe dashboard).
         const { data, error } = await admin.rpc('finalize_checkout', { p_payment_intent: pi.id, p_status: status, p_method: method });
         if (error) throw error;
         const result = data as { order_id: string | null; event: string };
         if (result.order_id && result.event !== 'noop') {
+          if (status !== 'failed' && pi.amount !== checkout.total_cents) {
+            console.error('[webhook] amount mismatch', pi.id, pi.amount, checkout.total_cents);
+            const { error: flagErr } = await admin.rpc('flag_order', { p_order_id: result.order_id, p_flag: 'amount_mismatch' });
+            if (flagErr) console.error('[webhook] flag failed', flagErr);
+          }
           // The order state is already committed; emails/notifications must not trigger a retry.
           await afterOrderEvent(admin, result.order_id, result.event).catch((e) => console.error('[webhook] side effects failed', e));
         }

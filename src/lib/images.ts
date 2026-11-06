@@ -15,6 +15,7 @@ const PLACEHOLDER = '/img/hf_20261002_221632_5de61919-3487-471c-98da-f50f80165bf
 /** Site imagery that isn't tied to a product (placeholders from the design handoff). */
 export const SITE_IMAGES = {
   hero: '/img/hf_20261002_221632_5de61919-3487-471c-98da-f50f80165bf1.jpg',
+  heroVideo: '/video/hero.mp4',
   discountPopup: '/img/hf_20261002_221633_fe6973c9-e7dc-4616-9e89-50fcfbc41950.jpg',
   accountSide: '/img/hf_20261002_221532_446455cc-7ecc-4704-83c4-1f805f60b942.jpg',
   categories: {
