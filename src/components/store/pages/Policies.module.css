@@ -17,6 +17,7 @@
 .block { display: flex; flex-direction: column; gap: 14px; }
 .blockH { font-size: 11px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: #6e6e6e; }
 .text { margin: 0; max-width: 720px; font-size: 15px; line-height: 1.75; white-space: pre-line; text-wrap: pretty; }
+.legalImage { display: block; width: 100%; max-width: 720px; height: auto; }
 .note { margin: 0; max-width: 720px; background: #9ef2ff; padding: 20px 24px; font-size: 14px; line-height: 1.65; white-space: pre-line; }
 .table { max-width: 720px; border-top: 1px solid #111; }
 .tableRow { display: flex; justify-content: space-between; gap: 24px; padding: 16px 0; border-bottom: 1px solid #e4e4e4; flex-wrap: wrap; }

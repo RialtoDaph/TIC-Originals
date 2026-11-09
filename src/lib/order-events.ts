@@ -1,3 +1,4 @@
+import { requestNewsletterConfirmation } from './newsletter';
 import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { sendEmail } from './email';
@@ -63,9 +64,7 @@ async function rememberCustomer(admin: SupabaseClient, order: Awaited<ReturnType
   if (order.checkout_id) {
     const { data: c } = await admin.from('checkouts').select('newsletter, lang').eq('id', order.checkout_id).maybeSingle();
     if (c?.newsletter) {
-      await admin
-        .from('newsletter_subscribers')
-        .upsert({ email: order.email.toLowerCase(), source: 'checkout', lang: c.lang }, { onConflict: 'email', ignoreDuplicates: true });
+      await requestNewsletterConfirmation(admin, order.email, 'checkout', c.lang === 'en' ? 'en' : 'de');
     }
   }
 }

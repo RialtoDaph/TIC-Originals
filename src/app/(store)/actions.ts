@@ -1,5 +1,6 @@
 'use server';
 
+import { requestNewsletterConfirmation } from '@/lib/newsletter';
 import { headers } from 'next/headers';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { sendEmail } from '@/lib/email';
@@ -14,12 +15,8 @@ export async function subscribeNewsletter(email: string, source: string, lang: L
   if (!EMAIL_RE.test(e) || e.length > 254) return { ok: false };
   const supabase = createAdminClient();
   if (!(await allowRequest(supabase, 'newsletter', await headers(), 10, 3600))) return { ok: false };
-  // TODO(double-opt-in): send a confirmation email and set confirmed_at when the link is clicked.
-  const { error } = await supabase
-    .from('newsletter_subscribers')
-    .upsert({ email: e, source: source.slice(0, 40), lang: lang === 'en' ? 'en' : 'de' }, { onConflict: 'email', ignoreDuplicates: true });
-  if (error) console.error('newsletter', error);
-  return { ok: !error };
+  const ok = await requestNewsletterConfirmation(supabase, e, source, lang === 'en' ? 'en' : 'de');
+  return { ok };
 }
 
 export async function sendContactMessage(input: { name: string; email: string; subject: string; message: string }): Promise<{ ok: boolean }> {

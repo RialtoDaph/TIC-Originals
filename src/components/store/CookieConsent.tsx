@@ -18,10 +18,7 @@ export function CookieConsent() {
       </p>
       <div className={s.btns}>
         <button className={s.btn} onClick={() => setConsent('necessary')}>
-          {t.ckNo}
-        </button>
-        <button className={s.btn} onClick={() => setConsent('all')}>
-          {t.ckYes}
+          {t.ckOk}
         </button>
       </div>
     </div>

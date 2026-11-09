@@ -11,7 +11,8 @@ export type Block =
   | { type: 'faq' }
   | { type: 'form'; h: string }
   | { type: 'track'; h: string }
-  | { type: 'contact' };
+  | { type: 'contact' }
+  | { type: 'image'; src: string; alt: string; width: number; height: number };
 
 export interface PolicyPage {
   eyebrow: string;
@@ -27,16 +28,16 @@ export interface ShipAmounts {
   free: string;
 }
 
-export const POLICY_KEYS = ['shipping', 'returns', 'faq', 'tracking', 'contact', 'impressum', 'datenschutz', 'agb', 'widerruf'] as const;
+export const POLICY_KEYS = ['shipping', 'returns', 'faq', 'tracking', 'contact', 'impressum', 'datenschutz', 'agb', 'widerruf', 'gewaehrleistung'] as const;
 export type PolicyKey = (typeof POLICY_KEYS)[number];
 
 export const GROUPS: ['service' | 'legal', PolicyKey[]][] = [
   ['service', ['shipping', 'returns', 'faq', 'tracking', 'contact']],
-  ['legal', ['impressum', 'datenschutz', 'agb', 'widerruf']],
+  ['legal', ['impressum', 'datenschutz', 'agb', 'widerruf', 'gewaehrleistung']],
 ];
 
-const ADDR = 'TILL I COLLAPSE ORIGINALS\nAn der Oberen Au 4\n85072 Eichstätt\nDeutschland';
-export const LEGAL_UPDATED = '01.10.2026';
+const ADDR = 'John Rasch\nTILL I COLLAPSE ORIGINALS\nAn der Oberen Au 4\n85072 Eichstätt\nDeutschland';
+export const LEGAL_UPDATED = '06.11.2026';
 
 export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPage {
   const pages: Record<PolicyKey, Record<Lang, PolicyPage>> = {
@@ -113,9 +114,9 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
         legal: true,
         blocks: [
           { type: 'text', h: 'Angaben gemäß § 5 DDG', p: ADDR },
-          { type: 'text', h: 'Vertreten durch', p: '[Name des Inhabers / Geschäftsführers]' },
           { type: 'text', h: 'Kontakt', p: 'E-Mail: company@ticoriginals.com\nTelefon: +49 152 07889847' },
-          { type: 'text', h: 'Umsatzsteuer', p: 'Steuernummer: [Steuernummer]\nKleinunternehmer gemäß § 19 UStG, daher kein Ausweis der Umsatzsteuer.' },
+          { type: 'text', h: 'Umsatzsteuer', p: 'Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: DE462943223\nKleinunternehmer gemäß § 19 UStG, daher kein Ausweis der Umsatzsteuer.' },
+          { type: 'text', h: 'Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV', p: ADDR },
           { type: 'text', h: 'EU-Streitschlichtung', p: 'Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.' },
         ],
       },
@@ -125,10 +126,30 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
         legal: true,
         blocks: [
           { type: 'text', h: 'Information pursuant to § 5 DDG', p: ADDR },
-          { type: 'text', h: 'Represented by', p: '[Owner / managing director name]' },
           { type: 'text', h: 'Contact', p: 'Email: company@ticoriginals.com\nPhone: +49 152 07889847' },
-          { type: 'text', h: 'VAT', p: 'Tax number: [Tax number]\nSmall business under § 19 UStG, no VAT is shown.' },
+          { type: 'text', h: 'VAT', p: 'VAT ID under § 27a UStG: DE462943223\nSmall business under § 19 UStG, no VAT is shown.' },
+          { type: 'text', h: 'Responsible for content under § 18(2) MStV', p: ADDR },
           { type: 'text', h: 'EU dispute resolution', p: 'We are neither willing nor obliged to participate in dispute resolution proceedings before a consumer arbitration board.' },
+        ],
+      },
+    },
+    gewaehrleistung: {
+      de: {
+        eyebrow: 'Rechtliches',
+        title: 'Gesetzliche Gewährleistung',
+        legal: true,
+        blocks: [
+          { type: 'image', src: '/img/legal/gewaehrleistung-de.webp', width: 1169, height: 1600, alt: 'Gesetzliche Gewährleistung. Mindestens zwei Jahre gesetzliche Gewährleistung der Vertragsmäßigkeit für Waren, die in der Europäischen Union verkauft werden. Verbraucherinnen und Verbraucher können ihre Rechte im Rahmen des gesetzlichen Gewährleistungsrechts geltend machen, z. B. wenn die Waren nicht der Beschreibung entsprechen oder nicht bestimmungsgemäß funktionieren. Verkäufer haften für jede Vertragswidrigkeit, die zum Zeitpunkt der Lieferung der Waren bestand und innerhalb des Zeitraums der gesetzlichen Gewährleistung erkennbar wird. Verkäufer müssen in solchen Fällen eine kostenlose Nachbesserung oder kostenlose Ersatzlieferung anbieten, in bestimmten Fällen eine Preisminderung oder eine vollständige Erstattung des Kaufpreises. Was ist zu tun, wenn Sie vertragswidrige Waren erhalten? Melden Sie dem Verkäufer das Problem so bald wie möglich und legen Sie einen Kaufnachweis vor, z. B. die Quittung, Rechnung oder einen Kontoauszug.' },
+          { type: 'text', p: 'Weitere Informationen: https://europa.eu/youreurope/garantien' },
+        ],
+      },
+      en: {
+        eyebrow: 'Legal',
+        title: 'Legal Guarantee',
+        legal: true,
+        blocks: [
+          { type: 'image', src: '/img/legal/gewaehrleistung-en.webp', width: 1132, height: 1600, alt: 'Legal guarantee. Minimum two-year legal guarantee protection for goods sold in the European Union. Consumers can claim their rights under the legal guarantee of conformity, for example if goods do not match the description or do not function as intended. Sellers are liable for any lack of conformity which existed when the goods were delivered, and which becomes apparent within the legal guarantee period. Sellers in such a situation are required to offer free repair or free replacement, in some cases a price reduction or full reimbursement. What to do if you receive non-conforming goods: contact the seller as soon as possible to report the issue and provide proof of purchase, such as a receipt, invoice, or bank statement.' },
+          { type: 'text', p: 'More information: https://europa.eu/youreurope/guarantees' },
         ],
       },
     },
@@ -141,9 +162,14 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
           { type: 'text', h: '1. Verantwortlicher', p: ADDR + '\ncompany@ticoriginals.com' },
           { type: 'text', h: '2. Bestellabwicklung', p: 'Zur Abwicklung deiner Bestellung verarbeiten wir Name, Anschrift, E-Mail, Telefonnummer und Bestelldaten (Art. 6 Abs. 1 lit. b DSGVO). Versanddaten geben wir an den beauftragten Versanddienstleister (DHL, Hermes) weiter.' },
           { type: 'text', h: '3. Zahlungsdienstleister', p: 'Kartenzahlungen werden über Stripe Payments Europe Ltd. abgewickelt, PayPal-Zahlungen über PayPal (Europe) S.à r.l. et Cie, S.C.A. Wir speichern keine vollständigen Kartendaten.' },
-          { type: 'text', h: '4. Newsletter', p: 'Für den Newsletter speichern wir deine E-Mail-Adresse auf Grundlage deiner Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Abmeldung jederzeit über den Link in jeder E-Mail.' },
-          { type: 'text', h: '5. Cookies', p: 'Wir verwenden technisch notwendige Cookies (z. B. Warenkorb, Spracheinstellung). Analyse- oder Marketing-Cookies setzen wir nicht ein.' },
-          { type: 'text', h: '6. Deine Rechte', p: 'Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch sowie das Recht auf Beschwerde bei einer Aufsichtsbehörde.' },
+          { type: 'text', h: '4. Kundenkonto', p: 'Wenn du ein Konto anlegst, speichern wir E-Mail-Adresse, Passwort (nur als Hash), Lieferadressen und deine Bestellhistorie (Art. 6 Abs. 1 lit. b DSGVO). Das Konto kannst du jederzeit löschen lassen, schreib uns dazu an company@ticoriginals.com.' },
+          { type: 'text', h: '5. Kontaktformular und E-Mail', p: 'Wenn du uns über das Kontaktformular oder per E-Mail schreibst, speichern wir Name, E-Mail-Adresse und deine Nachricht, um die Anfrage zu beantworten (Art. 6 Abs. 1 lit. b und f DSGVO).' },
+          { type: 'text', h: '6. Newsletter', p: 'Für den Newsletter speichern wir deine E-Mail-Adresse auf Grundlage deiner Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Wir nutzen das Double-Opt-in-Verfahren: Du erhältst zuerst eine E-Mail mit Bestätigungslink und wirst erst danach in den Verteiler aufgenommen. Abmeldung jederzeit über den Link in jeder E-Mail.' },
+          { type: 'text', h: '7. Hosting und technische Dienstleister', p: 'Unsere Website läuft bei Vercel Inc. (USA). Die Datenbank mit Konten und Bestellungen betreibt Supabase (Rechenzentrum in der EU, Irland). E-Mails (Bestellbestätigung, Versandmail, Newsletter) versenden wir über Resend. Dabei werden technisch bedingt Server-Logdaten wie IP-Adresse, Zeitpunkt und aufgerufene Seite verarbeitet (Art. 6 Abs. 1 lit. f DSGVO). Soweit Daten in die USA übermittelt werden, geschieht das auf Grundlage des EU-US Data Privacy Framework oder von Standardvertragsklauseln.' },
+          { type: 'text', h: '8. Missbrauchsschutz', p: 'Zum Schutz vor Missbrauch (z. B. automatisierte Bestellungen oder Formularspam) speichern wir einen gekürzten, nicht rückrechenbaren Hash deiner IP-Adresse für kurze Zeit (Art. 6 Abs. 1 lit. f DSGVO).' },
+          { type: 'text', h: '9. Speicherdauer', p: 'Bestell- und Rechnungsdaten bewahren wir wegen steuer- und handelsrechtlicher Pflichten bis zu zehn Jahre auf. Alle übrigen Daten löschen wir, sobald der Zweck entfällt oder du deine Einwilligung widerrufst.' },
+          { type: 'text', h: '10. Cookies', p: 'Wir verwenden nur technisch notwendige Cookies bzw. lokale Speicherung (z. B. Warenkorb, Spracheinstellung, Login). Analyse- oder Marketing-Cookies setzen wir nicht ein, daher ist keine Einwilligung nötig.' },
+          { type: 'text', h: '11. Deine Rechte', p: 'Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch sowie das Recht auf Beschwerde bei einer Aufsichtsbehörde, zum Beispiel beim Bayerischen Landesamt für Datenschutzaufsicht (BayLDA).' },
         ],
       },
       en: {
@@ -154,9 +180,14 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
           { type: 'text', h: '1. Controller', p: ADDR + '\ncompany@ticoriginals.com' },
           { type: 'text', h: '2. Order processing', p: 'To process your order we handle name, address, email, phone number and order data (Art. 6(1)(b) GDPR). Shipping data is shared with the carrier (DHL, Hermes).' },
           { type: 'text', h: '3. Payment providers', p: 'Card payments are processed by Stripe Payments Europe Ltd., PayPal payments by PayPal (Europe) S.à r.l. et Cie, S.C.A. We never store full card details.' },
-          { type: 'text', h: '4. Newsletter', p: 'For the newsletter we store your email address based on your consent (Art. 6(1)(a) GDPR). Unsubscribe any time via the link in every email.' },
-          { type: 'text', h: '5. Cookies', p: 'We use technically necessary cookies (e.g. cart, language). We do not use analytics or marketing cookies.' },
-          { type: 'text', h: '6. Your rights', p: 'You have the right to access, rectification, erasure, restriction of processing, data portability and objection, and the right to lodge a complaint with a supervisory authority.' },
+          { type: 'text', h: '4. Customer account', p: 'If you create an account we store your email address, password (as a hash only), delivery addresses and order history (Art. 6(1)(b) GDPR). You can have your account deleted at any time by writing to company@ticoriginals.com.' },
+          { type: 'text', h: '5. Contact form and email', p: 'If you write to us via the contact form or email we store your name, email address and message to answer your request (Art. 6(1)(b) and (f) GDPR).' },
+          { type: 'text', h: '6. Newsletter', p: 'For the newsletter we store your email address based on your consent (Art. 6(1)(a) GDPR). We use double opt-in: you first receive an email with a confirmation link and are only added to the list after confirming. Unsubscribe any time via the link in every email.' },
+          { type: 'text', h: '7. Hosting and technical providers', p: 'Our website runs on Vercel Inc. (USA). The database with accounts and orders is operated by Supabase (data centre in the EU, Ireland). We send emails (order confirmation, shipping, newsletter) through Resend. Technically this involves server log data such as IP address, time and page requested (Art. 6(1)(f) GDPR). Where data is transferred to the USA this is based on the EU-US Data Privacy Framework or standard contractual clauses.' },
+          { type: 'text', h: '8. Abuse protection', p: 'To protect against abuse (e.g. automated orders or form spam) we store a shortened, non-reversible hash of your IP address for a short time (Art. 6(1)(f) GDPR).' },
+          { type: 'text', h: '9. Retention', p: 'We keep order and invoice data for up to ten years because of tax and commercial law obligations. All other data is deleted once the purpose no longer applies or you withdraw consent.' },
+          { type: 'text', h: '10. Cookies', p: 'We only use technically necessary cookies and local storage (e.g. cart, language, login). We do not use analytics or marketing cookies, so no consent is required.' },
+          { type: 'text', h: '11. Your rights', p: 'You have the right to access, rectification, erasure, restriction of processing, data portability and objection, and the right to lodge a complaint with a supervisory authority, for example the Bavarian State Office for Data Protection Supervision (BayLDA).' },
         ],
       },
     },
@@ -260,7 +291,7 @@ export const POLICY_T = {
     updated: 'Zuletzt aktualisiert:',
     showForm: 'Widerrufsformular anzeigen',
     hideForm: 'Widerrufsformular ausblenden',
-    labels: { shipping: 'Versand & Zahlung', returns: 'Rückgabe', faq: 'FAQ', tracking: 'Track Order', contact: 'Kontakt', impressum: 'Impressum', datenschutz: 'Datenschutz', agb: 'AGB', widerruf: 'Widerrufsrecht' } as Record<PolicyKey, string>,
+    labels: { shipping: 'Versand & Zahlung', returns: 'Rückgabe', faq: 'FAQ', tracking: 'Track Order', contact: 'Kontakt', impressum: 'Impressum', datenschutz: 'Datenschutz', agb: 'AGB', widerruf: 'Widerrufsrecht', gewaehrleistung: 'Gewährleistung' } as Record<PolicyKey, string>,
     formText: 'An:\nTILL I COLLAPSE ORIGINALS, An der Oberen Au 4, 85072 Eichstätt, company@ticoriginals.com\n\nHiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren (*):\n______________________________________\n\nBestellt am (*) / erhalten am (*): ____________\nName des/der Verbraucher(s): ____________\nAnschrift des/der Verbraucher(s): ____________\nUnterschrift (nur bei Mitteilung auf Papier): ____________\nDatum: ____________\n\n(*) Unzutreffendes streichen.',
   },
   en: {
@@ -282,7 +313,7 @@ export const POLICY_T = {
     updated: 'Last updated:',
     showForm: 'Show withdrawal form',
     hideForm: 'Hide withdrawal form',
-    labels: { shipping: 'Shipping & Payment', returns: 'Returns', faq: 'FAQ', tracking: 'Track Order', contact: 'Contact', impressum: 'Imprint', datenschutz: 'Privacy Policy', agb: 'Terms (AGB)', widerruf: 'Right of Withdrawal' } as Record<PolicyKey, string>,
+    labels: { shipping: 'Shipping & Payment', returns: 'Returns', faq: 'FAQ', tracking: 'Track Order', contact: 'Contact', impressum: 'Imprint', datenschutz: 'Privacy Policy', agb: 'Terms (AGB)', widerruf: 'Right of Withdrawal', gewaehrleistung: 'Legal Guarantee' } as Record<PolicyKey, string>,
     formText: 'To:\nTILL I COLLAPSE ORIGINALS, An der Oberen Au 4, 85072 Eichstätt, company@ticoriginals.com\n\nI/We (*) hereby withdraw from the contract concluded by me/us (*) for the purchase of the following goods (*):\n______________________________________\n\nOrdered on (*) / received on (*): ____________\nName of consumer(s): ____________\nAddress of consumer(s): ____________\nSignature (only if notifying on paper): ____________\nDate: ____________\n\n(*) Delete as applicable.',
   },
 };

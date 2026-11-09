@@ -184,3 +184,38 @@ export function paymentReminderEmail(o: EmailOrder, lang: Lang): Email {
         text: [`Hey ${o.first_name},`, '', `we haven't received the payment for your order ${o.order_no} yet. Please make sure the direct debit of ${fmtCents(o.total_cents, lang)} can be collected. We keep your items reserved until then.`, '', sig].join('\n'),
       };
 }
+
+export function newsletterConfirmEmail(token: string, lang: Lang): Email {
+  const link = `${site()}/api/newsletter?a=confirm&t=${token}`;
+  const unsub = `${site()}/api/newsletter?a=unsubscribe&t=${token}`;
+  if (lang === 'de') {
+    return {
+      subject: 'Bitte bestätige deine Newsletter-Anmeldung',
+      text: [
+        'Hallo,',
+        '',
+        'du (oder jemand mit deiner E-Mail-Adresse) hat sich für den TIC Originals Newsletter angemeldet.',
+        'Bitte bestätige deine Anmeldung mit diesem Link:',
+        link,
+        '',
+        `Wenn du das nicht warst, ignoriere diese E-Mail oder lösche den Eintrag hier: ${unsub}`,
+        '',
+        sig,
+      ].join('\n'),
+    };
+  }
+  return {
+    subject: 'Please confirm your newsletter signup',
+    text: [
+      'Hello,',
+      '',
+      'you (or someone using your email address) signed up for the TIC Originals newsletter.',
+      'Please confirm your signup with this link:',
+      link,
+      '',
+      `If this wasn't you, ignore this email or remove the entry here: ${unsub}`,
+      '',
+      sig,
+    ].join('\n'),
+  };
+}

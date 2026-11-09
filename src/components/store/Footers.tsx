@@ -21,7 +21,7 @@ function useGroups() {
   return {
     shop,
     support: (['contact', 'faq', 'track', 'shipping', 'returns'] as LinkKey[]).map(link),
-    legal: (['impressum', 'datenschutz', 'agb', 'widerruf'] as LinkKey[]).map(link),
+    legal: (['impressum', 'datenschutz', 'agb', 'widerruf', 'gewaehrleistung'] as LinkKey[]).map(link),
     t,
   };
 }
@@ -195,7 +195,7 @@ export function ShopFooter() {
 export function CheckoutFooter() {
   const { lang } = useStore();
   const L = SHORT_LINK_LABELS[lang];
-  const keys: LinkKey[] = ['shipping', 'returns', 'agb', 'widerruf', 'datenschutz', 'impressum'];
+  const keys: LinkKey[] = ['shipping', 'returns', 'agb', 'widerruf', 'gewaehrleistung', 'datenschutz', 'impressum'];
   return (
     <footer className={s.checkout}>
       {keys.map((k) => (

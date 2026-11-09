@@ -85,7 +85,7 @@ export async function invoicePdf(order: OOrder, invoiceNo: string, issued: Date)
   page.drawLine({ start: { x: 50, y: y + 14 }, end: { x: 545, y: y + 14 }, thickness: 0.4, color: grey });
   text(`${BUSINESS.name} · ${BUSINESS.street} · ${BUSINESS.zipCity} · ${BUSINESS.email} · ${BUSINESS.phone}`, 50, 7, font, grey);
   y -= 11;
-  text(`Inhaber: ${BUSINESS.owner} · Steuernummer: ${BUSINESS.taxNumber}`, 50, 7, font, grey);
+  text(`Inhaber: ${BUSINESS.owner} · USt-IdNr.: ${BUSINESS.vatId}`, 50, 7, font, grey);
 
   return pdf.save();
 }
