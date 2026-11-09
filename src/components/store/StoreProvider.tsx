@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import type { CartLine, Drop, Lang, Product, SiteSettings } from '@/lib/types';
 import { STORE, type StoreDict } from '@/i18n/storefront';
 import { fmtAmount, fmtMoney } from '@/lib/format';
@@ -61,14 +61,18 @@ function readCart(): CartLine[] {
   }
 }
 
-/** Keep cart lines in sync with the live catalogue: current names/prices, drop removed products. */
-function reprice(cart: CartLine[], products: Product[]): CartLine[] {
+/**
+ * Keep cart lines in sync with the live catalogue: current names/prices, drop removed products.
+ * With keepUnknown, lines for products this page doesn't know are kept as they are: a tab opened
+ * before new products were added must not delete them from the cart shared with other tabs.
+ */
+function reprice(cart: CartLine[], products: Product[], keepUnknown = false): CartLine[] {
   const byId = new Map(products.map((p) => [p.id, p]));
   return cart
-    .filter((c) => byId.has(c.id) && c.qty > 0)
+    .filter((c) => c.qty > 0 && (keepUnknown || byId.has(c.id)))
     .map((c) => {
-      const p = byId.get(c.id)!;
-      return { ...c, name: p.name, eur: p.priceCents / 100, color: p.color };
+      const p = byId.get(c.id);
+      return p ? { ...c, name: p.name, eur: p.priceCents / 100, color: p.color } : c;
     });
 }
 
@@ -92,6 +96,8 @@ export function StoreProvider({
   const [currency, setCurrency] = useState<'EUR' | 'USD'>('EUR');
   const [consent, setConsentState] = useState<string | null>(null);
   const [consentChecked, setConsentChecked] = useState(false);
+  // Set when the cart was just copied from another tab: that change must not be written back.
+  const fromOtherTab = useRef(false);
 
   // Load persisted state after hydration (localStorage is browser-only).
   useEffect(() => {
@@ -109,6 +115,10 @@ export function StoreProvider({
 
   useEffect(() => {
     if (!cartLoaded) return;
+    if (fromOtherTab.current) {
+      fromOtherTab.current = false;
+      return;
+    }
     try {
       localStorage.setItem(CART_KEY, JSON.stringify(cart));
     } catch {}
@@ -117,7 +127,9 @@ export function StoreProvider({
   // Other tabs (or the checkout success page) may change the cart.
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
-      if (e.key === CART_KEY) setCart(reprice(readCart(), products));
+      if (e.key !== CART_KEY) return;
+      fromOtherTab.current = true;
+      setCart(reprice(readCart(), products, true));
     };
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
