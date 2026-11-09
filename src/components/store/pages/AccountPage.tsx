@@ -11,6 +11,9 @@ import { createClient } from '@/lib/supabase/client';
 import { EMAIL_RE } from '@/lib/validation';
 import { COUNTRIES, countryName } from '@/lib/countries';
 import { fmtDate } from '@/lib/format';
+
+// Google sign-in only works once the provider is enabled in Supabase; set NEXT_PUBLIC_GOOGLE_LOGIN=true then.
+const GOOGLE_LOGIN = process.env.NEXT_PUBLIC_GOOGLE_LOGIN === 'true';
 import { SITE_IMAGES, img } from '@/lib/images';
 import { STORE_STATUS_BG } from '@/lib/tokens';
 import { deleteAccount, makeDefaultAddress, saveAddress, type AddressForm } from '@/app/(store)/account/actions';
@@ -193,7 +196,7 @@ function AuthForm() {
           </div>
           <h1 className={s.h1}>{title}</h1>
           {mode === 'forgot' && <p className={s.p}>{t.forgotP}</p>}
-          {(mode === 'login' || mode === 'register') && (
+          {(mode === 'login' || mode === 'register') && GOOGLE_LOGIN && (
             <>
               <button type="button" className={s.google} onClick={() => void google()}>
                 <GoogleIcon />

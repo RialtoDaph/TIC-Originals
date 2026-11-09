@@ -25,10 +25,9 @@ const de = {
   copyright: '© 2026 TIC Originals. Alle Rechte vorbehalten.',
   copyrightShort: '© 2026 TIC Originals',
   ckH: 'Cookies',
-  ckP: 'Wir nutzen notwendige Cookies für Warenkorb und Login. Analyse- und Marketing-Cookies setzen wir nur mit deiner Einwilligung.',
+  ckP: 'Wir verwenden nur technisch notwendige Cookies (Warenkorb, Login, Sprache). Es gibt keine Analyse- oder Marketing-Cookies.',
   ckLink: 'Datenschutz',
-  ckYes: 'Alle akzeptieren',
-  ckNo: 'Nur notwendige',
+  ckOk: 'Verstanden',
   shipLeft: (x: M) => `Noch ${x} bis zum kostenlosen Versand`,
   shipFree: 'Du hast kostenlosen Versand freigeschaltet.',
   empty: 'Dein Warenkorb ist leer.',
@@ -103,11 +102,12 @@ const de = {
   etaINT: 'Lieferzeit je nach Land',
   free: 'Kostenlos',
   payment: 'Zahlung',
-  redirect: 'Nach dem Klick wirst du zur sicheren Zahlungsseite weitergeleitet. Wir speichern keine Kartendaten.',
+  redirect: 'Die Zahlung wird sicher über Stripe abgewickelt. Wir speichern keine Kartendaten.',
   legal1: 'Mit deiner Bestellung akzeptierst du unsere',
   agb: 'AGB',
   legal2: '. Hinweise zum',
   widerruf: 'Widerrufsrecht',
+  guarantee: 'Gesetzliche Gewährleistung',
   legal3: 'und zum',
   privacy: 'Datenschutz',
   order: 'Zahlungspflichtig bestellen',
@@ -219,7 +219,7 @@ const de = {
   lockedH: (name: string) => `Drop ${name}`,
   lockedNotify: 'Benachrichtige mich zum Drop',
   lockedDone: 'Du stehst auf der Liste ✓',
-  subscribed: 'Danke! Du bist dabei ✓',
+  subscribed: 'Fast geschafft: Bitte bestätige den Link in deiner E-Mail ✓',
 };
 
 type Dict = typeof de;
@@ -243,10 +243,9 @@ const en: Dict = {
   copyright: '© 2026 TIC Originals. All rights reserved.',
   copyrightShort: '© 2026 TIC Originals',
   ckH: 'Cookies',
-  ckP: 'We use essential cookies for cart and login. Analytics and marketing cookies are only set with your consent.',
+  ckP: 'We only use technically necessary cookies (cart, login, language). There are no analytics or marketing cookies.',
   ckLink: 'Privacy Policy',
-  ckYes: 'Accept all',
-  ckNo: 'Essential only',
+  ckOk: 'Got it',
   shipLeft: (x) => `${x} away from free shipping`,
   shipFree: "You've unlocked free shipping.",
   empty: 'Your cart is empty.',
@@ -318,11 +317,12 @@ const en: Dict = {
   etaINT: 'Delivery time depends on country',
   free: 'Free',
   payment: 'Payment',
-  redirect: "You'll be redirected to a secure payment page. We never store card details.",
+  redirect: 'Payment is processed securely by Stripe. We never store card details.',
   legal1: 'By placing your order you accept our',
   agb: 'Terms',
   legal2: '. Information on the',
   widerruf: 'right of withdrawal',
+  guarantee: 'Legal guarantee',
   legal3: 'and',
   privacy: 'privacy',
   order: 'Place order',
@@ -429,7 +429,7 @@ const en: Dict = {
   lockedH: (name) => `Drop ${name}`,
   lockedNotify: 'Notify me at the drop',
   lockedDone: "You're on the list ✓",
-  subscribed: "Thanks! You're in ✓",
+  subscribed: 'Almost done: please confirm via the link in your email ✓',
 };
 
 export const STORE: Record<Lang, Dict> = { de, en };
@@ -448,6 +448,7 @@ export const LINKS = {
   datenschutz: '/policies/datenschutz',
   agb: '/policies/agb',
   widerruf: '/policies/widerruf',
+  gewaehrleistung: '/policies/gewaehrleistung',
 };
 
 export const LINK_LABELS: Record<Lang, Record<keyof typeof LINKS, string>> = {
@@ -463,6 +464,7 @@ export const LINK_LABELS: Record<Lang, Record<keyof typeof LINKS, string>> = {
     datenschutz: 'Datenschutz',
     agb: 'AGB',
     widerruf: 'Widerrufsrecht',
+    gewaehrleistung: 'Gewährleistung',
   },
   en: {
     shopAll: 'Shop All',
@@ -476,13 +478,14 @@ export const LINK_LABELS: Record<Lang, Record<keyof typeof LINKS, string>> = {
     datenschutz: 'Privacy Policy',
     agb: 'Terms (AGB)',
     widerruf: 'Right of Withdrawal',
+    gewaehrleistung: 'Legal Guarantee',
   },
 };
 
 /** Short labels used in the checkout/account footers. */
 export const SHORT_LINK_LABELS: Record<Lang, Partial<Record<keyof typeof LINKS, string>>> = {
-  de: { agb: 'AGB', datenschutz: 'Datenschutz', impressum: 'Impressum', widerruf: 'Widerrufsrecht', shipping: 'Versand & Zahlung', returns: 'Rückgabe', contact: 'Kontakt', faq: 'FAQ' },
-  en: { agb: 'Terms', datenschutz: 'Privacy', impressum: 'Imprint', widerruf: 'Right of Withdrawal', shipping: 'Shipping & Payment', returns: 'Returns', contact: 'Contact', faq: 'FAQ' },
+  de: { agb: 'AGB', datenschutz: 'Datenschutz', impressum: 'Impressum', widerruf: 'Widerrufsrecht', gewaehrleistung: 'Gewährleistung', shipping: 'Versand & Zahlung', returns: 'Rückgabe', contact: 'Kontakt', faq: 'FAQ' },
+  en: { agb: 'Terms', datenschutz: 'Privacy', impressum: 'Imprint', widerruf: 'Right of Withdrawal', gewaehrleistung: 'Legal Guarantee', shipping: 'Shipping & Payment', returns: 'Returns', contact: 'Contact', faq: 'FAQ' },
 };
 
 export const PAYMENT_BADGES = ['VISA', 'Mastercard', 'AMEX', 'PayPal'];

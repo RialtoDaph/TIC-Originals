@@ -455,7 +455,10 @@ function CheckoutForm({
             <Link href="/policies/datenschutz" className={s.ul}>
               {t.privacy}
             </Link>
-            .
+            .{' '}
+            <Link href="/policies/gewaehrleistung" className={s.ul}>
+              {t.guarantee}
+            </Link>
           </p>
           {hasErrors && (
             <span className={s.formErr} role="alert">

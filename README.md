@@ -85,4 +85,3 @@ dashboard actions — is tested without cloud accounts.
 - **WhatsApp** (`TODO(whatsapp)`): the toggle is stored; sending needs a WhatsApp Business API provider.
 - **Newsletter double opt-in** (`TODO(double-opt-in)`): sign-ups are stored with `confirmed_at = null`.
 - **Product images upload** (`TODO(images)`): the product modal from the design has no image field; new products show a placeholder.
-- **Impressum / invoice placeholders:** owner name and tax number (`src/config/business.ts`, `src/i18n/policies.ts`).

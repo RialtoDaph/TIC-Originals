@@ -9,6 +9,7 @@ import { createClient } from '@/lib/supabase/client';
 import { fmtDateTime } from '@/lib/format';
 import { sendContactMessage } from '@/app/(store)/actions';
 import { faq, GROUPS, LEGAL_UPDATED, POLICY_T, policyPage, type Block, type PolicyKey } from '@/i18n/policies';
+import { img } from '@/lib/images';
 import s from './Policies.module.css';
 
 interface Tracked {
@@ -228,6 +229,13 @@ function BlockView({ b, faqItems }: { b: Block; faqItems: [string, string][] }) 
         <div className={s.block}>
           {h}
           <p className={s.text}>{b.p}</p>
+        </div>
+      );
+    case 'image':
+      return (
+        <div className={s.block}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={img(b.src)} alt={b.alt} width={b.width} height={b.height} className={s.legalImage} />
         </div>
       );
     case 'note':
