@@ -1,10 +1,12 @@
 // Storefront categories (navigation order from the design).
 export const CATEGORIES: { slug: string; label: string }[] = [
   { slug: 'hoodies', label: 'Hoodies' },
+  { slug: 'sweater', label: 'Sweater' },
   { slug: 'sweatsuits', label: 'Sweatsuits' },
   { slug: 't-shirts', label: 'T-Shirts' },
   { slug: 'pants', label: 'Pants' },
   { slug: 'shorts', label: 'Shorts' },
+  { slug: 'skirts', label: 'Skirts' },
 ];
 
 export function categoryLabel(slug: string) {

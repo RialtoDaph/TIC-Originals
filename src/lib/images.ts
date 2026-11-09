@@ -20,9 +20,11 @@ export const SITE_IMAGES = {
   accountSide: '/img/hf_20261002_221532_446455cc-7ecc-4704-83c4-1f805f60b942.jpg',
   categories: {
     hoodies: '/img/hf_20261002_221633_fe6973c9-e7dc-4616-9e89-50fcfbc41950.jpg',
+    sweater: '/img/products/drop002/set-grau-01.jpg',
+    skirts: '/img/products/drop002/girls-04.jpg',
     sweatsuits: '/img/hf_20261002_221532_446455cc-7ecc-4704-83c4-1f805f60b942.jpg',
-    't-shirts': '/img/hf_20261002_220517_3aab5855-7397-443f-9e2c-ee014634c6fb.jpg',
-    pants: '/img/hf_20261002_220517_f90bd2e4-f4e3-439e-9e06-2782876f9653.jpg',
+    't-shirts': '/img/products/choppa-schwarz.jpg',
+    pants: '/img/products/drop002/pants-grau-01.jpg',
     shorts: '/img/hf_20261002_220517_85ea51c2-2c00-4308-b34b-5fd53b3b6fb3.jpg',
   } as Record<string, string>,
   gallery: [

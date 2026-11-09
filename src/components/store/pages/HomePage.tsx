@@ -23,11 +23,17 @@ const CAT_LAYOUT: [string, number, string, string][] = [
   ['shorts', 2, '3/4', '36px'],
 ];
 
-/** Category tiles: the design layout when every category has products, otherwise equal columns. */
+/**
+ * Category tiles on a 6-column grid: the design layout when exactly the design's categories have
+ * products, otherwise rows of two wide tiles (span 3) and three narrow ones (span 2) with no gaps.
+ */
 function categoryTiles(slugs: string[]): [string, number, string, string][] {
-  if (slugs.length === CAT_LAYOUT.length) return CAT_LAYOUT;
-  const span = Math.floor(6 / Math.max(slugs.length, 1));
-  return slugs.map((slug) => [slug, span, '4/3', '46px']);
+  if (slugs.length === CAT_LAYOUT.length && CAT_LAYOUT.every(([slug]) => slugs.includes(slug))) return CAT_LAYOUT;
+  const n = slugs.length;
+  const wide = n === 1 ? 0 : n % 3 === 2 ? 2 : n % 3 === 1 ? 4 : 0;
+  return slugs.map((slug, i) =>
+    n === 1 ? [slug, 6, '16/7', '46px'] : i < wide ? [slug, 3, '4/3', '46px'] : [slug, 2, '3/4', '36px'],
+  );
 }
 
 /** "31.10.2026" → "31.10.2026" (DE) / "31 Oct 2026" (EN); other formats are shown as typed. */
