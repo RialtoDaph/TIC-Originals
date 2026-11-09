@@ -83,3 +83,4 @@
   .span1 { grid-column: span 1; }
   .span2 { grid-column: span 1; }
 }
+.preorderNote { margin: 0; padding: 12px 14px; background: #111; color: #9ef2ff; font-size: 13px; line-height: 1.5; }

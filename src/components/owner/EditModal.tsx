@@ -123,6 +123,7 @@ export function EditModal() {
             ['category', t.f.category, 'Hoodies'],
             ['price', t.f.price, '69.89'],
             ['model', t.f.model, 'Choppa Tee'],
+            ['setName', t.f.setName, 'Camo Set Grau'],
             ['color', t.f.color, 'Schwarz'],
             ['weight', t.f.weight, '220'],
             ['materialDe', t.f.materialDe, '100% Baumwolle'],
@@ -213,6 +214,21 @@ export function EditModal() {
                 </label>
               </div>
             )}
+            {m.kind === 'product' && (
+              <div style={sx('display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap')}>
+                <label style={sx('display:flex;gap:8px;align-items:center;cursor:pointer;font-size:14px;height:42px')}>
+                  <input type="checkbox" checked={m.draft.preorder} onChange={() => setDraft({ preorder: !m.draft.preorder })} style={sx('accent-color:#7C9CFF')} />
+                  {t.f.preorder}
+                </label>
+                {m.draft.preorder && (
+                  <label style={sx('display:flex;flex-direction:column;gap:6px;flex:1;min-width:180px')}>
+                    <span style={sx('font-size:12px;color:#9AA1AC')}>{t.f.shipsFrom}</span>
+                    <input type="date" value={m.draft.shipsFrom} onChange={(e) => setDraft({ shipsFrom: e.target.value })} style={{ ...inputStyle, colorScheme: 'dark' }} />
+                  </label>
+                )}
+              </div>
+            )}
+            {m.kind === 'product' && m.draft.preorder && <span style={sx('font-size:12px;color:#6B727D;margin-top:-6px')}>{t.f.preorderHint}</span>}
             {m.kind === 'product' && (
               <div style={sx('display:flex;flex-direction:column;gap:6px')}>
                 <span style={sx('font-size:12px;color:#9AA1AC')}>{t.f.stockPerSize}</span>

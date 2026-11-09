@@ -61,6 +61,9 @@ export interface OProduct {
   priceCents: number;
   images: string[];
   model: string;
+  preorder: boolean;
+  shipsFrom: string | null;
+  setName: string;
   color: string;
   materialDe: string;
   materialEn: string;

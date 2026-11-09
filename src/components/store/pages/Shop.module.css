@@ -62,3 +62,18 @@
 .relatedH { font-family: var(--font-display); font-size: clamp(36px, 5vw, 52px); line-height: 0.9; text-transform: uppercase; }
 .underlineLink { font-stretch: 125%; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; border-bottom: 2px solid #9ef2ff; padding-bottom: 4px; }
 .relatedGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 48px clamp(20px, 3vw, 48px); }
+
+/* Pre-order + sets */
+.preorderBadge { align-self: flex-start; margin-top: 4px; padding: 6px 10px; background: #111; color: #9ef2ff; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+.preTag { margin-left: 8px; padding: 2px 6px; background: #111; color: #9ef2ff; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; vertical-align: middle; }
+.setBlock { display: flex; flex-direction: column; gap: 10px; padding-top: 18px; border-top: 1px solid #111; }
+.setHint { font-size: 13px; color: #555; margin-top: -4px; }
+.setRow { display: flex; gap: 14px; align-items: center; }
+.setImg { position: relative; flex: 0 0 76px; height: 96px; background: #f2f2f2; overflow: hidden; display: block; }
+.setInfo { display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1; }
+.setName { font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: #111; }
+.setPrice { font-size: 13px; color: #333; }
+.setSizes { display: flex; flex-wrap: wrap; gap: 6px; }
+.setSize { min-width: 44px; height: 34px; padding: 0 8px; border: 1px solid #d6d6d6; background: #fff; color: #111; font-size: 12px; letter-spacing: 0.06em; cursor: pointer; }
+.setSize:hover:not(:disabled) { border-color: #111; }
+.setSize:disabled { color: #bbb; text-decoration: line-through; cursor: not-allowed; }

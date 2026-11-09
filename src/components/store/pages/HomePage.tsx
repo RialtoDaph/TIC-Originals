@@ -87,7 +87,10 @@ function ProductTile({ p }: { p: Product }) {
       </Link>
       <ColorDots colors={colors} label={t.colorsN(colors.length)} />
       <div className={s.details}>
-        <span className={s.price}>{price(p.priceCents / 100)}</span>
+        <span className={s.price}>
+          {price(p.priceCents / 100)}
+          {p.preorder ? ' · ' + t.preorder : ''}
+        </span>
         <div className={s.sizes}>
           {p.variants.map((v) => (
             <button

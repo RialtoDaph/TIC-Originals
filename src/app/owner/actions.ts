@@ -278,6 +278,11 @@ export interface ProductDraft {
   stock: Record<string, string>;
   /** Products with the same model are shown as colours of one design. */
   model: string;
+  /** Products with the same set name are offered together on the product page. */
+  setName: string;
+  preorder: boolean;
+  /** Expected shipping date for pre-orders, YYYY-MM-DD or empty. */
+  shipsFrom: string;
   color: string;
   weight: string;
   materialDe: string;
@@ -326,12 +331,17 @@ export async function saveProduct(d: ProductDraft): Promise<Result> {
     if (!images) return { ok: false, error: 'images' };
     const weight = d.weight?.trim() ? Math.floor(Number(d.weight.replace(',', '.'))) : null;
     if (weight !== null && (!Number.isFinite(weight) || weight < 0 || weight > 100000)) return { ok: false, error: 'weight' };
+    const shipsFrom = d.shipsFrom?.trim() ?? '';
+    if (shipsFrom && !/^\d{4}-\d{2}-\d{2}$/.test(shipsFrom)) return { ok: false, error: 'shipsFrom' };
     const fields = {
       name,
       category,
       price_cents: price,
       low_stock_threshold: Number.isFinite(low) ? low : 3,
       model: text(d.model, 120),
+      set_name: text(d.setName, 120),
+      preorder: !!d.preorder,
+      ships_from: d.preorder && shipsFrom ? shipsFrom : null,
       color: text(d.color, 60),
       material_de: text(d.materialDe, 200),
       material_en: text(d.materialEn, 200),

@@ -12,6 +12,7 @@ import { COUNTRIES } from '@/lib/countries';
 import { computeTotals, discountCents, type Totals } from '@/lib/pricing';
 import { addressErrors, type AddressInput } from '@/lib/validation';
 import { img } from '@/lib/images';
+import { latestShipDate, preorderDate } from '@/lib/preorder';
 import { CLAIMED_CODE_KEY } from '@/lib/constants';
 import s from './Checkout.module.css';
 
@@ -202,6 +203,7 @@ function CheckoutForm({
   stripeReady: boolean;
 }) {
   const { t, lang, cart, setQty, productById, money, amount, clearCart, settings } = useStore();
+  const preShip = latestShipDate(cart.map((c) => productById(c.id)), lang);
   const router = useRouter();
   const stripe = useStripe();
   const elements = useElements();
@@ -460,6 +462,7 @@ function CheckoutForm({
               {t.guarantee}
             </Link>
           </p>
+          {preShip && <p className={s.preorderNote}>{t.preorderNote(preShip)}</p>}
           {hasErrors && (
             <span className={s.formErr} role="alert">
               {t.fixErrors}
@@ -492,7 +495,10 @@ function CheckoutForm({
                 </div>
                 <div className={s.itemInfo}>
                   <span className={s.itemName}>{c.name}</span>
-                  <span className={s.itemMeta}>{c.size}</span>
+                  <span className={s.itemMeta}>
+                    {c.size}
+                    {preorderDate(productById(c.id), lang) ? ' · ' + t.preorderShips(preorderDate(productById(c.id), lang)!) : ''}
+                  </span>
                   <div className={s.qtyRow}>
                     <div className={s.stepper}>
                       <button type="button" className={s.stepBtn} onClick={() => setQty(i, -1)} aria-label="−1" disabled={busy}>

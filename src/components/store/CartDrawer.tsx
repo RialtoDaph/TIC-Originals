@@ -4,11 +4,12 @@ import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { useStore } from './StoreProvider';
 import { img } from '@/lib/images';
+import { preorderDate } from '@/lib/preorder';
 import s from './CartDrawer.module.css';
 
 /** Slide-in cart. `editable` (Shop) shows quantity steppers; the Home variant lists size · ×qty. */
 export function CartDrawer({ editable = true }: { editable?: boolean }) {
-  const { t, cart, cartCount, cartOpen, setCartOpen, setQty, productById, price: homePrice, money, subtotalEur, settings } = useStore();
+  const { t, lang, cart, cartCount, cartOpen, setCartOpen, setQty, productById, price: homePrice, money, subtotalEur, settings } = useStore();
   // Only the Home page offers the USD display switch; the shop pages always show EUR.
   const price = editable ? money : homePrice;
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -52,7 +53,10 @@ export function CartDrawer({ editable = true }: { editable?: boolean }) {
               {editable ? (
                 <div className={s.infoEdit}>
                   <span className={s.name}>{c.name}</span>
-                  <span className={s.meta}>{c.size}</span>
+                  <span className={s.meta}>
+                    {c.size}
+                    {preorderDate(productById(c.id), lang) ? ' · ' + t.preorderShips(preorderDate(productById(c.id), lang)!) : ''}
+                  </span>
                   <div className={s.qtyRow}>
                     <div className={s.stepper}>
                       <button className={s.stepBtn} onClick={() => setQty(i, -1)} aria-label="−1">
@@ -73,6 +77,7 @@ export function CartDrawer({ editable = true }: { editable?: boolean }) {
                   <span className={s.name}>{c.name}</span>
                   <span className={s.meta}>
                     {c.size} · ×{c.qty}
+                    {preorderDate(productById(c.id), lang) ? ' · ' + t.preorderShips(preorderDate(productById(c.id), lang)!) : ''}
                   </span>
                 </div>
               )}

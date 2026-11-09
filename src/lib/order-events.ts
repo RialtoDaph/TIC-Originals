@@ -19,6 +19,7 @@ export async function afterOrderEvent(admin: SupabaseClient, orderId: string, ev
   const lang: Lang = order.lang === 'en' ? 'en' : 'de';
 
   if (event === 'created_paid' || event === 'created_pending') {
+    await flagPreorder(admin, order.id, order.order_items.map((i) => i.product_id).filter(Boolean) as string[]);
     const mail = orderConfirmation(order, order.order_items, lang, event === 'created_pending');
     await sendEmail({ to: order.email, ...mail });
     const items = order.order_items.reduce((a, i) => a + i.qty, 0);
@@ -29,6 +30,15 @@ export async function afterOrderEvent(admin: SupabaseClient, orderId: string, ev
   if (event === 'failed') {
     await sendEmail({ to: order.email, ...paymentFailedEmail(order, lang) });
   }
+}
+
+/** Marks orders containing pre-order items, so the dashboard doesn't treat them as ready to ship. */
+async function flagPreorder(admin: SupabaseClient, orderId: string, productIds: string[]) {
+  if (!productIds.length) return;
+  const { count } = await admin.from('products').select('id', { count: 'exact', head: true }).in('id', productIds).eq('preorder', true);
+  if (!count) return;
+  const { error } = await admin.rpc('flag_order', { p_order_id: orderId, p_flag: 'preorder' });
+  if (error) console.error('[order-events] preorder flag failed', error);
 }
 
 async function notifyLowStock(admin: SupabaseClient, productIds: string[]) {

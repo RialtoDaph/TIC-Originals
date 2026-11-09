@@ -14,6 +14,12 @@ export interface Product {
   priceCents: number;
   /** Colour variants share a model name (see lib/models.ts); empty for standalone products. */
   model: string;
+  /** Sold before it is in stock; variant stock is the pre-order quota. */
+  preorder: boolean;
+  /** Expected shipping date (YYYY-MM-DD) for pre-orders. */
+  shipsFrom: string | null;
+  /** Products with the same set name are offered together on the product page. */
+  setName: string;
   color: string;
   materialDe: string;
   materialEn: string;

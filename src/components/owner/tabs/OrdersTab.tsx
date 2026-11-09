@@ -51,6 +51,8 @@ export function OrdersTab() {
   const card = (o: OOrder, ci: number) => {
     const flag = o.flags.includes('oversold')
       ? t.flags.oversold
+      : o.flags.includes('preorder') && toShip(o)
+        ? t.flags.preorder
       : ci === 3
         ? t.flags.refundDue
         : awaiting(o)

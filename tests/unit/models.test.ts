@@ -9,6 +9,9 @@ const product = (id: string, model: string, color: string, stock = 5): Product =
   category: 't-shirts',
   priceCents: 1489,
   model,
+  preorder: false,
+  shipsFrom: null,
+  setName: '',
   color,
   materialDe: '',
   materialEn: '',
@@ -48,5 +51,26 @@ describe('colour variants', () => {
     expect(colorHex('Schwarz')).toBe('#111111');
     expect(colorHex('Acid Wash Grau')).toBe('#8A8D91');
     expect(colorHex('3er-Pack')).toBeNull();
+  });
+});
+
+describe('pre-order dates', async () => {
+  const { fmtShipDate, latestShipDate, preorderDate } = await import('@/lib/preorder');
+  const pre = (shipsFrom: string | null) => ({ ...product('p' + shipsFrom, '', 'Grau'), preorder: true, shipsFrom });
+
+  it('formats the shipping date per language', () => {
+    expect(fmtShipDate('2026-12-15', 'de')).toBe('15.12.2026');
+    expect(fmtShipDate('2026-12-15', 'en')).toBe('15 Dec 2026');
+  });
+
+  it('only labels pre-order products', () => {
+    expect(preorderDate(product('x', '', 'Grau'), 'de')).toBeNull();
+    expect(preorderDate(pre('2026-12-15'), 'de')).toBe('15.12.2026');
+    expect(preorderDate(pre(null), 'de')).toBe('Termin folgt');
+  });
+
+  it('uses the latest date, since the whole order ships together', () => {
+    expect(latestShipDate([pre('2026-12-15'), pre('2027-01-10'), product('y', '', 'Weiß')], 'de')).toBe('10.01.2027');
+    expect(latestShipDate([product('y', '', 'Weiß')], 'de')).toBeNull();
   });
 });

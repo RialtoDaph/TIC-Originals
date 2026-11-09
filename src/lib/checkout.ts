@@ -2,7 +2,8 @@ import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { checkCode, computeTotals, discountCents, type CodeProblem, type Totals } from './pricing';
 import { loadSettings, mapProduct, PRODUCT_SELECT } from './catalog';
-import type { DiscountCode } from './types';
+import type { DiscountCode, Lang } from './types';
+import { preorderDate } from './preorder';
 import type { CartItemInput } from './checkout-items';
 
 export { sanitizeItems, type CartItemInput } from './checkout-items';
@@ -47,7 +48,7 @@ export function mapCode(r: Record<string, unknown>): DiscountCode {
  */
 export async function priceCart(
   admin: SupabaseClient,
-  input: { items: CartItemInput[]; code?: string | null; email?: string | null; country: string },
+  input: { items: CartItemInput[]; code?: string | null; email?: string | null; country: string; lang?: Lang },
 ): Promise<PriceResult> {
   if (!input.items.length) return { ok: false, error: 'empty' };
   const ids = [...new Set(input.items.map((i) => i.id))];
@@ -60,7 +61,10 @@ export async function priceCart(
     const p = products.get(it.id);
     const v = p?.variants.find((x) => x.size === it.size);
     if (!p || !v || v.stock < it.qty) return { ok: false, error: 'stock', name: p?.name, size: it.size };
-    lines.push({ product_id: p.id, name: p.name, size: it.size, qty: it.qty, unit_cents: p.priceCents });
+    // Pre-orders carry the shipping date in the line name, so it reaches the order, emails and invoice.
+    const ships = preorderDate(p, input.lang ?? 'de');
+    const name = ships ? `${p.name} (${input.lang === 'en' ? 'Pre-order, ships from' : 'Vorbestellung, Versand ab'} ${ships})` : p.name;
+    lines.push({ product_id: p.id, name, size: it.size, qty: it.qty, unit_cents: p.priceCents });
   }
   const subtotal = lines.reduce((a, l) => a + l.unit_cents * l.qty, 0);
   const settings = await loadSettings(admin);

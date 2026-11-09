@@ -9,6 +9,7 @@ import { CartDrawer } from '../CartDrawer';
 import { categoryLabel } from '@/lib/categories';
 import { img } from '@/lib/images';
 import { colorsOf, onePerModel } from '@/lib/models';
+import { preorderDate } from '@/lib/preorder';
 import { ColorDots, ColorPicker } from '../Swatches';
 import type { Product } from '@/lib/types';
 import s from './Shop.module.css';
@@ -26,7 +27,10 @@ function Card({ p, small = false }: { p: Product; small?: boolean }) {
         <img src={img(p.images[1] ?? p.images[0])} alt="" className={s.img} style={{ opacity: hover ? 1 : 0 }} loading="lazy" />
       </div>
       <span className={small ? s.nameSm : s.name}>{colors.length > 1 && p.model.trim() ? p.model : p.name}</span>
-      <span className={small ? s.priceSm : s.price}>{money(p.priceCents / 100)}</span>
+      <span className={small ? s.priceSm : s.price}>
+        {money(p.priceCents / 100)}
+        {p.preorder && <span className={s.preTag}>{t.preorder}</span>}
+      </span>
       <ColorDots colors={colors} label={t.colorsN(colors.length)} />
     </Link>
   );
@@ -86,6 +90,65 @@ export function ShopList({ category }: { category: string }) {
   );
 }
 
+/** "Komplettes Set": the other pieces of p's set, each with sizes that add straight to the cart. */
+function SetPieces({ p }: { p: Product }) {
+  const { t, lang, products, money, addToCart, setCartOpen } = useStore();
+  const [done, setDone] = useState<string | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(timer.current), []);
+  const key = p.setName.trim().toLowerCase();
+  const pieces = key ? products.filter((x) => x.id !== p.id && x.setName.trim().toLowerCase() === key) : [];
+  if (!pieces.length) return null;
+  return (
+    <div className={s.setBlock}>
+      <span className={s.sizeLabel}>{t.completeSet}</span>
+      <span className={s.setHint}>{t.setHint}</span>
+      {pieces.map((x) => {
+        const ships = preorderDate(x, lang);
+        return (
+          <div key={x.id} className={s.setRow}>
+            <Link href={'/shop/' + x.slug} className={s.setImg}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={img(x.images[0])} alt={x.name} className={s.img} />
+            </Link>
+            <div className={s.setInfo}>
+              <Link href={'/shop/' + x.slug} className={s.setName}>
+                {x.name}
+              </Link>
+              <span className={s.setPrice}>
+                {money(x.priceCents / 100)}
+                {ships ? ' · ' + t.preorder : ''}
+              </span>
+              <div className={s.setSizes}>
+                {x.variants.map((v) => (
+                  <button
+                    key={v.size}
+                    className={`${s.setSize} ${done === x.id + v.size ? s.sizeBtnActive : ''}`}
+                    disabled={v.stock <= 0}
+                    title={v.stock <= 0 ? t.soldOut : undefined}
+                    aria-label={`${x.name} ${v.size}`}
+                    onClick={() => {
+                      addToCart(x, v.size);
+                      setDone(x.id + v.size);
+                      clearTimeout(timer.current);
+                      timer.current = setTimeout(() => {
+                        setDone(null);
+                        setCartOpen(true);
+                      }, 600);
+                    }}
+                  >
+                    {done === x.id + v.size ? '✓' : v.size}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function ProductDetail({ product: p }: { product: Product }) {
   const { t, lang, products, money, amount, settings, addToCart, setCartOpen } = useStore();
   const [size, setSize] = useState<string | null>(null);
@@ -114,6 +177,8 @@ export function ProductDetail({ product: p }: { product: Product }) {
   const others = products.filter((x) => !colors.some((c) => c.id === x.id));
   const related = onePerModel([...others.filter((x) => x.category === p.category), ...others.filter((x) => x.category !== p.category)]).slice(0, 4);
   const price = money(p.priceCents / 100);
+  const ships = preorderDate(p, lang);
+  const addLabel = ships ? t.preorderBtn : t.add;
 
   return (
     <div className={s.page}>
@@ -154,6 +219,7 @@ export function ProductDetail({ product: p }: { product: Product }) {
                 <h1 className={s.pdpH1}>{p.name}</h1>
                 <div className={s.priceBlock}>
                   <span className={s.pdpPrice}>{price}</span>
+                  {ships && <span className={s.preorderBadge}>{t.preorderShips(ships)}</span>}
                   <span className={s.vat}>
                     {t.vat}{' '}
                     <Link href="/policies/shipping" className={s.ul}>
@@ -210,8 +276,9 @@ export function ProductDetail({ product: p }: { product: Product }) {
                   }, 700);
                 }}
               >
-                {added ? t.addedCheck : size ? t.add + ' · ' + price : t.choose}
+                {added ? t.addedCheck : size ? addLabel + ' · ' + price : t.choose}
               </button>
+              <SetPieces p={p} />
               <div className={s.perks}>
                 {t.perks(amount(settings.freeShipCents)).map((pk) => (
                   <span key={pk} className={s.perk}>

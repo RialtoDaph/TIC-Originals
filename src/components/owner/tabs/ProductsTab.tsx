@@ -11,7 +11,7 @@ import type { OProduct } from '@/lib/owner/types';
 
 export function productDraft(p?: OProduct): ProductDraft {
   if (!p) {
-    return { name: '', category: '', price: '', low: '', stock: Object.fromEntries(SIZES.map((z) => [z, '0'])), model: '', color: '', weight: '', materialDe: '', materialEn: '', descriptionDe: '', descriptionEn: '', careDe: '', careEn: '', images: [] };
+    return { name: '', category: '', price: '', low: '', stock: Object.fromEntries(SIZES.map((z) => [z, '0'])), model: '', setName: '', preorder: false, shipsFrom: '', color: '', weight: '', materialDe: '', materialEn: '', descriptionDe: '', descriptionEn: '', careDe: '', careEn: '', images: [] };
   }
   return {
     id: p.id,
@@ -21,6 +21,9 @@ export function productDraft(p?: OProduct): ProductDraft {
     low: String(p.lowStock),
     stock: Object.fromEntries(SIZES.map((z) => [z, String(p.variants.find((v) => v.size === z)?.stock ?? 0)])),
     model: p.model,
+    setName: p.setName,
+    preorder: p.preorder,
+    shipsFrom: p.shipsFrom ?? '',
     color: p.color,
     weight: p.weightG == null ? '' : String(p.weightG),
     materialDe: p.materialDe,

@@ -38,7 +38,7 @@ async function handle(req: Request) {
 
   if (isShopLocked(await loadCurrentDrop(admin))) return NextResponse.json({ error: 'locked' }, { status: 409 });
 
-  const priced = await priceCart(admin, { items, code: body.code ?? null, email: addr.email, country: addr.country });
+  const priced = await priceCart(admin, { items, code: body.code ?? null, email: addr.email, country: addr.country, lang });
   if (!priced.ok) return NextResponse.json({ error: priced.error, name: priced.name, size: priced.size }, { status: 409 });
   if (body.code && priced.codeProblem) {
     return NextResponse.json({ error: 'code', problem: priced.codeProblem, minCents: priced.codeMinCents }, { status: 409 });
