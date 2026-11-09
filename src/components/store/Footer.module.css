@@ -63,3 +63,4 @@
   .policies { padding: 28px 20px; }
   .galleryImg { width: 280px; height: 378px; }
 }
+.galleryClip:hover .galleryTrack { animation-play-state: paused; }

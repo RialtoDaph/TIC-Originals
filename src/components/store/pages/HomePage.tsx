@@ -12,6 +12,7 @@ import { ColorDots } from '../Swatches';
 import { SITE_IMAGES, img } from '@/lib/images';
 import type { Lang, Product } from '@/lib/types';
 import { CLAIMED_CODE_KEY } from '@/lib/constants';
+import { useParallax } from '../useParallax';
 import s from './Home.module.css';
 
 // [slug, grid span, aspect ratio, font size] — layout from the design.
@@ -69,7 +70,7 @@ function HeroVideo() {
   );
 }
 
-function ProductTile({ p }: { p: Product }) {
+function ProductTile({ p, index }: { p: Product; index: number }) {
   const { addToCart, price, t, products } = useStore();
   const colors = colorsOf(p, products);
   const [hover, setHover] = useState(false);
@@ -80,8 +81,8 @@ function ProductTile({ p }: { p: Product }) {
   const front = img(p.images[0]);
   const back = img(p.images[1] ?? p.images[0]);
   return (
-    <div className={s.card} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-      <Link href={href} className={s.imgLink} aria-label={p.name}>
+    <div className={s.card} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} data-reveal style={{ '--reveal-delay': `${(index % 3) * 0.09}s` } as React.CSSProperties}>
+      <Link href={href} className={`${s.imgLink} tic-zoom`} aria-label={p.name}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={front} alt={p.name} className={s.img} />
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -132,7 +133,7 @@ function DiscountPopup({ onClose }: { onClose: () => void }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
   return (
-    <div className={s.popup} role="dialog" aria-modal="true" aria-label={t.excl}>
+    <div className={s.popup} role="dialog" aria-modal="true" aria-label={t.excl} data-lenis-prevent>
       <div className={s.popupImgWrap}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={img(SITE_IMAGES.discountPopup)} alt="" className={s.img} />
@@ -182,6 +183,78 @@ function DiscountPopup({ onClose }: { onClose: () => void }) {
   );
 }
 
+/** Slow ticker between sections. */
+function Marquee({ text }: { text: string }) {
+  const items = Array.from({ length: 6 }, () => text);
+  return (
+    <div className={s.marquee} aria-hidden="true">
+      <div className={s.marqueeTrack}>
+        {[...items, ...items].map((x, i) => (
+          <span key={i} className={s.marqueeItem}>
+            {x}
+            <span className={s.marqueeDot} />
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Drop 002 editorial: lookbook photos with layered parallax and image reveals. */
+function Lookbook() {
+  const { t } = useStore();
+  const side = useParallax<HTMLDivElement>(0.12);
+  const detail = useParallax<HTMLDivElement>(-0.08);
+  const L = SITE_IMAGES.lookbook;
+  return (
+    <section className={s.look} aria-labelledby="lookbook-h">
+      <div className={s.lookGrid}>
+        <Link href="/shop/sweater" className={`${s.lookLead} tic-zoom`} data-reveal="img" aria-label={t.lookCta}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={img(L.lead)} alt="" className={s.lookImg} loading="lazy" />
+        </Link>
+        <div className={s.lookCopy}>
+          <span className={s.lookEyebrow} data-reveal>
+            {t.lookEyebrow}
+          </span>
+          <h2 id="lookbook-h" className={s.lookH} data-reveal="mask" style={{ '--reveal-delay': '0.1s' } as React.CSSProperties}>
+            {t.lookTitle}
+          </h2>
+          <p className={s.lookP} data-reveal style={{ '--reveal-delay': '0.2s' } as React.CSSProperties}>
+            {t.lookText}
+          </p>
+          <Link href="/shop" className={s.lookCta} data-reveal style={{ '--reveal-delay': '0.3s' } as React.CSSProperties}>
+            <span>{t.lookCta}</span>
+            <span className={s.lookArrow} aria-hidden="true">
+              →
+            </span>
+          </Link>
+          <div ref={detail} className={s.lookDetailWrap}>
+            <Link href="/shop/pants" className={`${s.lookDetail} tic-zoom`} data-reveal="img" style={{ '--reveal-delay': '0.15s' } as React.CSSProperties} aria-label="Chosen Sweatpants">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={img(L.detail)} alt="" className={s.lookImg} loading="lazy" />
+            </Link>
+          </div>
+        </div>
+        <div ref={side} className={s.lookSideWrap}>
+          <div className={`${s.lookSide} tic-zoom`} data-reveal="img" style={{ '--reveal-delay': '0.2s' } as React.CSSProperties}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={img(L.side)} alt="" className={s.lookImg} loading="lazy" />
+          </div>
+        </div>
+      </div>
+      <div className={s.lookStrip}>
+        {L.strip.map((src, i) => (
+          <div key={src} className={`${s.lookStripItem} tic-zoom`} data-reveal="img" style={{ '--reveal-delay': `${i * 0.1}s` } as React.CSSProperties}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={img(src)} alt="" className={s.lookImg} loading="lazy" />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function HomePage() {
   const { t, products, settings, categories } = useStore();
   const catTiles = categoryTiles(categories.map((c) => c.slug));
@@ -195,32 +268,35 @@ export function HomePage() {
   }, []);
 
   const showTab = settings.popupEnabled && !!settings.popupCode && scrolled && !discOpen;
+  const heroMedia = useParallax<HTMLDivElement>(0.35);
 
   return (
     <div className={s.page}>
       <HomeHeader />
       <section className={s.hero}>
-        <HeroVideo />
+        <div ref={heroMedia} className={s.heroMedia}>
+          <HeroVideo />
+        </div>
         <div className={s.noise} />
         <div className={s.fade} />
         <div className={s.heroContent}>
           <div className={s.heroTop}>
-            <h1 className={s.h1}>{t.heroTitle}</h1>
-            <a href="#shop" className={s.cta}>
+            <h1 className={`${s.h1} ${s.heroIn}`}>{t.heroTitle}</h1>
+            <a href="#shop" className={`${s.cta} ${s.heroIn2}`}>
               {t.shopNow}
             </a>
           </div>
           <div className={s.heroBottom}>
-            <span className={s.available}>{t.availableNow}</span>
-            <span className={s.limited}>{t.limited}</span>
+            <span className={`${s.available} ${s.heroIn3}`}>{t.availableNow}</span>
+            <span className={`${s.limited} ${s.heroIn4}`}>{t.limited}</span>
           </div>
         </div>
       </section>
 
       <section id="shop" className={s.shop}>
         <div className={s.grid}>
-          {onePerModel(products).map((p) => (
-            <ProductTile key={p.id} p={p} />
+          {onePerModel(products).map((p, i) => (
+            <ProductTile key={p.id} p={p} index={i} />
           ))}
         </div>
         <div className={s.viewAllWrap}>
@@ -230,19 +306,30 @@ export function HomePage() {
         </div>
       </section>
 
+      <Marquee text={t.marquee} />
+      <Lookbook />
+
       {catTiles.length >= 2 && (
         <section className={s.cats}>
           <div className={s.catsHead}>
-            <span className={s.catsH}>{t.categories}</span>
+            <span className={s.catsH} data-reveal="mask">
+              {t.categories}
+            </span>
             <Link href="/shop" className={s.underlineLink}>
               {t.viewAllHome} →
             </Link>
           </div>
           <div className={s.catGrid}>
-            {catTiles.map(([slug, span, ratio, size]) => {
+            {catTiles.map(([slug, span, ratio, size], i) => {
               const name = categoryLabel(slug);
               return (
-                <Link key={slug} href={'/shop/' + slug} className={s.cat} style={{ gridColumn: `span ${span}`, aspectRatio: ratio }}>
+                <Link
+                  key={slug}
+                  href={'/shop/' + slug}
+                  className={`${s.cat} tic-zoom`}
+                  data-reveal="img"
+                  style={{ gridColumn: `span ${span}`, aspectRatio: ratio, '--reveal-delay': `${(i % 3) * 0.1}s` } as React.CSSProperties}
+                >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={img(SITE_IMAGES.categories[slug])} alt={name} className={s.img} loading="lazy" />
                   <div className={s.catShade} />
@@ -260,8 +347,8 @@ export function HomePage() {
       )}
 
       <section className={s.trust}>
-        {t.trust.map((tr) => (
-          <div key={tr.h} className={s.trustItem}>
+        {t.trust.map((tr, i) => (
+          <div key={tr.h} className={s.trustItem} data-reveal style={{ '--reveal-delay': `${i * 0.08}s` } as React.CSSProperties}>
             <span className={s.trustH}>{tr.h}</span>
             <span className={s.trustP}>{tr.p}</span>
           </div>

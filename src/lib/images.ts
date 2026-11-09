@@ -1,4 +1,4 @@
-// All storefront imagery goes through here so placeholders can be swapped for real photography:
+// All storefront imagery goes through here (Drop 002 lookbook photos; the hero is a video):
 // either replace the files in /public/img, change the paths below / on the product, or point
 // NEXT_PUBLIC_IMAGE_BASE_URL at a CDN or Supabase Storage bucket that mirrors the same paths.
 
@@ -16,23 +16,32 @@ const PLACEHOLDER = '/img/hf_20261002_221632_5de61919-3487-471c-98da-f50f80165bf
 export const SITE_IMAGES = {
   hero: '/img/hf_20261002_221632_5de61919-3487-471c-98da-f50f80165bf1.jpg',
   heroVideo: '/video/hero.mp4',
-  discountPopup: '/img/hf_20261002_221633_fe6973c9-e7dc-4616-9e89-50fcfbc41950.jpg',
-  accountSide: '/img/hf_20261002_221532_446455cc-7ecc-4704-83c4-1f805f60b942.jpg',
+  discountPopup: '/img/products/drop002/girls-04.jpg',
+  accountSide: '/img/products/drop002/drop002-duo-02.jpg',
+  /** Drop 002 editorial on the home page. */
+  lookbook: {
+    lead: '/img/products/drop002/drop002-duo-01.jpg',
+    side: '/img/products/drop002/look-mural-02.jpg',
+    detail: '/img/products/drop002/set-grau-detail.jpg',
+    strip: ['/img/products/drop002/look-duo-05.jpg', '/img/products/drop002/set-weiss-02.jpg', '/img/products/drop002/girls-03.jpg', '/img/products/drop002/look-cafe-02.jpg'],
+  },
   categories: {
     hoodies: '/img/hf_20261002_221633_fe6973c9-e7dc-4616-9e89-50fcfbc41950.jpg',
     sweater: '/img/products/drop002/set-grau-01.jpg',
     skirts: '/img/products/drop002/girls-04.jpg',
     sweatsuits: '/img/hf_20261002_221532_446455cc-7ecc-4704-83c4-1f805f60b942.jpg',
-    't-shirts': '/img/products/choppa-schwarz.jpg',
+    't-shirts': '/img/products/drop002/girls-01.jpg',
     pants: '/img/products/drop002/pants-grau-01.jpg',
     shorts: '/img/hf_20261002_220517_85ea51c2-2c00-4308-b34b-5fd53b3b6fb3.jpg',
   } as Record<string, string>,
   gallery: [
-    '/img/hf_20261002_221632_a439c645-049e-467c-87d4-3d1681e7f9d2.jpg',
-    '/img/hf_20261002_221532_111db963-91e5-4f8a-b04a-f64506823f60.jpg',
-    '/img/hf_20261002_221532_2eafc4e6-ab04-4246-8d37-5433d30bf223.jpg',
-    '/img/hf_20261002_220517_082f8afe-4dc7-4949-90e3-64da97e3e8eb.jpg',
-    '/img/hf_20261002_220517_fe64d566-1bc1-4485-b89c-76097138b52b.jpg',
-    '/img/hf_20261002_221632_5de61919-3487-471c-98da-f50f80165bf1.jpg',
+    '/img/products/drop002/look-mural-01.jpg',
+    '/img/products/drop002/look-duo-03.jpg',
+    '/img/products/drop002/set-weiss-01.jpg',
+    '/img/products/drop002/look-cafe-01.jpg',
+    '/img/products/drop002/look-duo-06.jpg',
+    '/img/products/drop002/look-tank-02.jpg',
+    '/img/products/drop002/girls-05.jpg',
+    '/img/products/drop002/look-grau-street.jpg',
   ],
 };

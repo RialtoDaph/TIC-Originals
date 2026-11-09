@@ -1,6 +1,7 @@
 import '@/styles/store.css';
 import { StoreProvider } from '@/components/store/StoreProvider';
 import { CookieConsent } from '@/components/store/CookieConsent';
+import { Motion } from '@/components/store/Motion';
 import { StoreError } from '@/components/store/StoreError';
 import { createPublicClient } from '@/lib/supabase/public';
 import { loadCurrentDrop, loadProducts, loadSettings } from '@/lib/catalog';
@@ -33,6 +34,7 @@ export default async function StoreLayout({ children }: { children: React.ReactN
       <StoreProvider initialLang={lang} settings={data.settings} products={data.products} drop={data.drop}>
         {children}
         <CookieConsent />
+        <Motion />
       </StoreProvider>
     </div>
   );

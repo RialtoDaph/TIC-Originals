@@ -45,7 +45,7 @@ export function CartDrawer({ editable = true }: { editable?: boolean }) {
             <div className={s.bar} style={{ width: pct + '%' }} />
           </div>
         </div>
-        <div className={s.list}>
+        <div className={s.list} data-lenis-prevent>
           {cart.map((c, i) => (
             <div key={c.id + c.size} className={s.line}>
               {/* eslint-disable-next-line @next/next/no-img-element */}

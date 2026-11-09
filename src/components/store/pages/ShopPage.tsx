@@ -14,13 +14,20 @@ import { ColorDots, ColorPicker } from '../Swatches';
 import type { Product } from '@/lib/types';
 import s from './Shop.module.css';
 
-function Card({ p, small = false }: { p: Product; small?: boolean }) {
+function Card({ p, small = false, index = 0 }: { p: Product; small?: boolean; index?: number }) {
   const { money, products, t } = useStore();
   const colors = colorsOf(p, products);
   const [hover, setHover] = useState(false);
   return (
-    <Link href={'/shop/' + p.slug} className={s.card} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-      <div className={s.imgBox}>
+    <Link
+      href={'/shop/' + p.slug}
+      className={s.card}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      data-reveal
+      style={{ '--reveal-delay': `${(index % 3) * 0.08}s` } as React.CSSProperties}
+    >
+      <div className={`${s.imgBox} tic-zoom`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={img(p.images[0])} alt={p.name} className={s.img} />
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -79,8 +86,8 @@ export function ShopList({ category }: { category: string }) {
           </div>
         </div>
         <div className={s.grid}>
-          {list.map((p) => (
-            <Card key={p.id} p={p} />
+          {list.map((p, i) => (
+            <Card key={p.id} p={p} index={i} />
           ))}
         </div>
       </main>
@@ -309,8 +316,8 @@ export function ProductDetail({ product: p }: { product: Product }) {
             </Link>
           </div>
           <div className={s.relatedGrid}>
-            {related.map((r) => (
-              <Card key={r.id} p={r} small />
+            {related.map((r, i) => (
+              <Card key={r.id} p={r} small index={i} />
             ))}
           </div>
         </div>
