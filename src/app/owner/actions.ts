@@ -276,7 +276,37 @@ export interface ProductDraft {
   price: string;
   low: string;
   stock: Record<string, string>;
+  color: string;
+  weight: string;
+  materialDe: string;
+  materialEn: string;
+  descriptionDe: string;
+  descriptionEn: string;
+  careDe: string;
+  careEn: string;
+  /** First image is the main photo. Site paths (/img/…) or URLs in the product-images bucket. */
+  images: string[];
 }
+
+const MAX_IMAGES = 10;
+
+/** Accepts bundled site images and photos uploaded to our own Supabase Storage bucket only. */
+function cleanImages(list: unknown): string[] | null {
+  if (!Array.isArray(list)) return null;
+  const bucket = `${(process.env.NEXT_PUBLIC_SUPABASE_URL ?? '').replace(/\/$/, '')}/storage/v1/object/public/product-images/`;
+  const safePath = (p: string) => /^[\w./-]+$/.test(p) && !p.includes('..');
+  const out: string[] = [];
+  for (const v of list) {
+    if (typeof v !== 'string' || v.length > 500) return null;
+    const ok = (v.startsWith('/img/') && safePath(v)) || (v.startsWith(bucket) && safePath(v.slice(bucket.length)));
+    if (!ok) return null;
+    if (!out.includes(v)) out.push(v);
+  }
+  return out.slice(0, MAX_IMAGES);
+}
+
+const text = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
+const orNull = (v: string) => (v === '' ? null : v);
 
 const euroToCents = (v: string) => Math.round(Number(String(v).replace(',', '.')) * 100);
 
@@ -290,17 +320,35 @@ export async function saveProduct(d: ProductDraft): Promise<Result> {
     const low = d.low === '' ? 3 : Math.max(0, Math.floor(Number(d.low)));
     const catLabel = d.category.trim();
     const category = CATEGORIES.find((c) => c.label.toLowerCase() === catLabel.toLowerCase())?.slug ?? slugify(catLabel);
+    const images = cleanImages(d.images ?? []);
+    if (!images) return { ok: false, error: 'images' };
+    const weight = d.weight?.trim() ? Math.floor(Number(d.weight.replace(',', '.'))) : null;
+    if (weight !== null && (!Number.isFinite(weight) || weight < 0 || weight > 100000)) return { ok: false, error: 'weight' };
+    const fields = {
+      name,
+      category,
+      price_cents: price,
+      low_stock_threshold: Number.isFinite(low) ? low : 3,
+      color: text(d.color, 60),
+      material_de: text(d.materialDe, 200),
+      material_en: text(d.materialEn, 200),
+      weight_g: weight,
+      description_de: orNull(text(d.descriptionDe, 4000)),
+      description_en: orNull(text(d.descriptionEn, 4000)),
+      care_de: orNull(text(d.careDe, 1000)),
+      care_en: orNull(text(d.careEn, 1000)),
+      images,
+    };
     let productId = d.id;
     if (productId) {
-      const { error } = await supabase.from('products').update({ name, category, price_cents: price, low_stock_threshold: Number.isFinite(low) ? low : 3 }).eq('id', productId);
+      const { error } = await supabase.from('products').update(fields).eq('id', productId);
       if (error) throw error;
     } else {
       // Slugs must not collide with category routes (/shop/<category>) or existing products.
       let slug = slugify(name) || 'product';
       const reserved = new Set(CATEGORIES.map((c) => c.slug));
       for (let i = 2; reserved.has(slug) || (await supabase.from('products').select('id').eq('slug', slug).maybeSingle()).data; i++) slug = `${slugify(name)}-${i}`;
-      // TODO(images): add an image upload (Supabase Storage) to the product modal; until then new products show a placeholder.
-      const { data, error } = await supabase.from('products').insert({ slug, name, category, price_cents: price, low_stock_threshold: low, sort_order: 1000 }).select('id').single();
+      const { data, error } = await supabase.from('products').insert({ ...fields, slug, sort_order: 1000 }).select('id').single();
       if (error) throw error;
       productId = data.id as string;
     }

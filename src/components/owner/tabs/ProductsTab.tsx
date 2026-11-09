@@ -3,22 +3,39 @@
 import { dm, restockSuggestions, shortName, SIZES } from '@/lib/owner/derive';
 import { categoryLabel } from '@/lib/categories';
 import { TONE } from '@/lib/tokens';
-import { addStock, setProductVisible, setRestockOrdered } from '@/app/owner/actions';
+import { addStock, setProductVisible, setRestockOrdered, type ProductDraft } from '@/app/owner/actions';
 import { useOwner } from '../OwnerContext';
 import { sx } from '../sx';
 import { S, Thumb, Toggle } from '../ui';
 import type { OProduct } from '@/lib/owner/types';
 
-export function productDraft(p?: OProduct) {
-  return p
-    ? { id: p.id, name: p.name, category: categoryLabel(p.category), price: (p.priceCents / 100).toFixed(2), low: String(p.lowStock), stock: Object.fromEntries(SIZES.map((z) => [z, String(p.variants.find((v) => v.size === z)?.stock ?? 0)])) }
-    : { name: '', category: '', price: '', low: '', stock: Object.fromEntries(SIZES.map((z) => [z, '0'])) };
+export function productDraft(p?: OProduct): ProductDraft {
+  if (!p) {
+    return { name: '', category: '', price: '', low: '', stock: Object.fromEntries(SIZES.map((z) => [z, '0'])), color: '', weight: '', materialDe: '', materialEn: '', descriptionDe: '', descriptionEn: '', careDe: '', careEn: '', images: [] };
+  }
+  return {
+    id: p.id,
+    name: p.name,
+    category: categoryLabel(p.category),
+    price: (p.priceCents / 100).toFixed(2),
+    low: String(p.lowStock),
+    stock: Object.fromEntries(SIZES.map((z) => [z, String(p.variants.find((v) => v.size === z)?.stock ?? 0)])),
+    color: p.color,
+    weight: p.weightG == null ? '' : String(p.weightG),
+    materialDe: p.materialDe,
+    materialEn: p.materialEn,
+    descriptionDe: p.descriptionDe,
+    descriptionEn: p.descriptionEn,
+    careDe: p.careDe,
+    careEn: p.careEn,
+    images: p.images,
+  };
 }
 
 export function ProductsTab() {
   const { data, t, now, setUi, run, eur, busy } = useOwner();
   const rs = restockSuggestions(data.products, data.orders, now);
-  const grid = 'minmax(0,2.2fr) 84px repeat(4,54px) minmax(0,1fr) 84px 50px';
+  const grid = `minmax(0,2.2fr) 84px repeat(${SIZES.length},54px) minmax(0,1fr) 84px 50px`;
 
   return (
     <>
@@ -56,7 +73,7 @@ export function ProductsTab() {
         </div>
       )}
       <div style={sx('background:#1C1F25;border-radius:16px;overflow-x:auto')}>
-        <div style={{ ...sx('min-width:860px;display:grid;gap:10px;padding:12px 18px;font-size:12px;color:#6B727D;border-bottom:1px solid rgba(255,255,255,.05)'), gridTemplateColumns: grid }}>
+        <div style={{ ...sx('min-width:920px;display:grid;gap:10px;padding:12px 18px;font-size:12px;color:#6B727D;border-bottom:1px solid rgba(255,255,255,.05)'), gridTemplateColumns: grid }}>
           <span>{t.prodHead.product}</span>
           <span>{t.prodHead.price}</span>
           {SIZES.map((z) => (
@@ -72,7 +89,7 @@ export function ProductsTab() {
           const total = p.variants.reduce((a, v) => a + v.stock, 0);
           const w = Object.entries(p.waitlist).filter(([, n]) => n > 0);
           return (
-            <div key={p.id} style={{ ...sx('min-width:860px;display:grid;gap:10px;align-items:center;padding:10px 18px;border-bottom:1px solid rgba(255,255,255,.04)'), gridTemplateColumns: grid, opacity: p.visible ? 1 : 0.5 }}>
+            <div key={p.id} style={{ ...sx('min-width:920px;display:grid;gap:10px;align-items:center;padding:10px 18px;border-bottom:1px solid rgba(255,255,255,.04)'), gridTemplateColumns: grid, opacity: p.visible ? 1 : 0.5 }}>
               <div style={sx('display:flex;align-items:center;gap:12px;min-width:0')}>
                 <Thumb productId={p.id} size={42} radius={9} />
                 <span style={sx('display:flex;flex-direction:column;gap:2px;min-width:0')}>

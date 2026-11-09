@@ -1,44 +1,39 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { useStore } from "../StoreProvider";
-import { HomeHeader } from "../Headers";
-import { HomeFooter } from "../Footers";
-import { CartDrawer } from "../CartDrawer";
-import { categoryLabel } from "@/lib/categories";
-import { SITE_IMAGES, img } from "@/lib/images";
-import type { Lang, Product } from "@/lib/types";
-import { CLAIMED_CODE_KEY } from "@/lib/constants";
-import s from "./Home.module.css";
+import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
+import { useStore } from '../StoreProvider';
+import { HomeHeader } from '../Headers';
+import { HomeFooter } from '../Footers';
+import { CartDrawer } from '../CartDrawer';
+import { categoryLabel } from '@/lib/categories';
+import { SITE_IMAGES, img } from '@/lib/images';
+import type { Lang, Product } from '@/lib/types';
+import { CLAIMED_CODE_KEY } from '@/lib/constants';
+import s from './Home.module.css';
 
 // [slug, grid span, aspect ratio, font size] — layout from the design.
 const CAT_LAYOUT: [string, number, string, string][] = [
-  ["hoodies", 3, "4/3", "46px"],
-  ["sweatsuits", 3, "4/3", "46px"],
-  ["t-shirts", 2, "3/4", "36px"],
-  ["pants", 2, "3/4", "36px"],
-  ["shorts", 2, "3/4", "36px"],
+  ['hoodies', 3, '4/3', '46px'],
+  ['sweatsuits', 3, '4/3', '46px'],
+  ['t-shirts', 2, '3/4', '36px'],
+  ['pants', 2, '3/4', '36px'],
+  ['shorts', 2, '3/4', '36px'],
 ];
 
 /** Category tiles: the design layout when every category has products, otherwise equal columns. */
 function categoryTiles(slugs: string[]): [string, number, string, string][] {
   if (slugs.length === CAT_LAYOUT.length) return CAT_LAYOUT;
   const span = Math.floor(6 / Math.max(slugs.length, 1));
-  return slugs.map((slug) => [slug, span, "4/3", "46px"]);
+  return slugs.map((slug) => [slug, span, '4/3', '46px']);
 }
 
 /** "31.10.2026" → "31.10.2026" (DE) / "31 Oct 2026" (EN); other formats are shown as typed. */
 function formatUntil(v: string, lang: Lang) {
   const m = v.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
-  if (!m || lang === "de") return v;
+  if (!m || lang === 'de') return v;
   const d = new Date(Date.UTC(+m[3], +m[2] - 1, +m[1]));
-  return d.toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    timeZone: "UTC",
-  });
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 }
 
 /** Looping hero video; the poster stays visible when it can't play or the visitor prefers reduced motion. */
@@ -49,8 +44,7 @@ function HeroVideo() {
     if (!v) return;
     // React sets `muted` as a property only, so browsers won't autoplay from the server HTML.
     v.muted = true;
-    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches)
-      v.play().catch(() => {});
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) v.play().catch(() => {});
   }, []);
   return (
     <video
@@ -73,26 +67,16 @@ function ProductTile({ p }: { p: Product }) {
   const [justAdded, setJustAdded] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
-  const href = "/shop/" + p.slug;
+  const href = '/shop/' + p.slug;
   const front = img(p.images[0]);
   const back = img(p.images[1] ?? p.images[0]);
   return (
-    <div
-      className={s.card}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-    >
+    <div className={s.card} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
       <Link href={href} className={s.imgLink} aria-label={p.name}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={front} alt={p.name} className={s.img} />
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={back}
-          alt=""
-          className={s.img}
-          style={{ opacity: hover ? 1 : 0 }}
-          loading="lazy"
-        />
+        <img src={back} alt="" className={s.img} style={{ opacity: hover ? 1 : 0 }} loading="lazy" />
         {justAdded && <span className={s.added}>{t.added}</span>}
       </Link>
       <Link href={href} className={s.name}>
@@ -130,37 +114,23 @@ function DiscountPopup({ onClose }: { onClose: () => void }) {
   const closeRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     closeRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
   return (
-    <div
-      className={s.popup}
-      role="dialog"
-      aria-modal="true"
-      aria-label={t.excl}
-    >
+    <div className={s.popup} role="dialog" aria-modal="true" aria-label={t.excl}>
       <div className={s.popupImgWrap}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={img(SITE_IMAGES.discountPopup)} alt="" className={s.img} />
       </div>
       <div className={s.popupBody}>
-        <button
-          ref={closeRef}
-          onClick={onClose}
-          className={s.popupClose}
-          aria-label="Close"
-        >
+        <button ref={closeRef} onClick={onClose} className={s.popupClose} aria-label="Close">
           ×
         </button>
         <div className={s.popupLogo}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/tic-logo.png"
-            alt="Till I Collapse"
-            className={s.popupLogoImg}
-          />
+          <img src="/tic-logo.png" alt="Till I Collapse" className={s.popupLogoImg} />
         </div>
         <div className={s.popupText}>
           <span className={s.got}>{t.got}</span>
@@ -169,11 +139,7 @@ function DiscountPopup({ onClose }: { onClose: () => void }) {
         </div>
         {!claimed ? (
           <div className={s.popupCol}>
-            {settings.popupUntil && (
-              <span className={s.expires}>
-                {t.expires(formatUntil(settings.popupUntil, lang))}
-              </span>
-            )}
+            {settings.popupUntil && <span className={s.expires}>{t.expires(formatUntil(settings.popupUntil, lang))}</span>}
             <button
               className={s.claim}
               onClick={() => {
@@ -211,12 +177,11 @@ export function HomePage() {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 700);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const showTab =
-    settings.popupEnabled && !!settings.popupCode && scrolled && !discOpen;
+  const showTab = settings.popupEnabled && !!settings.popupCode && scrolled && !discOpen;
 
   return (
     <div className={s.page}>
@@ -264,19 +229,9 @@ export function HomePage() {
             {catTiles.map(([slug, span, ratio, size]) => {
               const name = categoryLabel(slug);
               return (
-                <Link
-                  key={slug}
-                  href={"/shop/" + slug}
-                  className={s.cat}
-                  style={{ gridColumn: `span ${span}`, aspectRatio: ratio }}
-                >
+                <Link key={slug} href={'/shop/' + slug} className={s.cat} style={{ gridColumn: `span ${span}`, aspectRatio: ratio }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={img(SITE_IMAGES.categories[slug])}
-                    alt={name}
-                    className={s.img}
-                    loading="lazy"
-                  />
+                  <img src={img(SITE_IMAGES.categories[slug])} alt={name} className={s.img} loading="lazy" />
                   <div className={s.catShade} />
                   <div className={s.catBody}>
                     <span className={s.catName} style={{ fontSize: size }}>

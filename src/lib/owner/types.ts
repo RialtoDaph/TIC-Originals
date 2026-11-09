@@ -60,6 +60,14 @@ export interface OProduct {
   category: string;
   priceCents: number;
   images: string[];
+  color: string;
+  materialDe: string;
+  materialEn: string;
+  weightG: number | null;
+  descriptionDe: string;
+  descriptionEn: string;
+  careDe: string;
+  careEn: string;
   visible: boolean;
   lowStock: number;
   variants: OVariant[];
