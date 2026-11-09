@@ -3,7 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { checkCode, computeTotals, discountCents, type CodeProblem, type Totals } from './pricing';
 import { loadSettings, mapProduct, PRODUCT_SELECT } from './catalog';
 import type { DiscountCode, Lang } from './types';
-import { preorderDate } from './preorder';
+import { isTbd, preorderDate } from './preorder';
 import type { CartItemInput } from './checkout-items';
 
 export { sanitizeItems, type CartItemInput } from './checkout-items';
@@ -63,7 +63,8 @@ export async function priceCart(
     if (!p || !v || v.stock < it.qty) return { ok: false, error: 'stock', name: p?.name, size: it.size };
     // Pre-orders carry the shipping date in the line name, so it reaches the order, emails and invoice.
     const ships = preorderDate(p, input.lang ?? 'de');
-    const name = ships ? `${p.name} (${input.lang === 'en' ? 'Pre-order, ships from' : 'Vorbestellung, Versand ab'} ${ships})` : p.name;
+    const en = input.lang === 'en';
+    const name = !ships ? p.name : isTbd(ships) ? `${p.name} (${en ? 'Pre-order, shipping date to follow' : 'Vorbestellung, Versandtermin folgt'})` : `${p.name} (${en ? 'Pre-order, ships from' : 'Vorbestellung, Versand ab'} ${ships})`;
     lines.push({ product_id: p.id, name, size: it.size, qty: it.qty, unit_cents: p.priceCents });
   }
   const subtotal = lines.reduce((a, l) => a + l.unit_cents * l.qty, 0);

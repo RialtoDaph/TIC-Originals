@@ -69,6 +69,13 @@ describe('pre-order dates', async () => {
     expect(preorderDate(pre(null), 'de')).toBe('Termin folgt');
   });
 
+  it('phrases a missing date naturally', async () => {
+    const { STORE } = await import('@/i18n/storefront');
+    expect(STORE.de.preorderShips(preorderDate(pre(null), 'de')!)).toBe('Vorbestellung · Versandtermin folgt');
+    expect(STORE.de.preorderShips('15.12.2026')).toBe('Vorbestellung · Versand voraussichtlich ab 15.12.2026');
+    expect(STORE.en.preorderShips(preorderDate(pre(null), 'en')!)).toBe('Pre-order · shipping date to follow');
+  });
+
   it('uses the latest date, since the whole order ships together', () => {
     expect(latestShipDate([pre('2026-12-15'), pre('2027-01-10'), product('y', '', 'Weiß')], 'de')).toBe('10.01.2027');
     expect(latestShipDate([product('y', '', 'Weiß')], 'de')).toBeNull();

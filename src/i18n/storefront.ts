@@ -2,6 +2,7 @@
 // Amounts that come from the shop settings (shipping rates, free-shipping threshold) are
 // passed in as already formatted strings so the texts always match what checkout charges.
 import type { Lang } from '@/lib/types';
+import { isTbd } from '@/lib/preorder';
 
 type M = string; // formatted money, e.g. "80 €" / "€80"
 
@@ -65,9 +66,10 @@ const de = {
   color: 'Farbe',
   colorsN: (n: number) => `${n} Farben`,
   preorder: 'Vorbestellung',
-  preorderShips: (d: string) => `Vorbestellung · Versand voraussichtlich ab ${d}`,
+  preorderShips: (d: string) => (isTbd(d) ? 'Vorbestellung · Versandtermin folgt' : `Vorbestellung · Versand voraussichtlich ab ${d}`),
   preorderBtn: 'Vorbestellen',
-  preorderNote: (d: string) => `Deine Bestellung enthält Vorbestellartikel. Wir versenden die gesamte Bestellung, sobald alle Artikel da sind – voraussichtlich ab ${d}.`,
+  preorderNote: (d: string) =>
+    `Deine Bestellung enthält Vorbestellartikel. Wir versenden die gesamte Bestellung, sobald alle Artikel da sind${isTbd(d) ? ' – den Termin teilen wir dir per E-Mail mit' : ` – voraussichtlich ab ${d}`}.`,
   completeSet: 'Komplettes Set',
   setHint: 'Passt zusammen – Größe wählen und direkt hinzufügen.',
   sizeGuide: 'Größentabelle',
@@ -290,9 +292,10 @@ const en: Dict = {
   color: 'Colour',
   colorsN: (n: number) => `${n} colours`,
   preorder: 'Pre-order',
-  preorderShips: (d: string) => `Pre-order · expected to ship from ${d}`,
+  preorderShips: (d: string) => (isTbd(d) ? 'Pre-order · shipping date to follow' : `Pre-order · expected to ship from ${d}`),
   preorderBtn: 'Pre-order',
-  preorderNote: (d: string) => `Your order contains pre-order items. We ship the whole order once everything is in stock – expected from ${d}.`,
+  preorderNote: (d: string) =>
+    `Your order contains pre-order items. We ship the whole order once everything is in stock${isTbd(d) ? ' – we will email you the date' : ` – expected from ${d}`}.`,
   completeSet: 'Complete the set',
   setHint: 'Made to match – pick a size and add it straight away.',
   sizeGuide: 'Size guide',

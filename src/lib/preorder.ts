@@ -8,10 +8,14 @@ export function fmtShipDate(iso: string, lang: Lang): string {
   return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 }
 
-/** Shipping date shown for a pre-order product; null when it ships normally. */
+/** Shown instead of a date while the shipping date of a pre-order isn't fixed yet. */
+export const DATE_TBD = { de: 'Termin folgt', en: 'date to be announced' } as const;
+export const isTbd = (d: string) => d === DATE_TBD.de || d === DATE_TBD.en;
+
+/** Shipping date shown for a pre-order product (DATE_TBD when not set yet); null when it ships normally. */
 export function preorderDate(p: Pick<Product, 'preorder' | 'shipsFrom'> | undefined, lang: Lang): string | null {
   if (!p?.preorder) return null;
-  return p.shipsFrom ? fmtShipDate(p.shipsFrom, lang) : lang === 'de' ? 'Termin folgt' : 'date to be announced';
+  return p.shipsFrom ? fmtShipDate(p.shipsFrom, lang) : DATE_TBD[lang];
 }
 
 /** Latest pre-order shipping date among products (the whole order ships together). */
