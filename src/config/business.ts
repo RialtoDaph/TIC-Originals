@@ -13,7 +13,6 @@ export const BUSINESS = {
 
 export const SOCIAL = {
   instagram: 'https://www.instagram.com/tillicollapseoriginals/',
-  // TODO(owner): TikTok profile and WhatsApp community invite link.
-  tiktok: '#',
-  community: '#',
+  tiktok: 'https://www.tiktok.com/@tillicollapseoriginals',
+  community: 'https://chat.whatsapp.com/EqURZfTVdA6JiUoDXsPdku',
 };

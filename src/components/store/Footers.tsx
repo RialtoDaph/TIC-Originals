@@ -98,7 +98,7 @@ export function HomeFooter() {
             <span className={s.commTitle}>{t.commTitle}</span>
             <span className={s.commSub}>{t.commSub}</span>
           </div>
-          <a href={SOCIAL.community} className={s.join}>
+          <a href={SOCIAL.community} className={s.join} target="_blank" rel="noreferrer">
             {t.join}
           </a>
         </div>
@@ -121,7 +121,7 @@ export function HomeFooter() {
             <a href={SOCIAL.instagram} className={s.social} aria-label="Instagram" target="_blank" rel="noreferrer">
               <InstagramIcon />
             </a>
-            <a href={SOCIAL.tiktok} className={s.social} aria-label="TikTok">
+            <a href={SOCIAL.tiktok} className={s.social} aria-label="TikTok" target="_blank" rel="noreferrer">
               <TikTokIcon />
             </a>
           </div>
