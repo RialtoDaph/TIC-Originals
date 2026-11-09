@@ -35,9 +35,12 @@ export function mapProduct(r: Row): Product {
 
 export const PRODUCT_SELECT = '*, product_variants(id, size, stock, sort_order)';
 
-/** Products visible to the current client (RLS hides invisible ones from shoppers). */
+/**
+ * Products shown in the storefront. Filtered explicitly: RLS lets the owner read hidden products too,
+ * and the checkout refuses those, so a logged-in owner must not see them in the shop either.
+ */
 export async function loadProducts(supabase: SupabaseClient): Promise<Product[]> {
-  const { data, error } = await supabase.from('products').select(PRODUCT_SELECT).order('sort_order').order('created_at');
+  const { data, error } = await supabase.from('products').select(PRODUCT_SELECT).eq('visible', true).order('sort_order').order('created_at');
   if (error) throw error;
   return (data ?? []).map(mapProduct);
 }
