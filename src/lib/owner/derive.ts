@@ -2,7 +2,7 @@
 import type { Tone } from '@/lib/tokens';
 import type { OOrder, OProduct, ODrop } from './types';
 
-export const SIZES = ['S', 'M', 'L', 'XL'];
+export const SIZES = ['XS', 'S', 'M', 'L', 'XL'];
 export const DAY = 864e5;
 export const KU_LIMIT_CENTS = 25000_00; // § 19 UStG: prior-year turnover limit
 export const LEAD_DAYS = 7;

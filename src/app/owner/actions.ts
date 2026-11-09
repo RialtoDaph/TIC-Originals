@@ -14,6 +14,7 @@ import { serverEnv } from '@/lib/env';
 import { invoicePdf } from '@/lib/invoice';
 import { mapOrder } from '@/lib/owner/load';
 import { CATEGORIES, slugify } from '@/lib/categories';
+import { SIZES } from '@/lib/catalog';
 import { cartReminderEmail, invoiceEmail, paymentReminderEmail, refundEmail, shippedEmail, vipEmail, type EmailOrder } from '@/i18n/emails';
 import type { Lang } from '@/lib/types';
 
@@ -309,7 +310,7 @@ export async function saveProduct(d: ProductDraft): Promise<Result> {
       if (v) {
         if (v.stock !== stock) await supabase.rpc('adjust_stock', { p_variant_id: v.id, p_delta: stock - v.stock });
       } else {
-        await supabase.from('product_variants').insert({ product_id: productId, size, stock, sort_order: ['S', 'M', 'L', 'XL'].indexOf(size) });
+        await supabase.from('product_variants').insert({ product_id: productId, size, stock, sort_order: SIZES.indexOf(size) });
       }
     }
     await log(supabase, user.id, d.id ? `Updated ${name}` : `Added ${name}`);

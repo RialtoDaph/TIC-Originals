@@ -2,7 +2,7 @@ import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Drop, Product, SiteSettings } from './types';
 
-export const SIZES = ['S', 'M', 'L', 'XL'];
+export const SIZES = ['XS', 'S', 'M', 'L', 'XL'];
 
 type Row = Record<string, unknown>;
 
