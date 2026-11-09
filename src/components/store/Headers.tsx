@@ -5,10 +5,12 @@ import { useEffect, useRef, useState } from 'react';
 import { useStore } from './StoreProvider';
 import { LangToggle } from './LangToggle';
 import { AccountIcon, LockIcon, TICKER_ICONS, TickerIcon } from './icons';
-import { CATEGORIES } from '@/lib/categories';
 import s from './Header.module.css';
 
-const NAV = [{ slug: 'all', label: 'Shop All' }, ...CATEGORIES];
+function useNav() {
+  const { categories } = useStore();
+  return [{ slug: 'all', label: 'Shop All' }, ...categories];
+}
 const navHref = (slug: string) => (slug === 'all' ? '/shop' : '/shop/' + slug);
 
 function Logo({ big = false }: { big?: boolean }) {
@@ -63,6 +65,7 @@ function Ticker() {
 
 export function HomeHeader() {
   const { t, cartCount, setCartOpen, currency, setCurrency } = useStore();
+  const NAV = useNav();
   const [curOpen, setCurOpen] = useState(false);
   const curs = [
     { k: 'EUR' as const, l: '🇩🇪  EUR (€)' },
@@ -121,6 +124,7 @@ export function HomeHeader() {
 /** Header used by Shop (with strip + active underline), Account and Policies. */
 export function StoreHeader({ variant, active }: { variant: 'shop' | 'account' | 'policies'; active?: string }) {
   const { t, cartCount, setCartOpen, amount, settings } = useStore();
+  const NAV = useNav();
   return (
     <>
       {variant === 'shop' && (

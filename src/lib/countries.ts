@@ -1,6 +1,7 @@
 import type { Lang } from './types';
 
-// Shipping countries offered at checkout (order as in the design). DE ships at the domestic rate.
+// Shipping countries offered at checkout: Germany, Switzerland and the rest of the EU.
+// DE ships at the domestic rate, every other country at the international rate.
 export const COUNTRIES: { code: string; de: string; en: string }[] = [
   { code: 'DE', de: 'Deutschland', en: 'Germany' },
   { code: 'AT', de: 'Österreich', en: 'Austria' },
@@ -12,6 +13,24 @@ export const COUNTRIES: { code: string; de: string; en: string }[] = [
   { code: 'ES', de: 'Spanien', en: 'Spain' },
   { code: 'PL', de: 'Polen', en: 'Poland' },
   { code: 'DK', de: 'Dänemark', en: 'Denmark' },
+  { code: 'SE', de: 'Schweden', en: 'Sweden' },
+  { code: 'FI', de: 'Finnland', en: 'Finland' },
+  { code: 'IE', de: 'Irland', en: 'Ireland' },
+  { code: 'PT', de: 'Portugal', en: 'Portugal' },
+  { code: 'LU', de: 'Luxemburg', en: 'Luxembourg' },
+  { code: 'CZ', de: 'Tschechien', en: 'Czechia' },
+  { code: 'SK', de: 'Slowakei', en: 'Slovakia' },
+  { code: 'SI', de: 'Slowenien', en: 'Slovenia' },
+  { code: 'HU', de: 'Ungarn', en: 'Hungary' },
+  { code: 'HR', de: 'Kroatien', en: 'Croatia' },
+  { code: 'RO', de: 'Rumänien', en: 'Romania' },
+  { code: 'BG', de: 'Bulgarien', en: 'Bulgaria' },
+  { code: 'GR', de: 'Griechenland', en: 'Greece' },
+  { code: 'EE', de: 'Estland', en: 'Estonia' },
+  { code: 'LV', de: 'Lettland', en: 'Latvia' },
+  { code: 'LT', de: 'Litauen', en: 'Lithuania' },
+  { code: 'CY', de: 'Zypern', en: 'Cyprus' },
+  { code: 'MT', de: 'Malta', en: 'Malta' },
 ];
 
 export const COUNTRY_CODES = COUNTRIES.map((c) => c.code);

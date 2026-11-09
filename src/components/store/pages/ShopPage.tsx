@@ -6,7 +6,7 @@ import { useStore } from '../StoreProvider';
 import { StoreHeader } from '../Headers';
 import { ShopFooter } from '../Footers';
 import { CartDrawer } from '../CartDrawer';
-import { CATEGORIES, categoryLabel } from '@/lib/categories';
+import { categoryLabel } from '@/lib/categories';
 import { img } from '@/lib/images';
 import type { Product } from '@/lib/types';
 import s from './Shop.module.css';
@@ -29,12 +29,12 @@ function Card({ p, small = false }: { p: Product; small?: boolean }) {
 }
 
 export function ShopList({ category }: { category: string }) {
-  const { t, products } = useStore();
+  const { t, products, categories } = useStore();
   const [sort, setSort] = useState('featured');
   let list = products.filter((p) => category === 'all' || p.category === category);
   if (sort === 'asc') list = [...list].sort((a, b) => a.priceCents - b.priceCents);
   if (sort === 'desc') list = [...list].sort((a, b) => b.priceCents - a.priceCents);
-  const chips = [{ slug: 'all', label: t.all }, ...CATEGORIES];
+  const chips = [{ slug: 'all', label: t.all }, ...categories];
   return (
     <div className={s.page}>
       <StoreHeader variant="shop" active={category} />

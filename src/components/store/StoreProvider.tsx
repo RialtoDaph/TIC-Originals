@@ -5,6 +5,7 @@ import type { CartLine, Drop, Lang, Product, SiteSettings } from '@/lib/types';
 import { STORE, type StoreDict } from '@/i18n/storefront';
 import { fmtAmount, fmtMoney } from '@/lib/format';
 import { usdPrice } from '@/lib/pricing';
+import { CATEGORIES } from '@/lib/categories';
 
 const CART_KEY = 'tic-cart-v3';
 const CONSENT_KEY = 'tic-consent';
@@ -17,6 +18,8 @@ interface StoreCtx {
   toggleLang: () => void;
   settings: SiteSettings;
   products: Product[];
+  /** Categories that currently have at least one visible product (navigation, filters). */
+  categories: { slug: string; label: string }[];
   productById: (id: string) => Product | undefined;
   drop: Drop | null;
   // Cart
@@ -174,6 +177,7 @@ export function StoreProvider({
       toggleLang,
       settings,
       products,
+      categories: CATEGORIES.filter((c) => products.some((p) => p.visible && p.category === c.slug)),
       productById,
       drop,
       cart,

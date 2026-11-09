@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { useStore } from './StoreProvider';
 import { InstagramIcon, TikTokIcon, WhatsAppIcon } from './icons';
 import { COMPANY_ADDRESS_LINE, LINKS, LINK_LABELS, PAYMENT_BADGES, SHORT_LINK_LABELS } from '@/i18n/storefront';
-import { CATEGORIES } from '@/lib/categories';
 import { SITE_IMAGES, img } from '@/lib/images';
 import { SOCIAL } from '@/config/business';
 import { subscribeNewsletter } from '@/app/(store)/actions';
@@ -14,10 +13,10 @@ import s from './Footer.module.css';
 type LinkKey = keyof typeof LINKS;
 
 function useGroups() {
-  const { lang, t } = useStore();
+  const { lang, t, categories } = useStore();
   const L = LINK_LABELS[lang];
   const link = (k: LinkKey) => ({ label: L[k], href: LINKS[k] });
-  const shop = [{ label: 'Shop All', href: '/shop' }, ...CATEGORIES.map((c) => ({ label: c.label, href: '/shop/' + c.slug }))];
+  const shop = [{ label: 'Shop All', href: '/shop' }, ...categories.map((c) => ({ label: c.label, href: '/shop/' + c.slug }))];
   return {
     shop,
     support: (['contact', 'faq', 'track', 'shipping', 'returns'] as LinkKey[]).map(link),

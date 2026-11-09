@@ -45,9 +45,9 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
       de: {
         eyebrow: 'Service / Versand',
         title: 'Versand & Zahlung',
-        intro: 'Bestellungen bis 14 Uhr verlassen unser Lager am selben Werktag. Versand mit DHL und Hermes.',
+        intro: 'Bestellungen bis 14 Uhr verlassen unser Lager am selben Werktag. Versand mit DHL.',
         blocks: [
-          { type: 'table', h: 'Versandkosten', rows: [['Deutschland (2 bis 5 Werktage)', s.de], ['International', s.intl], [`Ab ${s.free} Bestellwert`, 'Kostenlos']] },
+          { type: 'table', h: 'Versandkosten', rows: [['Deutschland (1 bis 4 Werktage)', s.de], ['International', s.intl], [`Ab ${s.free} Bestellwert`, 'Kostenlos']] },
           { type: 'text', h: 'Kostenloser Versand', p: `Die ${s.free.replace(/\s/g, '-')}-Grenze gilt für den Warenwert nach Abzug von Rabattcodes.` },
           { type: 'list', h: 'Zahlungsarten', items: ['Visa, Mastercard, American Express (über Stripe)', 'PayPal'] },
           { type: 'text', h: 'Preise', p: 'Alle Preise sind Endpreise in Euro zuzüglich Versandkosten. Gemäß § 19 UStG wird keine Umsatzsteuer berechnet (Kleinunternehmerregelung).' },
@@ -57,9 +57,9 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
       en: {
         eyebrow: 'Service / Shipping',
         title: 'Shipping & Payment',
-        intro: 'Orders placed before 2 pm leave our warehouse the same business day. Shipped with DHL and Hermes.',
+        intro: 'Orders placed before 2 pm leave our warehouse the same business day. Shipped with DHL.',
         blocks: [
-          { type: 'table', h: 'Shipping rates', rows: [['Germany (2 to 5 business days)', s.de], ['International', s.intl], [`Orders over ${s.free}`, 'Free']] },
+          { type: 'table', h: 'Shipping rates', rows: [['Germany (1 to 4 business days)', s.de], ['International', s.intl], [`Orders over ${s.free}`, 'Free']] },
           { type: 'text', h: 'Free shipping', p: `The ${s.free} threshold applies to the order value after discount codes.` },
           { type: 'list', h: 'Payment methods', items: ['Visa, Mastercard, American Express (via Stripe)', 'PayPal'] },
           { type: 'text', h: 'Prices', p: 'All prices are final prices in euros, plus shipping. No VAT is charged under § 19 UStG (German small business regulation).' },
@@ -160,7 +160,7 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
         legal: true,
         blocks: [
           { type: 'text', h: '1. Verantwortlicher', p: ADDR + '\ncompany@ticoriginals.com' },
-          { type: 'text', h: '2. Bestellabwicklung', p: 'Zur Abwicklung deiner Bestellung verarbeiten wir Name, Anschrift, E-Mail, Telefonnummer und Bestelldaten (Art. 6 Abs. 1 lit. b DSGVO). Versanddaten geben wir an den beauftragten Versanddienstleister (DHL, Hermes) weiter.' },
+          { type: 'text', h: '2. Bestellabwicklung', p: 'Zur Abwicklung deiner Bestellung verarbeiten wir Name, Anschrift, E-Mail, Telefonnummer und Bestelldaten (Art. 6 Abs. 1 lit. b DSGVO). Versanddaten geben wir an den beauftragten Versanddienstleister (DHL) weiter.' },
           { type: 'text', h: '3. Zahlungsdienstleister', p: 'Kartenzahlungen werden über Stripe Payments Europe Ltd. abgewickelt, PayPal-Zahlungen über PayPal (Europe) S.à r.l. et Cie, S.C.A. Wir speichern keine vollständigen Kartendaten.' },
           { type: 'text', h: '4. Kundenkonto', p: 'Wenn du ein Konto anlegst, speichern wir E-Mail-Adresse, Passwort (nur als Hash), Lieferadressen und deine Bestellhistorie (Art. 6 Abs. 1 lit. b DSGVO). Das Konto kannst du jederzeit löschen lassen, schreib uns dazu an company@ticoriginals.com.' },
           { type: 'text', h: '5. Kontaktformular und E-Mail', p: 'Wenn du uns über das Kontaktformular oder per E-Mail schreibst, speichern wir Name, E-Mail-Adresse und deine Nachricht, um die Anfrage zu beantworten (Art. 6 Abs. 1 lit. b und f DSGVO).' },
@@ -178,7 +178,7 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
         legal: true,
         blocks: [
           { type: 'text', h: '1. Controller', p: ADDR + '\ncompany@ticoriginals.com' },
-          { type: 'text', h: '2. Order processing', p: 'To process your order we handle name, address, email, phone number and order data (Art. 6(1)(b) GDPR). Shipping data is shared with the carrier (DHL, Hermes).' },
+          { type: 'text', h: '2. Order processing', p: 'To process your order we handle name, address, email, phone number and order data (Art. 6(1)(b) GDPR). Shipping data is shared with the carrier (DHL).' },
           { type: 'text', h: '3. Payment providers', p: 'Card payments are processed by Stripe Payments Europe Ltd., PayPal payments by PayPal (Europe) S.à r.l. et Cie, S.C.A. We never store full card details.' },
           { type: 'text', h: '4. Customer account', p: 'If you create an account we store your email address, password (as a hash only), delivery addresses and order history (Art. 6(1)(b) GDPR). You can have your account deleted at any time by writing to company@ticoriginals.com.' },
           { type: 'text', h: '5. Contact form and email', p: 'If you write to us via the contact form or email we store your name, email address and message to answer your request (Art. 6(1)(b) and (f) GDPR).' },
@@ -250,7 +250,7 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
 export function faq(lang: Lang, s: ShipAmounts): [string, string][] {
   return lang === 'de'
     ? [
-        ['Wie lange dauert der Versand?', 'Bestellungen bis 14 Uhr gehen am selben Werktag raus. Innerhalb Deutschlands dauert die Zustellung 2 bis 5 Werktage mit DHL oder Hermes.'],
+        ['Wie lange dauert der Versand?', 'Bestellungen bis 14 Uhr gehen am selben Werktag raus. Innerhalb Deutschlands dauert die Zustellung 1 bis 4 Werktage mit DHL.'],
         ['Was kostet der Versand?', `Deutschland ${s.de}, international ${s.intl}. Ab ${s.free} Bestellwert ist der Versand kostenlos.`],
         ['Kann ich meine Bestellung zurückgeben?', 'Ja, du hast 14 Tage Widerrufsrecht. Schreib uns an company@ticoriginals.com.'],
         ['Welche Zahlungsmethoden akzeptiert ihr?', 'Visa, Mastercard und AMEX über Stripe sowie PayPal.'],
@@ -260,7 +260,7 @@ export function faq(lang: Lang, s: ShipAmounts): [string, string][] {
         ['Wird Mehrwertsteuer berechnet?', 'Nein. Als Kleinunternehmer gemäß § 19 UStG berechnen wir keine Umsatzsteuer. Die angezeigten Preise sind Endpreise.'],
       ]
     : [
-        ['How long does shipping take?', 'Orders before 2 pm ship the same business day. Delivery within Germany takes 2 to 5 business days via DHL or Hermes.'],
+        ['How long does shipping take?', 'Orders before 2 pm ship the same business day. Delivery within Germany takes 1 to 4 business days via DHL.'],
         ['How much is shipping?', `Germany ${s.de}, international ${s.intl}. Free on orders over ${s.free}.`],
         ['Can I return my order?', 'Yes, you have a 14-day right of withdrawal. Email company@ticoriginals.com.'],
         ['Which payment methods do you accept?', 'Visa, Mastercard and AMEX via Stripe, plus PayPal.'],

@@ -59,8 +59,8 @@ export function mapSettings(r: Row): SiteSettings {
 
 export const DEFAULT_SETTINGS: SiteSettings = {
   freeShipCents: 8000,
-  shipDeCents: 519,
-  shipIntlCents: 1419,
+  shipDeCents: 495,
+  shipIntlCents: 1495,
   usdRate: 1.1,
   popupEnabled: false,
   popupCode: '',
