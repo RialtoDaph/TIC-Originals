@@ -25,7 +25,7 @@ function Card({ p, small = false }: { p: Product; small?: boolean }) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={img(p.images[1] ?? p.images[0])} alt="" className={s.img} style={{ opacity: hover ? 1 : 0 }} loading="lazy" />
       </div>
-      <span className={small ? s.nameSm : s.name}>{p.name}</span>
+      <span className={small ? s.nameSm : s.name}>{colors.length > 1 && p.model.trim() ? p.model : p.name}</span>
       <span className={small ? s.priceSm : s.price}>{money(p.priceCents / 100)}</span>
       <ColorDots colors={colors} label={t.colorsN(colors.length)} />
     </Link>
