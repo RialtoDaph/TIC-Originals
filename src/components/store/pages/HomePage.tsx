@@ -7,6 +7,8 @@ import { HomeHeader } from '../Headers';
 import { HomeFooter } from '../Footers';
 import { CartDrawer } from '../CartDrawer';
 import { categoryLabel } from '@/lib/categories';
+import { colorsOf, onePerModel } from '@/lib/models';
+import { ColorDots } from '../Swatches';
 import { SITE_IMAGES, img } from '@/lib/images';
 import type { Lang, Product } from '@/lib/types';
 import { CLAIMED_CODE_KEY } from '@/lib/constants';
@@ -62,7 +64,8 @@ function HeroVideo() {
 }
 
 function ProductTile({ p }: { p: Product }) {
-  const { addToCart, price, t } = useStore();
+  const { addToCart, price, t, products } = useStore();
+  const colors = colorsOf(p, products);
   const [hover, setHover] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -82,6 +85,7 @@ function ProductTile({ p }: { p: Product }) {
       <Link href={href} className={s.name}>
         {p.name}
       </Link>
+      <ColorDots colors={colors} label={t.colorsN(colors.length)} />
       <div className={s.details}>
         <span className={s.price}>{price(p.priceCents / 100)}</span>
         <div className={s.sizes}>
@@ -206,7 +210,7 @@ export function HomePage() {
 
       <section id="shop" className={s.shop}>
         <div className={s.grid}>
-          {products.map((p) => (
+          {onePerModel(products).map((p) => (
             <ProductTile key={p.id} p={p} />
           ))}
         </div>

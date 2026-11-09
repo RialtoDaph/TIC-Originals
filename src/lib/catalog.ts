@@ -17,6 +17,7 @@ export function mapProduct(r: Row): Product {
     name: r.name as string,
     category: r.category as string,
     priceCents: r.price_cents as number,
+    model: (r.model as string) ?? '',
     color: r.color as string,
     materialDe: r.material_de as string,
     materialEn: r.material_en as string,

@@ -67,6 +67,7 @@ const product = (p: Partial<OProduct> = {}): OProduct => ({
   category: 'hoodies',
   priceCents: 10000,
   images: [],
+  model: '',
   color: '',
   materialDe: '',
   materialEn: '',

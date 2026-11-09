@@ -276,6 +276,8 @@ export interface ProductDraft {
   price: string;
   low: string;
   stock: Record<string, string>;
+  /** Products with the same model are shown as colours of one design. */
+  model: string;
   color: string;
   weight: string;
   materialDe: string;
@@ -329,6 +331,7 @@ export async function saveProduct(d: ProductDraft): Promise<Result> {
       category,
       price_cents: price,
       low_stock_threshold: Number.isFinite(low) ? low : 3,
+      model: text(d.model, 120),
       color: text(d.color, 60),
       material_de: text(d.materialDe, 200),
       material_en: text(d.materialEn, 200),

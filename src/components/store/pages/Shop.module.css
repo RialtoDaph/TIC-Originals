@@ -42,7 +42,7 @@
 .sizeHead { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .sizeLabel { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
 .guide { font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
-.sizes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.sizes { display: grid; grid-template-columns: repeat(auto-fit, minmax(56px, 1fr)); gap: 8px; }
 .sizeBtn { height: 48px; border: 1px solid #d6d6d6; background: #fff; color: #111; font-stretch: 125%; font-size: 12px; letter-spacing: 0.06em; cursor: pointer; padding: 0; }
 .sizeBtnActive { border-color: #111; background: #111; color: #fff; }
 .sizeBtn:disabled { color: #bdbdbd; text-decoration: line-through; cursor: not-allowed; }

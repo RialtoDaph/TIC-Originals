@@ -112,6 +112,7 @@ export async function loadOwnerData(supabase: SupabaseClient): Promise<OwnerData
     category: r.category as string,
     priceCents: r.price_cents as number,
     images: (r.images as string[]) ?? [],
+    model: (r.model as string) ?? '',
     color: (r.color as string) ?? '',
     materialDe: (r.material_de as string) ?? '',
     materialEn: (r.material_en as string) ?? '',

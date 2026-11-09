@@ -122,6 +122,7 @@ export function EditModal() {
             ['name', t.f.name, ''],
             ['category', t.f.category, 'Hoodies'],
             ['price', t.f.price, '69.89'],
+            ['model', t.f.model, 'Choppa Tee'],
             ['color', t.f.color, 'Schwarz'],
             ['weight', t.f.weight, '220'],
             ['materialDe', t.f.materialDe, '100% Baumwolle'],

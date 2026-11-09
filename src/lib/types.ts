@@ -12,6 +12,8 @@ export interface Product {
   name: string;
   category: string;
   priceCents: number;
+  /** Colour variants share a model name (see lib/models.ts); empty for standalone products. */
+  model: string;
   color: string;
   materialDe: string;
   materialEn: string;

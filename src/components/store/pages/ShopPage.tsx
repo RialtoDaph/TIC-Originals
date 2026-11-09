@@ -8,11 +8,14 @@ import { ShopFooter } from '../Footers';
 import { CartDrawer } from '../CartDrawer';
 import { categoryLabel } from '@/lib/categories';
 import { img } from '@/lib/images';
+import { colorsOf, onePerModel } from '@/lib/models';
+import { ColorDots, ColorPicker } from '../Swatches';
 import type { Product } from '@/lib/types';
 import s from './Shop.module.css';
 
 function Card({ p, small = false }: { p: Product; small?: boolean }) {
-  const { money } = useStore();
+  const { money, products, t } = useStore();
+  const colors = colorsOf(p, products);
   const [hover, setHover] = useState(false);
   return (
     <Link href={'/shop/' + p.slug} className={s.card} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
@@ -24,6 +27,7 @@ function Card({ p, small = false }: { p: Product; small?: boolean }) {
       </div>
       <span className={small ? s.nameSm : s.name}>{p.name}</span>
       <span className={small ? s.priceSm : s.price}>{money(p.priceCents / 100)}</span>
+      <ColorDots colors={colors} label={t.colorsN(colors.length)} />
     </Link>
   );
 }
@@ -34,6 +38,7 @@ export function ShopList({ category }: { category: string }) {
   let list = products.filter((p) => category === 'all' || p.category === category);
   if (sort === 'asc') list = [...list].sort((a, b) => a.priceCents - b.priceCents);
   if (sort === 'desc') list = [...list].sort((a, b) => b.priceCents - a.priceCents);
+  list = onePerModel(list);
   const chips = [{ slug: 'all', label: t.all }, ...categories];
   return (
     <div className={s.page}>
@@ -105,10 +110,9 @@ export function ProductDetail({ product: p }: { product: Product }) {
       [t.accH[2], t.shipText(amount(settings.shipDeCents), amount(settings.freeShipCents))],
     ] as [string, string | null][]
   ).filter((x): x is [string, string] => !!x[1]);
-  const related = [
-    ...products.filter((x) => x.id !== p.id && x.category === p.category),
-    ...products.filter((x) => x.id !== p.id && x.category !== p.category),
-  ].slice(0, 4);
+  const colors = colorsOf(p, products);
+  const others = products.filter((x) => !colors.some((c) => c.id === x.id));
+  const related = onePerModel([...others.filter((x) => x.category === p.category), ...others.filter((x) => x.category !== p.category)]).slice(0, 4);
   const price = money(p.priceCents / 100);
 
   return (
@@ -158,6 +162,7 @@ export function ProductDetail({ product: p }: { product: Product }) {
                   </span>
                 </div>
               </div>
+              <ColorPicker current={p} colors={colors} label={t.color} soldOut={t.soldOut} />
               <div className={s.sizeBlock}>
                 <div className={s.sizeHead}>
                   <span className={s.sizeLabel}>

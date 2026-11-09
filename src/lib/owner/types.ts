@@ -60,6 +60,7 @@ export interface OProduct {
   category: string;
   priceCents: number;
   images: string[];
+  model: string;
   color: string;
   materialDe: string;
   materialEn: string;
