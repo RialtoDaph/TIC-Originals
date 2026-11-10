@@ -1,11 +1,10 @@
 import type { Lang } from './types';
 
-// Shipping countries offered at checkout: Germany, Switzerland and the rest of the EU.
-// DE ships at the domestic rate, every other country at the international rate.
+// Shipping countries offered at checkout: Germany and the rest of the EU (rest of the world later).
+// DE ships at the domestic rate, every other country at the EU rate.
 export const COUNTRIES: { code: string; de: string; en: string }[] = [
   { code: 'DE', de: 'Deutschland', en: 'Germany' },
   { code: 'AT', de: 'Österreich', en: 'Austria' },
-  { code: 'CH', de: 'Schweiz', en: 'Switzerland' },
   { code: 'NL', de: 'Niederlande', en: 'Netherlands' },
   { code: 'BE', de: 'Belgien', en: 'Belgium' },
   { code: 'FR', de: 'Frankreich', en: 'France' },

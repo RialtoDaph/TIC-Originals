@@ -13,5 +13,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|fonts/|img/|video/|tic-logo.png|api/stripe/webhook).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|fonts/|img/|video/|tic-logo.png|tic-logo-blue.png|icon.png|api/stripe/webhook).*)'],
 };

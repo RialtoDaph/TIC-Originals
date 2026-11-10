@@ -50,8 +50,8 @@
 .popupImgWrap { position: relative; min-height: 280px; background: #000; }
 .popupBody { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: safe center; gap: 22px; padding: 56px 32px 40px; text-align: center; }
 .popupClose { position: absolute; top: 20px; right: 28px; background: transparent; border: 0; color: #fff; font-size: 23px; font-weight: 300; cursor: pointer; }
-.popupLogo { height: 110px; width: 200px; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-.popupLogoImg { height: 260px; width: 260px; filter: invert(1); }
+.popupLogo { flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 8px 0; }
+.popupLogoImg { width: 190px; height: auto; display: block; }
 .popupText { display: flex; flex-direction: column; gap: 4px; font-stretch: 110%; text-transform: uppercase; line-height: 1; }
 .got { font-weight: 300; font-size: 30px; }
 .excl { font-weight: 700; font-size: 36px; }

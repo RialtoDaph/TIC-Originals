@@ -37,11 +37,11 @@ export interface Totals {
   netCents: number;
   shippingCents: number;
   totalCents: number;
-  /** Amount still missing for free shipping (0 when reached). */
+  /** Amount still missing for free shipping (0 when reached, or outside Germany where it never applies). */
   freeLeftCents: number;
 }
 
-/** Free shipping applies to the order value after discounts. Germany ships domestic, everything else international. */
+/** Free shipping applies to the order value after discounts and only within Germany. Every other (EU) country pays the EU rate. */
 export function computeTotals(input: {
   subtotalCents: number;
   discountCents: number;
@@ -51,15 +51,16 @@ export function computeTotals(input: {
   const { subtotalCents, settings } = input;
   const discount = Math.min(input.discountCents, subtotalCents);
   const net = subtotalCents - discount;
-  const free = net >= settings.freeShipCents;
-  const shipping = subtotalCents === 0 || free ? 0 : input.country === 'DE' ? settings.shipDeCents : settings.shipIntlCents;
+  const domestic = input.country === 'DE';
+  const free = domestic && net >= settings.freeShipCents;
+  const shipping = subtotalCents === 0 || free ? 0 : domestic ? settings.shipDeCents : settings.shipIntlCents;
   return {
     subtotalCents,
     discountCents: discount,
     netCents: net,
     shippingCents: shipping,
     totalCents: net + shipping,
-    freeLeftCents: Math.max(0, settings.freeShipCents - net),
+    freeLeftCents: domestic ? Math.max(0, settings.freeShipCents - net) : 0,
   };
 }
 

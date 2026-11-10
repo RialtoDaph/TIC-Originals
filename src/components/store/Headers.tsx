@@ -18,7 +18,7 @@ function Logo({ big = false }: { big?: boolean }) {
   return (
     <Link href="/" className={big ? s.homeLogo : s.logoLink} aria-label="TIC Originals – Home">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/tic-logo.png" alt="Till I Collapse" className={big ? s.homeLogoImg : s.logoImg} />
+      <img src="/tic-logo-blue.png" alt="TIC Originals" className={big ? s.homeLogoImg : s.logoImg} />
     </Link>
   );
 }
@@ -271,7 +271,7 @@ export function CheckoutHeader() {
       </Link>
       <Link href="/" className={s.checkoutLogo} aria-label="TIC Originals – Home">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/tic-logo.png" alt="Till I Collapse" className={s.logoImg} />
+        <img src="/tic-logo-blue.png" alt="TIC Originals" className={s.logoImg} />
       </Link>
       <div className={s.checkoutRight}>
         <span className={s.secure}>

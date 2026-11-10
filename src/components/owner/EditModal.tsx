@@ -120,7 +120,7 @@ export function EditModal() {
       : m.kind === 'product'
         ? [
             ['name', t.f.name, ''],
-            ['category', t.f.category, 'Hoodies'],
+            ['category', t.f.category, 'Tops'],
             ['price', t.f.price, '69.89'],
             ['model', t.f.model, 'Choppa Tee'],
             ['setName', t.f.setName, 'Camo Set Grau'],

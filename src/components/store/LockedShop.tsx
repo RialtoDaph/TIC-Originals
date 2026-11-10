@@ -39,7 +39,7 @@ export function LockedShop() {
     <main style={{ minHeight: '100dvh', boxSizing: 'border-box', background: '#111', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28, padding: '48px 24px', textAlign: 'center' }}>
       <div style={{ height: 110, width: 200, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/tic-logo.png" alt="Till I Collapse" style={{ height: 260, width: 260, filter: 'invert(1)' }} />
+        <img src="/tic-logo-blue.png" alt="TIC Originals" style={{ width: 'min(320px, 70vw)', height: 'auto' }} />
       </div>
       <h1 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 400, fontSize: 'clamp(56px,10vw,112px)', lineHeight: 0.88, textTransform: 'uppercase' }}>
         {t.lockedH(drop?.name ?? '')}

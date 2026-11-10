@@ -107,7 +107,15 @@ export function HomeFooter() {
         <div className={s.galleryClip}>
           <div className={s.galleryTrack}>
             {gallery.map((g, i) => (
-              <Photo key={i} src={g} alt={i < SITE_IMAGES.gallery.length ? 'TIC community' : ''} className={s.galleryImg} width={400} height={540} sizes="(max-width: 600px) 280px, 400px" />
+              <Photo
+                key={i}
+                src={g}
+                alt={i < SITE_IMAGES.gallery.length ? 'TIC community' : ''}
+                className={i < SITE_IMAGES.gallery.length ? s.galleryImg : `${s.galleryImg} ${s.galleryDup}`}
+                width={400}
+                height={540}
+                sizes="(max-width: 600px) 280px, 400px"
+              />
             ))}
           </div>
         </div>

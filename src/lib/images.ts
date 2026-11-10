@@ -17,23 +17,18 @@ export const SITE_IMAGES = {
   hero: '/img/hf_20261002_221632_5de61919-3487-471c-98da-f50f80165bf1.jpg',
   heroVideo: '/video/hero.mp4',
   heroVideoMobile: '/video/hero-mobile.mp4',
-  discountPopup: '/img/products/drop002/girls-04.jpg',
+  discountPopup: '/img/products/drop002/look-weiss-01.jpg',
   accountSide: '/img/products/drop002/drop002-duo-02.jpg',
   /** Drop 002 editorial on the home page. */
   lookbook: {
     lead: '/img/products/drop002/drop002-duo-01.jpg',
     side: '/img/products/drop002/look-mural-02.jpg',
     detail: '/img/products/drop002/set-grau-detail.jpg',
-    strip: ['/img/products/drop002/look-duo-05.jpg', '/img/products/drop002/set-weiss-02.jpg', '/img/products/drop002/girls-03.jpg', '/img/products/drop002/look-cafe-02.jpg'],
+    strip: ['/img/products/drop002/look-duo-05.jpg', '/img/products/drop002/set-weiss-02.jpg', '/img/products/drop002/look-duo-04.jpg', '/img/products/drop002/look-cafe-02.jpg'],
   },
   categories: {
-    hoodies: '/img/hf_20261002_221633_fe6973c9-e7dc-4616-9e89-50fcfbc41950.jpg',
-    sweater: '/img/products/drop002/set-grau-01.jpg',
-    skirts: '/img/products/drop002/girls-04.jpg',
-    sweatsuits: '/img/hf_20261002_221532_446455cc-7ecc-4704-83c4-1f805f60b942.jpg',
-    't-shirts': '/img/products/drop002/girls-01.jpg',
-    pants: '/img/products/drop002/pants-grau-01.jpg',
-    shorts: '/img/hf_20261002_220517_85ea51c2-2c00-4308-b34b-5fd53b3b6fb3.jpg',
+    tops: '/img/products/drop002/set-grau-01.jpg',
+    bottoms: '/img/products/drop002/pants-grau-01.jpg',
   } as Record<string, string>,
   gallery: [
     '/img/products/drop002/look-mural-01.jpg',
@@ -42,7 +37,7 @@ export const SITE_IMAGES = {
     '/img/products/drop002/look-cafe-01.jpg',
     '/img/products/drop002/look-duo-06.jpg',
     '/img/products/drop002/look-tank-02.jpg',
-    '/img/products/drop002/girls-05.jpg',
+    '/img/products/drop002/look-duo-07.jpg',
     '/img/products/drop002/look-grau-street.jpg',
   ],
 };

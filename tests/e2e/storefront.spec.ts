@@ -27,7 +27,7 @@ test('language switch translates the storefront and persists', async ({ page }) 
   await page.getByRole('button', { name: 'Switch to English' }).click();
   await expect(page.getByRole('button', { name: /^Cart \(/ })).toBeVisible();
   await page.reload();
-  await expect(page.getByText('Free shipping over €80').first()).toBeVisible();
+  await expect(page.getByText('Free shipping in Germany over €80').first()).toBeVisible();
 });
 
 test('checkout validates fields and applies a discount code server-side', async ({ page }) => {
@@ -49,11 +49,12 @@ test('checkout validates fields and applies a discount code server-side', async 
   await page.getByLabel('Rabattcode').fill('tic15');
   await page.getByRole('button', { name: 'Einlösen' }).click();
   await expect(page.getByText('Code TIC15 angewendet: 15 % Rabatt.')).toBeVisible();
-  // 69,78 − 10,47 = 59,31 + 5,19 shipping = 64,50
-  await expect(page.getByText('64,50 €').locator('visible=true').first()).toBeVisible();
+  // 69,78 − 10,47 = 59,31 + 4,95 shipping = 64,26
+  await expect(page.getByText('64,26 €').locator('visible=true').first()).toBeVisible();
   await page.getByRole('combobox').selectOption('AT');
-  await expect(page.getByText('DHL International')).toBeVisible();
-  await expect(page.getByText('73,50 €').locator('visible=true').first()).toBeVisible();
+  await expect(page.getByText('DHL EU')).toBeVisible();
+  // EU rate 14,95 €, and free shipping never applies outside Germany.
+  await expect(page.getByText('74,26 €').locator('visible=true').first()).toBeVisible();
 });
 
 test('checkout API → Stripe webhook creates the order, takes stock, shows thanks', async ({ page, request }) => {
@@ -96,7 +97,7 @@ test('SEPA: processing reserves stock as a pending order; failure cancels and re
   const stock = () => Number(sql(`select stock from product_variants where product_id = '${id}' and size = 'S'`)[0]);
   const before = stock();
   const res = await request.post('/api/checkout', {
-    data: { email: 'sepa@kunde.de', first: 'Se', last: 'Pa', street: 'Weg 1', extra: '', zip: '85072', city: 'Eichstätt', country: 'DE', phone: '', lang: 'de', items: [{ id, size: 'S', qty: 1 }], expectedTotalCents: 3489 + 519 },
+    data: { email: 'sepa@kunde.de', first: 'Se', last: 'Pa', street: 'Weg 1', extra: '', zip: '85072', city: 'Eichstätt', country: 'DE', phone: '', lang: 'de', items: [{ id, size: 'S', qty: 1 }], expectedTotalCents: 3489 + 495 },
   });
   const { clientSecret, orderNo } = await res.json();
   const pi = clientSecret.split('_secret_')[0];

@@ -1,13 +1,29 @@
-// Storefront categories (navigation order from the design).
+// Storefront categories. The client keeps the shop to two: Tops and Bottoms.
 export const CATEGORIES: { slug: string; label: string }[] = [
-  { slug: 'hoodies', label: 'Hoodies' },
-  { slug: 'sweater', label: 'Sweater' },
-  { slug: 'sweatsuits', label: 'Sweatsuits' },
-  { slug: 't-shirts', label: 'T-Shirts' },
-  { slug: 'pants', label: 'Pants' },
-  { slug: 'shorts', label: 'Shorts' },
-  { slug: 'skirts', label: 'Skirts' },
+  { slug: 'tops', label: 'Tops' },
+  { slug: 'bottoms', label: 'Bottoms' },
 ];
+
+/** Older, finer categories still stored on some products (or typed in the dashboard) → Tops / Bottoms. */
+const LEGACY: Record<string, string> = {
+  hoodies: 'tops',
+  sweater: 'tops',
+  sweaters: 'tops',
+  crewneck: 'tops',
+  crewnecks: 'tops',
+  't-shirts': 'tops',
+  tees: 'tops',
+  shirts: 'tops',
+  sweatsuits: 'tops',
+  pants: 'bottoms',
+  sweatpants: 'bottoms',
+  shorts: 'bottoms',
+  skirts: 'bottoms',
+};
+
+export function normalizeCategory(slug: string): string {
+  return LEGACY[slug] ?? slug;
+}
 
 export function categoryLabel(slug: string) {
   return CATEGORIES.find((c) => c.slug === slug)?.label ?? slug.replace(/(^|-)([a-z])/g, (_, d, c) => (d ? ' ' : '') + c.toUpperCase());

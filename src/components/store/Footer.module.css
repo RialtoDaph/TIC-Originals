@@ -59,9 +59,30 @@
 .policies { background: #1a1a1a; color: #8a8a8a; padding: 28px 48px; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; font-size: 11px; }
 .policiesCopy { letter-spacing: 0.2em; text-transform: uppercase; }
 
+@media (hover: hover) {
+  .galleryClip:hover .galleryTrack { animation-play-state: paused; }
+}
+
+/* Touch screens: a swipeable row instead of the auto-running marquee (which can't be dragged). */
+@media (hover: none), (max-width: 600px), (prefers-reduced-motion: reduce) {
+  .galleryClip { overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-padding-inline: 20px; }
+  .galleryClip::-webkit-scrollbar { display: none; }
+  .galleryTrack { animation: none; padding: 0 20px; gap: 10px; }
+  .galleryImg { scroll-snap-align: start; }
+  .galleryDup { display: none; }
+}
+
 @media (max-width: 600px) {
   .policies { padding: 28px 20px; }
-  .galleryImg { width: 280px; height: 378px; }
-  .galleryLabel { bottom: -24px; padding: 14px 20px; font-size: 13px; white-space: nowrap; letter-spacing: 0.02em; }
+  .galleryImg { width: 76vw; max-width: 300px; height: auto; aspect-ratio: 400 / 540; }
+  .galleryLabel { bottom: -22px; padding: 12px 18px; font-size: 13px; white-space: nowrap; letter-spacing: 0.02em; pointer-events: none; }
+  .bottom { padding-top: 88px; gap: 40px; }
+  .socials { gap: 12px; }
+  .social { width: 52px; height: 52px; }
+  .accBtn { padding: 22px 0; }
+  .pill { height: 60px; padding-left: 22px; }
+  .pillInput { font-size: 16px; letter-spacing: 0.12em; }
+  .pillBtn { width: 46px; height: 46px; }
+  /* Room so the floating discount tab never covers the copyright line. */
+  .home { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
 }
-.galleryClip:hover .galleryTrack { animation-play-state: paused; }

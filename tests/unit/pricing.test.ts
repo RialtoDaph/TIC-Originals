@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { checkCode, computeTotals, discountCents, usdPrice } from '@/lib/pricing';
 import type { DiscountCode } from '@/lib/types';
 
-const settings = { freeShipCents: 8000, shipDeCents: 519, shipIntlCents: 1419 };
+const settings = { freeShipCents: 8000, shipDeCents: 495, shipIntlCents: 1495 };
 const code = (p: Partial<DiscountCode> = {}): DiscountCode => ({
   code: 'TIC15', isPercent: true, value: 15, minOrderCents: 0, validUntil: null, usageLimit: null, usedCount: 0, firstOrderOnly: false, active: true, ...p,
 });
@@ -10,21 +10,25 @@ const code = (p: Partial<DiscountCode> = {}): DiscountCode => ({
 describe('computeTotals (checkout reference rules)', () => {
   it('charges German shipping below the threshold', () => {
     const t = computeTotals({ subtotalCents: 6989, discountCents: 0, country: 'DE', settings });
-    expect(t).toMatchObject({ shippingCents: 519, totalCents: 7508, freeLeftCents: 1011 });
+    expect(t).toMatchObject({ shippingCents: 495, totalCents: 7484, freeLeftCents: 1011 });
   });
-  it('charges international shipping outside Germany', () => {
-    expect(computeTotals({ subtotalCents: 6989, discountCents: 0, country: 'AT', settings }).shippingCents).toBe(1419);
+  it('charges the EU rate outside Germany', () => {
+    expect(computeTotals({ subtotalCents: 6989, discountCents: 0, country: 'AT', settings }).shippingCents).toBe(1495);
   });
   it('applies the free-shipping threshold after the discount', () => {
     // 89,78 € − 15 % = 76,31 € → below 80 € → shipping is charged.
     const sub = 8978;
     const t = computeTotals({ subtotalCents: sub, discountCents: discountCents(code(), sub), country: 'DE', settings });
     expect(t.discountCents).toBe(1347);
-    expect(t.shippingCents).toBe(519);
-    expect(t.totalCents).toBe(8978 - 1347 + 519);
+    expect(t.shippingCents).toBe(495);
+    expect(t.totalCents).toBe(8978 - 1347 + 495);
   });
-  it('ships free at exactly the threshold', () => {
-    expect(computeTotals({ subtotalCents: 8000, discountCents: 0, country: 'FR', settings }).shippingCents).toBe(0);
+  it('ships free at exactly the threshold within Germany', () => {
+    expect(computeTotals({ subtotalCents: 8000, discountCents: 0, country: 'DE', settings }).shippingCents).toBe(0);
+  });
+  it('never ships free outside Germany', () => {
+    const t = computeTotals({ subtotalCents: 20000, discountCents: 0, country: 'FR', settings });
+    expect(t).toMatchObject({ shippingCents: 1495, freeLeftCents: 0 });
   });
   it('never discounts below zero', () => {
     const t = computeTotals({ subtotalCents: 500, discountCents: discountCents(code({ isPercent: false, value: 10 }), 500), country: 'DE', settings });

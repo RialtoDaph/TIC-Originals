@@ -19,21 +19,11 @@ import { Photo } from '../Photo';
 const TILE_SIZES = '(max-width: 700px) 50vw, 33vw';
 import s from './Home.module.css';
 
-// [slug, grid span, aspect ratio, font size] — layout from the design.
-const CAT_LAYOUT: [string, number, string, string][] = [
-  ['hoodies', 3, '4/3', '46px'],
-  ['sweatsuits', 3, '4/3', '46px'],
-  ['t-shirts', 2, '3/4', '36px'],
-  ['pants', 2, '3/4', '36px'],
-  ['shorts', 2, '3/4', '36px'],
-];
-
 /**
- * Category tiles on a 6-column grid: the design layout when exactly the design's categories have
- * products, otherwise rows of two wide tiles (span 3) and three narrow ones (span 2) with no gaps.
+ * Category tiles ([slug, grid span, aspect ratio, font size]) on a 6-column grid: rows of two wide
+ * tiles (span 3) and three narrow ones (span 2) with no gaps.
  */
 function categoryTiles(slugs: string[]): [string, number, string, string][] {
-  if (slugs.length === CAT_LAYOUT.length && CAT_LAYOUT.every(([slug]) => slugs.includes(slug))) return CAT_LAYOUT;
   const n = slugs.length;
   const wide = n === 1 ? 0 : n % 3 === 2 ? 2 : n % 3 === 1 ? 4 : 0;
   return slugs.map((slug, i) =>
@@ -68,7 +58,7 @@ function HeroVideo() {
     if (!saveData && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) v.play().catch(() => {});
   }, []);
   return (
-    <video ref={ref} poster={img(SITE_IMAGES.hero)} className={s.heroVideo} muted loop playsInline preload="none" aria-hidden="true">
+    <video ref={ref} poster={img(SITE_IMAGES.hero)} className={`${s.heroVideo} tic-bw`} muted loop playsInline preload="none" aria-hidden="true">
       {/* Phones get a smaller portrait crop (~0.3 MB instead of ~0.9 MB). */}
       <source src={img(SITE_IMAGES.heroVideoMobile)} type="video/mp4" media="(max-width: 700px)" />
       <source src={img(SITE_IMAGES.heroVideo)} type="video/mp4" />
@@ -140,7 +130,7 @@ function DiscountPopup({ onClose }: { onClose: () => void }) {
         </button>
         <div className={s.popupLogo}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/tic-logo.png" alt="Till I Collapse" className={s.popupLogoImg} />
+          <img src="/tic-logo-blue.png" alt="TIC Originals" className={s.popupLogoImg} />
         </div>
         <div className={s.popupText}>
           <span className={s.got}>{t.got}</span>
@@ -205,7 +195,7 @@ function Lookbook() {
   return (
     <section className={s.look} aria-labelledby="lookbook-h">
       <div className={s.lookGrid}>
-        <Link href="/shop/sweater" className={`${s.lookLead} tic-zoom`} data-reveal="img" aria-label={t.lookCta}>
+        <Link href="/shop/tops" className={`${s.lookLead} tic-zoom`} data-reveal="img" aria-label={t.lookCta}>
           <Photo src={L.lead} alt="" className={s.lookImg} sizes="(max-width: 900px) 100vw, 50vw" />
         </Link>
         <div className={s.lookCopy}>
@@ -225,7 +215,7 @@ function Lookbook() {
             </span>
           </Link>
           <div ref={detail} className={s.lookDetailWrap}>
-            <Link href="/shop/pants" className={`${s.lookDetail} tic-zoom`} data-reveal="img" style={{ '--reveal-delay': '0.15s' } as React.CSSProperties} aria-label="Chosen Sweatpants">
+            <Link href="/shop/bottoms" className={`${s.lookDetail} tic-zoom`} data-reveal="img" style={{ '--reveal-delay': '0.15s' } as React.CSSProperties} aria-label="Chosen1 Pants">
               <Photo src={L.detail} alt="" className={s.lookImg} sizes="20vw" />
             </Link>
           </div>

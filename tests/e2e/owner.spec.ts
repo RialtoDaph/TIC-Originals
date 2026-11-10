@@ -85,7 +85,7 @@ test.describe('as owner', () => {
     await modal.getByRole('textbox').nth(5).fill('7'); // stock M
     await modal.getByRole('button', { name: 'Save' }).click();
     await expect(page.getByRole('status')).toHaveText('Product added');
-    expect(sql("select slug || '/' || category || '/' || price_cents from products where name = 'TIC Longsleeve'")[0]).toBe('tic-longsleeve/t-shirts/4989');
+    expect(sql("select slug || '/' || category || '/' || price_cents from products where name = 'TIC Longsleeve'")[0]).toBe('tic-longsleeve/tops/4989');
   });
 
   test('promo: create, toggle and delete a discount code', async ({ page }) => {
@@ -112,13 +112,13 @@ test.describe('as owner', () => {
     await page.goto('/owner/settings');
     const save = page.getByRole('button', { name: 'Save changes' });
     await expect(save).toBeDisabled();
-    await page.getByLabel('Free shipping from (€)').fill('100');
+    await page.getByLabel('Free shipping in Germany from (€)').fill('100');
     await expect(page.getByText('Unsaved changes')).toBeVisible();
     await save.click();
     await expect(page.getByRole('status')).toHaveText('Settings saved');
     await expect(save).toBeDisabled();
     const shop = await page.request.get('/shop');
-    expect(await shop.text()).toContain('Kostenloser Versand ab 100');
+    expect(await shop.text()).toContain('Kostenloser Versand in DE ab 100');
     sql('update site_settings set free_ship_cents = 8000');
   });
 

@@ -597,7 +597,7 @@ function CheckoutForm({
               <span>{t.shipping}</span>
               <span>{shipLabel}</span>
             </div>
-            <span className={s.shipHint}>{totals.freeLeftCents === 0 ? t.freeOk(amount(settings.freeShipCents)) : t.freeLeft(money(totals.freeLeftCents / 100))}</span>
+            <span className={s.shipHint}>{country !== 'DE' ? t.freeDeOnly(amount(settings.freeShipCents)) : totals.freeLeftCents === 0 ? t.freeOk(amount(settings.freeShipCents)) : t.freeLeft(money(totals.freeLeftCents / 100))}</span>
           </div>
           <div className={s.totalRow}>
             <div className={s.totalLeft}>

@@ -144,3 +144,6 @@ html.lenis, html.lenis body { height: auto; }
 /* Client-side navigation only (Motion adds .tic-nav after the first route change), so the first
    load paints immediately. */
 .tic-nav .store-root main { animation: tic-page-in 0.5s var(--ease-out) both; }
+
+/* Client: all storefront photography in black and white for a clean look (also covers dashboard uploads). */
+.tic-bw { filter: grayscale(1); }
