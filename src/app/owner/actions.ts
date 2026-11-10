@@ -3,7 +3,7 @@
 // Owner dashboard mutations. Every action re-checks the owner role server-side (requireOwner)
 // and runs with the owner's session, so row level security applies as a second guard.
 
-import { refresh } from 'next/cache';
+import { refresh, updateTag } from 'next/cache';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { requireOwner } from '@/lib/auth';
 import { sendEmail } from '@/lib/email';
@@ -14,7 +14,7 @@ import { serverEnv } from '@/lib/env';
 import { invoicePdf } from '@/lib/invoice';
 import { mapOrder } from '@/lib/owner/load';
 import { CATEGORIES, slugify } from '@/lib/categories';
-import { SIZES } from '@/lib/catalog';
+import { CATALOG_TAG, SIZES } from '@/lib/catalog';
 import { cartReminderEmail, invoiceEmail, paymentReminderEmail, refundEmail, shippedEmail, vipEmail, type EmailOrder } from '@/i18n/emails';
 import type { Lang } from '@/lib/types';
 
@@ -41,6 +41,8 @@ async function wrap(fn: () => Promise<Result>): Promise<Result> {
   try {
     const r = await fn();
     refresh();
+    // Products, stock, settings and drops are cached for the storefront; show changes right away.
+    updateTag(CATALOG_TAG);
     return r;
   } catch (e) {
     return fail(e);

@@ -1,5 +1,7 @@
 import 'server-only';
+import { unstable_cache } from 'next/cache';
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { createPublicClient } from './supabase/public';
 import type { Drop, Product, SiteSettings } from './types';
 
 export const SIZES = ['XS', 'S', 'M', 'L', 'XL'];
@@ -93,3 +95,25 @@ export async function loadCurrentDrop(supabase: SupabaseClient): Promise<Drop | 
   if (error) throw error;
   return data?.[0] ? mapDrop(data[0]) : null;
 }
+
+/** Cache tag for everything the storefront reads (products, stock, settings, drop). */
+export const CATALOG_TAG = 'catalog';
+
+/**
+ * The storefront catalogue, cached across requests so pages don't wait on the database every time.
+ * Invalidated by every owner action (updateTag in app/owner/actions.ts) and by the Stripe webhook
+ * when an order changes stock; the 60 s revalidate covers edits made outside the app (SQL editor).
+ * Checkout and the webhook never use this: they read live data with the admin client.
+ */
+async function loadStorefrontFresh() {
+  const supabase = createPublicClient();
+  const [products, settings, drop] = await Promise.all([loadProducts(supabase), loadSettings(supabase), loadCurrentDrop(supabase)]);
+  return { products, settings, drop };
+}
+
+// CATALOG_CACHE=off reads the database on every request: for the e2e tests, which rewrite the
+// database directly between runs (see tests/dev/README.md).
+export const loadStorefront =
+  process.env.CATALOG_CACHE === 'off'
+    ? loadStorefrontFresh
+    : unstable_cache(loadStorefrontFresh, ['storefront-v1'], { tags: [CATALOG_TAG], revalidate: 60 });

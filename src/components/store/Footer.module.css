@@ -62,5 +62,6 @@
 @media (max-width: 600px) {
   .policies { padding: 28px 20px; }
   .galleryImg { width: 280px; height: 378px; }
+  .galleryLabel { bottom: -24px; padding: 14px 20px; font-size: 13px; white-space: nowrap; letter-spacing: 0.02em; }
 }
 .galleryClip:hover .galleryTrack { animation-play-state: paused; }

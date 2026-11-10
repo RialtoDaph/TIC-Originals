@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 import type Stripe from 'stripe';
 import { stripe, paymentMethodLabel } from '@/lib/stripe';
 import { serverEnv } from '@/lib/env';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { afterOrderEvent } from '@/lib/order-events';
+import { CATALOG_TAG } from '@/lib/catalog';
 
 // Stripe webhook. Configure in Stripe → Developers → Webhooks with the events
 // payment_intent.processing, payment_intent.succeeded, payment_intent.payment_failed and charge.refunded.
@@ -37,6 +39,8 @@ export async function POST(req: Request) {
         if (error) throw error;
         const result = data as { order_id: string | null; event: string };
         if (result.order_id && result.event !== 'noop') {
+          // Stock was reserved or released: the cached storefront must show it.
+          revalidateTag(CATALOG_TAG, { expire: 0 });
           if (status !== 'failed' && pi.amount !== checkout.total_cents) {
             console.error('[webhook] amount mismatch', pi.id, pi.amount, checkout.total_cents);
             const { error: flagErr } = await admin.rpc('flag_order', { p_order_id: result.order_id, p_flag: 'amount_mismatch' });

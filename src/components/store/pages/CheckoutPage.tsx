@@ -11,7 +11,7 @@ import { CheckoutFooter } from '../Footers';
 import { COUNTRIES } from '@/lib/countries';
 import { computeTotals, discountCents, type Totals } from '@/lib/pricing';
 import { addressErrors, type AddressInput } from '@/lib/validation';
-import { img } from '@/lib/images';
+import { Photo } from '../Photo';
 import { latestShipDate, preorderDate } from '@/lib/preorder';
 import { CLAIMED_CODE_KEY } from '@/lib/constants';
 import s from './Checkout.module.css';
@@ -215,6 +215,7 @@ function CheckoutForm({
   const [payReady, setPayReady] = useState(false);
   const [codeInput, setCodeInput] = useState('');
   const [codeMsg, setCodeMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [sumOpen, setSumOpen] = useState(false);
   const checkoutId = useRef<string | null>(null);
 
   const addr: AddressInput = { ...f, country } as AddressInput;
@@ -473,6 +474,33 @@ function CheckoutForm({
               {formError}
             </span>
           )}
+          {/* Phones: the summary sits far above, so the items and total are repeated right before the button. */}
+          <div className={s.recap}>
+            {cart.map((c) => (
+              <div key={c.id + c.size} className={s.recapRow}>
+                <span className={s.recapName}>
+                  {c.name} · {c.size} · ×{c.qty}
+                </span>
+                <span>{money(c.eur * c.qty)}</span>
+              </div>
+            ))}
+            <div className={s.recapRow}>
+              <span>{t.shipping}</span>
+              <span>{shipLabel}</span>
+            </div>
+            {totals.discountCents > 0 && (
+              <div className={s.recapRow}>
+                <span>{t.discount}</span>
+                <span>−{money(totals.discountCents / 100)}</span>
+              </div>
+            )}
+            <div className={`${s.recapRow} ${s.recapTotal}`}>
+              <span>
+                {t.total} <span className={s.vat}>{t.vatLine}</span>
+              </span>
+              <span>{total}</span>
+            </div>
+          </div>
           {/* German "Button-Lösung" (§ 312j Abs. 3 BGB): this is the final, payment-confirming click. */}
           <button type="submit" className={s.order} disabled={busy} aria-busy={busy}>
             {busy && <span className={s.spinner} />}
@@ -482,7 +510,14 @@ function CheckoutForm({
       </form>
 
       <aside className={s.aside}>
-        <div className={s.asideInner}>
+        {/* Phones: the summary comes first, collapsed to one line with the total. */}
+        <button type="button" className={s.sumToggle} aria-expanded={sumOpen} aria-controls="order-summary" onClick={() => setSumOpen((o) => !o)}>
+          <span className={s.sumToggleL}>
+            {sumOpen ? t.hideSummary : t.showSummary} ({count})<span className={s.sumCaret} data-open={sumOpen} aria-hidden="true" />
+          </span>
+          <span className={s.sumToggleTotal}>{total}</span>
+        </button>
+        <div className={s.asideInner} id="order-summary" data-open={sumOpen}>
           <span className={s.sectionH}>
             {t.summary} ({count})
           </span>
@@ -490,8 +525,7 @@ function CheckoutForm({
             {cart.map((c, i) => (
               <div key={c.id + c.size} className={s.item}>
                 <div className={s.thumbBox}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={img(productById(c.id)?.images[0])} alt="" className={s.thumb} />
+                  <Photo src={productById(c.id)?.images[0]} alt="" className={s.thumb} sizes="96px" />
                 </div>
                 <div className={s.itemInfo}>
                   <span className={s.itemName}>{c.name}</span>

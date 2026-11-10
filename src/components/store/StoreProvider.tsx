@@ -10,6 +10,7 @@ import { CATEGORIES } from '@/lib/categories';
 const CART_KEY = 'tic-cart-v3';
 const CONSENT_KEY = 'tic-consent';
 const LANG_COOKIE = 'tic-lang';
+const CURRENCY_KEY = 'tic-currency';
 
 interface StoreCtx {
   lang: Lang;
@@ -32,7 +33,7 @@ interface StoreCtx {
   clearCart: () => void;
   cartOpen: boolean;
   setCartOpen: (open: boolean) => void;
-  // Display currency (Home header switcher; checkout always charges EUR)
+  // Display currency (header switcher on wide screens, remembered; checkout always charges EUR)
   currency: 'EUR' | 'USD';
   setCurrency: (c: 'EUR' | 'USD') => void;
   price: (eur: number) => string;
@@ -93,7 +94,7 @@ export function StoreProvider({
   const [cart, setCart] = useState<CartLine[]>([]);
   const [cartLoaded, setCartLoaded] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-  const [currency, setCurrency] = useState<'EUR' | 'USD'>('EUR');
+  const [currency, setCurrencyState] = useState<'EUR' | 'USD'>('EUR');
   const [consent, setConsentState] = useState<string | null>(null);
   const [consentChecked, setConsentChecked] = useState(false);
   // Set when the cart was just copied from another tab: that change must not be written back.
@@ -110,6 +111,9 @@ export function StoreProvider({
     } catch {}
     setConsentState(ck);
     setConsentChecked(true);
+    try {
+      if (localStorage.getItem(CURRENCY_KEY) === 'USD') setCurrencyState('USD');
+    } catch {}
     /* eslint-enable react-hooks/set-state-in-effect */
   }, [products]);
 
@@ -173,6 +177,13 @@ export function StoreProvider({
 
   const clearCart = useCallback(() => setCart([]), []);
 
+  const setCurrency = useCallback((c: 'EUR' | 'USD') => {
+    setCurrencyState(c);
+    try {
+      localStorage.setItem(CURRENCY_KEY, c);
+    } catch {}
+  }, []);
+
   const setConsent = useCallback((v: 'all' | 'necessary') => {
     try {
       localStorage.setItem(CONSENT_KEY, v);
@@ -210,7 +221,7 @@ export function StoreProvider({
       consentChecked,
       setConsent,
     };
-  }, [lang, setLang, toggleLang, settings, products, productById, drop, cart, cartLoaded, addToCart, setQty, clearCart, cartOpen, currency, consent, consentChecked, setConsent]);
+  }, [lang, setLang, toggleLang, settings, products, productById, drop, cart, cartLoaded, addToCart, setQty, clearCart, cartOpen, currency, setCurrency, consent, consentChecked, setConsent]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

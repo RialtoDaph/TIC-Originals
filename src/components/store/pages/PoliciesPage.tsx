@@ -328,6 +328,13 @@ export function PoliciesPage({ page, trackNo }: { page: PolicyKey; trackNo: stri
   const t = POLICY_T[lang];
   const ship = { de: amount(settings.shipDeCents), intl: amount(settings.shipIntlCents), free: amount(settings.freeShipCents) };
   const p = policyPage(page, lang, ship);
+  const asideRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    // Phones show the menu as one sideways-scrolling row: keep the current page in view.
+    const row = asideRef.current;
+    const el = row?.querySelector<HTMLElement>('[aria-current="page"]');
+    if (row && el && row.scrollWidth > row.clientWidth) row.scrollLeft = Math.max(0, el.offsetLeft - row.offsetLeft - 20);
+  }, [page]);
   const faqItems = faq(lang, ship);
   return (
     <div className={s.page}>
@@ -344,7 +351,7 @@ export function PoliciesPage({ page, trackNo }: { page: PolicyKey; trackNo: stri
         </div>
       </section>
       <div className={s.body}>
-        <aside className={s.aside}>
+        <aside className={s.aside} ref={asideRef}>
           {GROUPS.map(([g, keys]) => (
             <nav key={g} className={s.group} aria-label={t[g]}>
               <span className={s.groupH}>{t[g]}</span>

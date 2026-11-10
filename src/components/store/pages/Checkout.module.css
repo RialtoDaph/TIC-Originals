@@ -84,3 +84,22 @@
   .span2 { grid-column: span 1; }
 }
 .preorderNote { margin: 0; padding: 12px 14px; background: #111; color: #9ef2ff; font-size: 13px; line-height: 1.5; }
+
+/* Phones and small tablets (single column): summary first and collapsible, recap before the button. */
+.sumToggle, .recap { display: none; }
+@media (max-width: 879px) {
+  .aside { order: -1; padding: 0; align-self: auto; }
+  .sumToggle { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 12px; padding: 18px clamp(20px, 5vw, 72px); background: #f4f4f4; border: 0; border-bottom: 1px solid #e4e4e4; color: #111; font: inherit; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; text-align: left; cursor: pointer; }
+  .sumToggleL { display: inline-flex; align-items: center; gap: 10px; }
+  .sumCaret { width: 7px; height: 7px; border-right: 1.5px solid #111; border-bottom: 1.5px solid #111; transform: translateY(-2px) rotate(45deg); transition: transform 0.35s var(--ease-out); }
+  .sumCaret[data-open='true'] { transform: translateY(2px) rotate(225deg); }
+  .sumToggleTotal { font-size: 15px; letter-spacing: 0.02em; }
+  .asideInner { position: static; max-width: none; padding: 24px clamp(20px, 5vw, 72px) 32px; border-bottom: 1px solid #e4e4e4; }
+  .asideInner[data-open='false'] { display: none; }
+  .asideInner[data-open='true'] { animation: sumIn 0.4s var(--ease-out) both; }
+  .recap { display: flex; flex-direction: column; gap: 8px; padding: 16px 0; border-top: 1px solid #e4e4e4; border-bottom: 1px solid #e4e4e4; font-size: 13px; }
+  .recapRow { display: flex; justify-content: space-between; gap: 16px; }
+  .recapName { min-width: 0; overflow-wrap: anywhere; }
+  .recapTotal { font-weight: 600; font-size: 15px; padding-top: 6px; }
+}
+@keyframes sumIn { from { opacity: 0; transform: translate3d(0, -8px, 0); } to { opacity: 1; transform: none; } }
