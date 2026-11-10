@@ -1,7 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import Lenis from 'lenis';
+import { registerLenis, resyncLenis } from './dialog';
 
 /**
  * Storefront motion, mounted once in the store layout:
@@ -9,9 +11,20 @@ import Lenis from 'lenis';
  * - scroll reveals: any element with `data-reveal` fades/slides in the first time it enters the
  *   viewport. Elements already on screen when they appear are shown immediately, so nothing
  *   above the fold flashes, and without JS everything simply stays visible.
- * Both are skipped when the visitor prefers reduced motion.
+ * - the page fade-in plays on client-side navigation only, never on the first load (it would
+ *   delay the largest paint)
+ * All of it is skipped when the visitor prefers reduced motion.
  */
 export function Motion() {
+  const pathname = usePathname();
+  const firstPath = useRef(pathname);
+  useEffect(() => {
+    if (pathname === firstPath.current) return;
+    document.documentElement.classList.add('tic-nav');
+    // Drop any momentum left over from the previous page so Lenis follows the router's scroll.
+    resyncLenis();
+  }, [pathname]);
+
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -26,6 +39,7 @@ export function Motion() {
       };
       raf = requestAnimationFrame(loop);
       document.documentElement.classList.add('tic-smooth');
+      registerLenis(lenis);
     }
 
     // In-page anchors (e.g. "Shop now" → #shop) glide instead of jumping.
@@ -78,6 +92,7 @@ export function Motion() {
     return () => {
       cancelAnimationFrame(raf);
       document.removeEventListener('click', onClick);
+      registerLenis(null);
       lenis?.destroy();
       document.documentElement.classList.remove('tic-smooth');
       io.disconnect();

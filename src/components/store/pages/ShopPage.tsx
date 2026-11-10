@@ -7,15 +7,17 @@ import { StoreHeader } from '../Headers';
 import { ShopFooter } from '../Footers';
 import { CartDrawer } from '../CartDrawer';
 import { categoryLabel } from '@/lib/categories';
-import { img } from '@/lib/images';
 import { colorsOf, onePerModel } from '@/lib/models';
 import { preorderDate } from '@/lib/preorder';
 import { ColorDots, ColorPicker } from '../Swatches';
 import type { Product } from '@/lib/types';
+import { Photo } from '../Photo';
 import s from './Shop.module.css';
 
+const CARD_SIZES = '(max-width: 560px) 100vw, (max-width: 900px) 50vw, 25vw';
+
 function Card({ p, small = false, index = 0 }: { p: Product; small?: boolean; index?: number }) {
-  const { money, products, t } = useStore();
+  const { price, products, t } = useStore();
   const colors = colorsOf(p, products);
   const [hover, setHover] = useState(false);
   return (
@@ -24,18 +26,16 @@ function Card({ p, small = false, index = 0 }: { p: Product; small?: boolean; in
       className={s.card}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      data-reveal
-      style={{ '--reveal-delay': `${(index % 3) * 0.08}s` } as React.CSSProperties}
+      data-reveal="quick"
+      style={{ '--reveal-delay': `${(index % 3) * 0.05}s` } as React.CSSProperties}
     >
       <div className={`${s.imgBox} tic-zoom`}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={img(p.images[0])} alt={p.name} className={s.img} />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={img(p.images[1] ?? p.images[0])} alt="" className={s.img} style={{ opacity: hover ? 1 : 0 }} loading="lazy" />
+        <Photo src={p.images[0]} alt={p.name} className={s.img} sizes={CARD_SIZES} />
+        <Photo src={p.images[1] ?? p.images[0]} alt="" className={s.img} style={{ opacity: hover ? 1 : 0 }} sizes={CARD_SIZES} />
       </div>
       <span className={small ? s.nameSm : s.name}>{colors.length > 1 && p.model.trim() ? p.model : p.name}</span>
       <span className={small ? s.priceSm : s.price}>
-        {money(p.priceCents / 100)}
+        {price(p.priceCents / 100)}
         {p.preorder && <span className={s.preTag}>{t.preorder}</span>}
       </span>
       <ColorDots colors={colors} label={t.colorsN(colors.length)} />
@@ -99,7 +99,7 @@ export function ShopList({ category }: { category: string }) {
 
 /** "Komplettes Set": the other pieces of p's set, each with sizes that add straight to the cart. */
 function SetPieces({ p }: { p: Product }) {
-  const { t, lang, products, money, addToCart, setCartOpen } = useStore();
+  const { t, lang, products, price, addToCart, setCartOpen } = useStore();
   const [done, setDone] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
@@ -115,15 +115,14 @@ function SetPieces({ p }: { p: Product }) {
         return (
           <div key={x.id} className={s.setRow}>
             <Link href={'/shop/' + x.slug} className={s.setImg}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={img(x.images[0])} alt={x.name} className={s.img} />
+              <Photo src={x.images[0]} alt={x.name} className={s.img} sizes="120px" />
             </Link>
             <div className={s.setInfo}>
               <Link href={'/shop/' + x.slug} className={s.setName}>
                 {x.name}
               </Link>
               <span className={s.setPrice}>
-                {money(x.priceCents / 100)}
+                {price(x.priceCents / 100)}
                 {ships ? ' · ' + t.preorder : ''}
               </span>
               <div className={s.setSizes}>
@@ -157,7 +156,7 @@ function SetPieces({ p }: { p: Product }) {
 }
 
 export function ProductDetail({ product: p }: { product: Product }) {
-  const { t, lang, products, money, amount, settings, addToCart, setCartOpen } = useStore();
+  const { t, lang, products, price: display, amount, settings, addToCart, setCartOpen } = useStore();
   const [size, setSize] = useState<string | null>(null);
   const [imgIdx, setImgIdx] = useState(0);
   const [needSize, setNeedSize] = useState(false);
@@ -165,6 +164,40 @@ export function ProductDetail({ product: p }: { product: Product }) {
   const [accOpen, setAccOpen] = useState<number | null>(0);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
+  const track = useRef<HTMLDivElement>(null);
+  const sizeBlock = useRef<HTMLDivElement>(null);
+  const addRef = useRef<HTMLButtonElement>(null);
+  // Phones: a bar with price + add button is shown whenever the real button is off screen.
+  const [barOn, setBarOn] = useState(false);
+  useEffect(() => {
+    const el = addRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setBarOn(!e.isIntersecting));
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  /** Thumbnail → slide. On phones the gallery is a swipeable strip, so it scrolls there too. */
+  const showImage = (i: number) => {
+    setImgIdx(i);
+    const t = track.current;
+    if (t && t.scrollWidth > t.clientWidth + 1) t.scrollTo({ left: i * t.clientWidth, behavior: 'smooth' });
+  };
+
+  const add = (fromBar = false) => {
+    if (!size) {
+      setNeedSize(true);
+      if (fromBar) sizeBlock.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    addToCart(p, size);
+    setAdded(true);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      setAdded(false);
+      setCartOpen(true);
+    }, 700);
+  };
 
   const imgs = p.images.length ? p.images : [''];
   const catLabel = categoryLabel(p.category);
@@ -183,7 +216,7 @@ export function ProductDetail({ product: p }: { product: Product }) {
   const colors = colorsOf(p, products);
   const others = products.filter((x) => !colors.some((c) => c.id === x.id));
   const related = onePerModel([...others.filter((x) => x.category === p.category), ...others.filter((x) => x.category !== p.category)]).slice(0, 4);
-  const price = money(p.priceCents / 100);
+  const price = display(p.priceCents / 100);
   const ships = preorderDate(p, lang);
   const addLabel = ships ? t.preorderBtn : t.add;
 
@@ -201,21 +234,38 @@ export function ProductDetail({ product: p }: { product: Product }) {
           </nav>
           <div className={s.pdpGrid}>
             <div className={s.gallery}>
-              <div className={s.imgBox}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={img(imgs[imgIdx] ?? imgs[0])} alt={p.name} className={s.img} />
+              <div
+                ref={track}
+                className={`${s.imgBox} ${s.slides}`}
+                onScroll={(e) => {
+                  const t = e.currentTarget;
+                  const i = Math.round(t.scrollLeft / t.clientWidth);
+                  if (i !== imgIdx && i >= 0 && i < imgs.length) setImgIdx(i);
+                }}
+              >
+                {imgs.map((src, i) => (
+                  <div key={src + i} className={s.slide} data-active={i === imgIdx} aria-hidden={i !== imgIdx}>
+                    <Photo src={src} alt={i === 0 ? p.name : ''} className={s.img} sizes="(max-width: 900px) 100vw, 50vw" preload={i === 0} />
+                  </div>
+                ))}
               </div>
+              {imgs.length > 1 && (
+                <div className={s.dots} aria-hidden="true">
+                  {imgs.map((src, i) => (
+                    <span key={src + i} className={s.dot} data-active={i === imgIdx} />
+                  ))}
+                </div>
+              )}
               <div className={s.thumbs}>
                 {imgs.map((src, i) => (
                   <button
                     key={src + i}
                     className={`${s.thumb} ${i === imgIdx ? s.thumbActive : ''}`}
-                    onClick={() => setImgIdx(i)}
+                    onClick={() => showImage(i)}
                     aria-label={`${p.name} ${i + 1}`}
                     aria-pressed={i === imgIdx}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={img(src)} alt="" className={s.img} />
+                    <Photo src={src} alt="" className={s.img} sizes="160px" />
                   </button>
                 ))}
               </div>
@@ -236,7 +286,7 @@ export function ProductDetail({ product: p }: { product: Product }) {
                 </div>
               </div>
               <ColorPicker current={p} colors={colors} label={t.color} soldOut={t.soldOut} />
-              <div className={s.sizeBlock}>
+              <div className={s.sizeBlock} ref={sizeBlock}>
                 <div className={s.sizeHead}>
                   <span className={s.sizeLabel}>
                     {t.size}
@@ -270,19 +320,7 @@ export function ProductDetail({ product: p }: { product: Product }) {
                   </span>
                 )}
               </div>
-              <button
-                className={`${s.addBtn} ${added ? s.addBtnAdded : ''}`}
-                onClick={() => {
-                  if (!size) return setNeedSize(true);
-                  addToCart(p, size);
-                  setAdded(true);
-                  clearTimeout(timer.current);
-                  timer.current = setTimeout(() => {
-                    setAdded(false);
-                    setCartOpen(true);
-                  }, 700);
-                }}
-              >
+              <button ref={addRef} className={`${s.addBtn} ${added ? s.addBtnAdded : ''}`} onClick={() => add()}>
                 {added ? t.addedCheck : size ? addLabel + ' · ' + price : t.choose}
               </button>
               <SetPieces p={p} />
@@ -323,6 +361,18 @@ export function ProductDetail({ product: p }: { product: Product }) {
         </div>
       </main>
       <ShopFooter />
+      <div className={s.buyBar} data-on={barOn} aria-hidden={!barOn}>
+        <div className={s.buyBarInfo}>
+          <span className={s.buyBarName}>{p.name}</span>
+          <span className={s.buyBarPrice}>
+            {price}
+            {size ? ' · ' + size : ''}
+          </span>
+        </div>
+        <button className={`${s.buyBarBtn} ${added ? s.addBtnAdded : ''}`} onClick={() => add(true)} tabIndex={barOn ? 0 : -1}>
+          {added ? t.addedCheck : size ? addLabel : t.choose}
+        </button>
+      </div>
       <CartDrawer />
     </div>
   );

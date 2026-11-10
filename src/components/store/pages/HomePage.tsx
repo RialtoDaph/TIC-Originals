@@ -13,6 +13,10 @@ import { SITE_IMAGES, img } from '@/lib/images';
 import type { Lang, Product } from '@/lib/types';
 import { CLAIMED_CODE_KEY } from '@/lib/constants';
 import { useParallax } from '../useParallax';
+import { useDialog } from '../dialog';
+import { Photo } from '../Photo';
+
+const TILE_SIZES = '(max-width: 700px) 50vw, 33vw';
 import s from './Home.module.css';
 
 // [slug, grid span, aspect ratio, font size] — layout from the design.
@@ -37,6 +41,13 @@ function categoryTiles(slugs: string[]): [string, number, string, string][] {
   );
 }
 
+/** Desktop columns for the product grid, chosen so the last row is never a lone card. */
+function gridCols(n: number) {
+  if (n % 3 === 0 || n % 3 === 2) return 3;
+  if (n % 4 === 0 || n % 4 === 3) return 4;
+  return 3;
+}
+
 /** "31.10.2026" → "31.10.2026" (DE) / "31 Oct 2026" (EN); other formats are shown as typed. */
 function formatUntil(v: string, lang: Lang) {
   const m = v.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
@@ -53,20 +64,15 @@ function HeroVideo() {
     if (!v) return;
     // React sets `muted` as a property only, so browsers won't autoplay from the server HTML.
     v.muted = true;
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) v.play().catch(() => {});
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+    if (!saveData && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) v.play().catch(() => {});
   }, []);
   return (
-    <video
-      ref={ref}
-      src={img(SITE_IMAGES.heroVideo)}
-      poster={img(SITE_IMAGES.hero)}
-      className={s.heroVideo}
-      muted
-      loop
-      playsInline
-      preload="metadata"
-      aria-hidden="true"
-    />
+    <video ref={ref} poster={img(SITE_IMAGES.hero)} className={s.heroVideo} muted loop playsInline preload="none" aria-hidden="true">
+      {/* Phones get a smaller portrait crop (~0.3 MB instead of ~0.9 MB). */}
+      <source src={img(SITE_IMAGES.heroVideoMobile)} type="video/mp4" media="(max-width: 700px)" />
+      <source src={img(SITE_IMAGES.heroVideo)} type="video/mp4" />
+    </video>
   );
 }
 
@@ -78,15 +84,11 @@ function ProductTile({ p, index }: { p: Product; index: number }) {
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
   const href = '/shop/' + p.slug;
-  const front = img(p.images[0]);
-  const back = img(p.images[1] ?? p.images[0]);
   return (
-    <div className={s.card} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} data-reveal style={{ '--reveal-delay': `${(index % 3) * 0.09}s` } as React.CSSProperties}>
+    <div className={s.card} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} data-reveal="quick" style={{ '--reveal-delay': `${(index % 3) * 0.05}s` } as React.CSSProperties}>
       <Link href={href} className={`${s.imgLink} tic-zoom`} aria-label={p.name}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={front} alt={p.name} className={s.img} />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={back} alt="" className={s.img} style={{ opacity: hover ? 1 : 0 }} loading="lazy" />
+        <Photo src={p.images[0]} alt={p.name} className={s.img} sizes={TILE_SIZES} />
+        <Photo src={p.images[1] ?? p.images[0]} alt="" className={s.img} style={{ opacity: hover ? 1 : 0 }} sizes={TILE_SIZES} />
         {justAdded && <span className={s.added}>{t.added}</span>}
       </Link>
       <Link href={href} className={s.name}>
@@ -125,21 +127,15 @@ function ProductTile({ p, index }: { p: Product; index: number }) {
 function DiscountPopup({ onClose }: { onClose: () => void }) {
   const { t, settings, lang } = useStore();
   const [claimed, setClaimed] = useState(false);
-  const closeRef = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    closeRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
+  const ref = useRef<HTMLDivElement>(null);
+  useDialog(ref, true, onClose);
   return (
-    <div className={s.popup} role="dialog" aria-modal="true" aria-label={t.excl} data-lenis-prevent>
+    <div ref={ref} className={s.popup} role="dialog" aria-modal="true" aria-label={t.excl} data-lenis-prevent>
       <div className={s.popupImgWrap}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={img(SITE_IMAGES.discountPopup)} alt="" className={s.img} />
+        <Photo src={SITE_IMAGES.discountPopup} alt="" className={s.img} sizes="(max-width: 920px) 100vw, 50vw" />
       </div>
       <div className={s.popupBody}>
-        <button ref={closeRef} onClick={onClose} className={s.popupClose} aria-label="Close">
+        <button data-autofocus onClick={onClose} className={s.popupClose} aria-label={t.close}>
           ×
         </button>
         <div className={s.popupLogo}>
@@ -210,8 +206,7 @@ function Lookbook() {
     <section className={s.look} aria-labelledby="lookbook-h">
       <div className={s.lookGrid}>
         <Link href="/shop/sweater" className={`${s.lookLead} tic-zoom`} data-reveal="img" aria-label={t.lookCta}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={img(L.lead)} alt="" className={s.lookImg} loading="lazy" />
+          <Photo src={L.lead} alt="" className={s.lookImg} sizes="(max-width: 900px) 100vw, 50vw" />
         </Link>
         <div className={s.lookCopy}>
           <span className={s.lookEyebrow} data-reveal>
@@ -231,23 +226,20 @@ function Lookbook() {
           </Link>
           <div ref={detail} className={s.lookDetailWrap}>
             <Link href="/shop/pants" className={`${s.lookDetail} tic-zoom`} data-reveal="img" style={{ '--reveal-delay': '0.15s' } as React.CSSProperties} aria-label="Chosen Sweatpants">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={img(L.detail)} alt="" className={s.lookImg} loading="lazy" />
+              <Photo src={L.detail} alt="" className={s.lookImg} sizes="20vw" />
             </Link>
           </div>
         </div>
         <div ref={side} className={s.lookSideWrap}>
           <div className={`${s.lookSide} tic-zoom`} data-reveal="img" style={{ '--reveal-delay': '0.2s' } as React.CSSProperties}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={img(L.side)} alt="" className={s.lookImg} loading="lazy" />
+            <Photo src={L.side} alt="" className={s.lookImg} sizes="25vw" />
           </div>
         </div>
       </div>
       <div className={s.lookStrip}>
         {L.strip.map((src, i) => (
           <div key={src} className={`${s.lookStripItem} tic-zoom`} data-reveal="img" style={{ '--reveal-delay': `${i * 0.1}s` } as React.CSSProperties}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={img(src)} alt="" className={s.lookImg} loading="lazy" />
+            <Photo src={src} alt="" className={s.lookImg} sizes="(max-width: 700px) 72vw, 25vw" />
           </div>
         ))}
       </div>
@@ -267,6 +259,7 @@ export function HomePage() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  const tiles = onePerModel(products);
   const showTab = settings.popupEnabled && !!settings.popupCode && scrolled && !discOpen;
   const heroMedia = useParallax<HTMLDivElement>(0.35);
 
@@ -294,8 +287,8 @@ export function HomePage() {
       </section>
 
       <section id="shop" className={s.shop}>
-        <div className={s.grid}>
-          {onePerModel(products).map((p, i) => (
+        <div className={s.grid} style={{ '--cols': gridCols(tiles.length) } as React.CSSProperties}>
+          {tiles.map((p, i) => (
             <ProductTile key={p.id} p={p} index={i} />
           ))}
         </div>
@@ -330,8 +323,7 @@ export function HomePage() {
                   data-reveal="img"
                   style={{ gridColumn: `span ${span}`, aspectRatio: ratio, '--reveal-delay': `${(i % 3) * 0.1}s` } as React.CSSProperties}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={img(SITE_IMAGES.categories[slug])} alt={name} className={s.img} loading="lazy" />
+                  <Photo src={SITE_IMAGES.categories[slug]} alt={name} className={s.img} sizes={span === 6 ? '100vw' : '(max-width: 700px) 100vw, 50vw'} />
                   <div className={s.catShade} />
                   <div className={s.catBody}>
                     <span className={s.catName} style={{ fontSize: size }}>
@@ -363,7 +355,7 @@ export function HomePage() {
         </button>
       )}
       {discOpen && <DiscountPopup onClose={() => setDiscOpen(false)} />}
-      <CartDrawer editable={false} />
+      <CartDrawer />
     </div>
   );
 }

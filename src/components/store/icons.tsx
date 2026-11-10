@@ -9,6 +9,15 @@ export function AccountIcon({ size = 24, variant = 'home' }: { size?: number; va
   );
 }
 
+export function BagIcon({ size = 22 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+      <path d="M5 8h14l-1 13H6L5 8z" />
+      <path d="M9 10V6a3 3 0 0 1 6 0v4" />
+    </svg>
+  );
+}
+
 export function LockIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">

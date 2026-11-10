@@ -1,5 +1,5 @@
-.backdrop { position: fixed; inset: 0; z-index: 40; background: rgba(0, 0, 0, 0.5); }
-.aside { position: fixed; top: 0; right: 0; bottom: 0; width: 440px; max-width: 100%; z-index: 41; background: #fff; display: flex; flex-direction: column; color: #111; }
+.backdrop { position: fixed; inset: 0; z-index: 70; background: rgba(0, 0, 0, 0.5); }
+.aside { position: fixed; top: 0; right: 0; bottom: 0; width: 440px; max-width: 100%; z-index: 71; background: #fff; display: flex; flex-direction: column; color: #111; }
 .head { padding: 24px 28px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eaeaea; }
 .title { font-stretch: 125%; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; }
 .close { background: transparent; border: 0; font-size: 22px; cursor: pointer; color: #111; }
@@ -23,4 +23,23 @@
 .empty { padding: 40px 0; text-align: center; font-size: 13px; color: #8a8a8a; }
 .foot { padding: 24px 28px; border-top: 1px solid #eaeaea; display: flex; flex-direction: column; gap: 16px; }
 .sub { display: flex; justify-content: space-between; font-size: 14px; }
+.eurNote { margin-top: -8px; font-size: 11px; color: #6e6e6e; }
 .checkout { height: 52px; background: #9ef2ff; color: #111; display: flex; align-items: center; justify-content: center; font-stretch: 125%; font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; }
+
+/* Motion: the panel slides in on an ease-out, the lines follow in a short stagger; closing is
+   quicker and the component unmounts when the slide-out ends (CartDrawer onAnimationEnd). */
+.aside:focus { outline: none; }
+.backdrop { animation: backdropIn 0.4s var(--ease-out) both; }
+.backdrop[data-state='closed'] { animation: backdropOut 0.3s ease both; pointer-events: none; }
+.aside { animation: asideIn 0.55s var(--ease-out) both; box-shadow: -24px 0 60px rgba(0, 0, 0, 0.18); }
+.aside[data-state='closed'] { animation: asideOut 0.32s var(--ease-in-out) both; pointer-events: none; }
+.aside[data-state='open'] .line { animation: lineIn 0.5s var(--ease-out) both; animation-delay: calc(0.12s + min(var(--i, 0), 6) * 0.045s); }
+.bar { transition: width 0.6s var(--ease-out); }
+.checkout { transition: background 0.3s var(--ease-out); }
+.checkout:hover { background: #111; color: #9ef2ff; }
+
+@keyframes backdropIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes backdropOut { from { opacity: 1; } to { opacity: 0; } }
+@keyframes asideIn { from { transform: translate3d(100%, 0, 0); } to { transform: none; } }
+@keyframes asideOut { from { transform: none; } to { transform: translate3d(100%, 0, 0); } }
+@keyframes lineIn { from { opacity: 0; transform: translate3d(16px, 0, 0); } to { opacity: 1; transform: none; } }
