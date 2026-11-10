@@ -2,14 +2,16 @@ import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { CUSTOMER, login, OWNER, sql } from './helpers';
 
+const APP_URL = process.env.APP_URL || 'http://localhost:3000';
+
 test('signed-out visitors and customers are sent away from /owner (server-side)', async ({ page, request }) => {
   const anon = await request.get('/owner/today', { maxRedirects: 0 });
   expect(anon.status()).toBe(307);
-  expect(anon.headers()['location']).toMatch(/^(http:\/\/localhost:3000)?\/$/);
+  expect(anon.headers()['location']).toMatch(/^(http:\/\/localhost:\d+)?\/$/);
 
   await login(page, CUSTOMER.email, CUSTOMER.password);
   await page.goto('/owner/orders');
-  await expect(page).toHaveURL('http://localhost:3000/');
+  await expect(page).toHaveURL(new URL('/', APP_URL).href);
   const pdf = await page.request.get('/owner/invoice/00000000-0000-0000-0000-000000000000', { maxRedirects: 0 });
   expect(pdf.status()).toBe(403);
 });
@@ -77,7 +79,7 @@ test.describe('as owner', () => {
 
     await page.getByRole('button', { name: 'Add product' }).click();
     const modal = page.getByRole('dialog', { name: 'Add product' });
-    await modal.getByLabel('Name').fill('TIC Longsleeve');
+    await modal.getByLabel('Name', { exact: true }).fill('TIC Longsleeve');
     await modal.getByLabel('Category').fill('T-Shirts');
     await modal.getByLabel('Price (€)').fill('49,89');
     await modal.getByRole('textbox').nth(5).fill('7'); // stock M

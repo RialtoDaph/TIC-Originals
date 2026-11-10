@@ -35,7 +35,8 @@ test('checkout validates fields and applies a discount code server-side', async 
   await page.addInitScript((pid) => localStorage.setItem('tic-cart-v3', JSON.stringify([{ id: pid, name: 'x', eur: 1, color: '', size: 'M', qty: 2 }])), id);
   await page.goto('/checkout');
   // The cart is re-priced from the database (eur: 1 above is ignored).
-  await expect(page.getByText('69,78 €').first()).toBeVisible();
+  // .locator('visible=true'): on phones the items are repeated above the order button (hidden here).
+  await expect(page.getByText('69,78 €').locator('visible=true').first()).toBeVisible();
   await page.getByRole('button', { name: /Zahlungspflichtig bestellen/ }).click();
   await expect(page.getByText('Bitte prüfe die markierten Felder.')).toBeVisible();
   await page.fill('#f-zip', '123');
@@ -49,10 +50,10 @@ test('checkout validates fields and applies a discount code server-side', async 
   await page.getByRole('button', { name: 'Einlösen' }).click();
   await expect(page.getByText('Code TIC15 angewendet: 15 % Rabatt.')).toBeVisible();
   // 69,78 − 10,47 = 59,31 + 5,19 shipping = 64,50
-  await expect(page.getByText('64,50 €').first()).toBeVisible();
+  await expect(page.getByText('64,50 €').locator('visible=true').first()).toBeVisible();
   await page.getByRole('combobox').selectOption('AT');
   await expect(page.getByText('DHL International')).toBeVisible();
-  await expect(page.getByText('73,50 €').first()).toBeVisible();
+  await expect(page.getByText('73,50 €').locator('visible=true').first()).toBeVisible();
 });
 
 test('checkout API → Stripe webhook creates the order, takes stock, shows thanks', async ({ page, request }) => {
