@@ -13,7 +13,7 @@ import { fmtCents } from '@/lib/format';
 import { serverEnv } from '@/lib/env';
 import { invoicePdf } from '@/lib/invoice';
 import { mapOrder } from '@/lib/owner/load';
-import { CATEGORIES, slugify } from '@/lib/categories';
+import { CATEGORIES, normalizeCategory, slugify } from '@/lib/categories';
 import { CATALOG_TAG, SIZES } from '@/lib/catalog';
 import { cartReminderEmail, invoiceEmail, paymentReminderEmail, refundEmail, shippedEmail, vipEmail, type EmailOrder } from '@/i18n/emails';
 import type { Lang } from '@/lib/types';
@@ -328,7 +328,7 @@ export async function saveProduct(d: ProductDraft): Promise<Result> {
     if (!Number.isFinite(price) || price < 0) return { ok: false, error: 'price' };
     const low = d.low === '' ? 3 : Math.max(0, Math.floor(Number(d.low)));
     const catLabel = d.category.trim();
-    const category = CATEGORIES.find((c) => c.label.toLowerCase() === catLabel.toLowerCase())?.slug ?? slugify(catLabel);
+    const category = CATEGORIES.find((c) => c.label.toLowerCase() === catLabel.toLowerCase())?.slug ?? normalizeCategory(slugify(catLabel));
     const images = cleanImages(d.images ?? []);
     if (!images) return { ok: false, error: 'images' };
     const weight = d.weight?.trim() ? Math.floor(Number(d.weight.replace(',', '.'))) : null;

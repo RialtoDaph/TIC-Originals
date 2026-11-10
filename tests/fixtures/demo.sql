@@ -10,9 +10,9 @@ update public.profiles set role = 'owner' where id = '00000000-0000-0000-0000-00
 
 insert into public.discount_codes (code, is_percent, value, min_order_cents, valid_until, usage_limit, used_count, first_order_only, active) values
   ('DROP002', true, 20, 10000, (now() + interval '12 days')::date, 500, 87, false, true),
-  ('WELCOME10', false, 10, 6000, null, null, 43, true, false)
+  ('TIC15', true, 15, 0, null, null, 214, true, true)
 on conflict do nothing;
-update public.discount_codes set used_count = 214 where code = 'TIC15';
+update public.discount_codes set used_count = 43 where code = 'WELCOME10';
 
 insert into public.bundles (name, summary, normal_cents, price_cents, active)
 values ('Tee Duo', '1× Logo Tee Black + 1× Logo Tee Sky', 6978, 5900, true);

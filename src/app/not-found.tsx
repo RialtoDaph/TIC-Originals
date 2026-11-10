@@ -10,7 +10,7 @@ export default function NotFound() {
       <header style={{ background: '#111', padding: '4px clamp(20px, 5vw, 70px)' }}>
         <Link href="/" aria-label="TIC Originals – Home" style={{ width: 120, height: 56, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/tic-logo.png" alt="Till I Collapse" style={{ width: 130, height: 130, display: 'block', filter: 'invert(1)' }} />
+          <img src="/tic-logo-blue.png" alt="TIC Originals" style={{ width: 160, height: 'auto', display: 'block' }} />
         </Link>
       </header>
       <main style={{ flex: 1, padding: '96px 20px 120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, textAlign: 'center' }}>

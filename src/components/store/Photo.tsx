@@ -47,7 +47,7 @@ export function Photo({
       {...(width && height ? { width, height } : { fill: true })}
       sizes={sizes}
       quality={75}
-      className={className}
+      className={className ? `${className} tic-bw` : 'tic-bw'}
       style={style}
       preload={preload}
       unoptimized={!!host && !OPTIMISED_HOSTS.has(host)}

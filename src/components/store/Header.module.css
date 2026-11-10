@@ -1,6 +1,6 @@
 /* Shared header pieces */
-.logoLink { height: 64px; width: 130px; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.logoImg { height: 150px; width: 150px; display: block; filter: invert(1); }
+.logoLink { height: 64px; display: flex; align-items: center; flex-shrink: 0; }
+.logoImg { height: 50px; width: auto; display: block; }
 .nav { display: flex; gap: clamp(14px, 1.8vw, 26px); flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
 .navLink { white-space: nowrap; }
 .navLinkLine { white-space: nowrap; padding: 6px 0; border-bottom: 2px solid transparent; }
@@ -36,8 +36,8 @@
 .tickerLb { font-size: 11px; font-weight: 400; color: #bdbdbd; }
 .tickerR { animation: tic-glitch 0.45s linear; display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
 .homeHeader { background: #111; color: #fff; border-bottom: 1px solid #2b2b2b; padding: 0 clamp(20px, 4vw, 48px); min-height: 96px; display: flex; align-items: center; gap: clamp(20px, 4vw, 48px); flex-wrap: wrap; position: sticky; top: 0; z-index: 20; }
-.homeLogo { height: 72px; width: 150px; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.homeLogoImg { height: 170px; width: 170px; display: block; filter: invert(1); }
+.homeLogo { height: 72px; display: flex; align-items: center; flex-shrink: 0; }
+.homeLogoImg { height: 58px; width: auto; display: block; }
 .homeNavLink { white-space: nowrap; color: #fff; }
 .cur { position: relative; }
 .curBtn { background: transparent; color: #fff; border: 1px solid #444; padding: 9px 14px; min-width: 140px; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; cursor: pointer; }
@@ -49,7 +49,7 @@
 /* Checkout header */
 .checkoutHeader { background: #111; color: #fff; padding: 0 clamp(20px, 4vw, 48px); min-height: 84px; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 16px; }
 .back { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #bdbdbd; white-space: nowrap; }
-.checkoutLogo { height: 64px; width: 130px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.checkoutLogo { height: 64px; display: flex; align-items: center; justify-content: center; }
 .checkoutRight { display: flex; justify-content: flex-end; align-items: center; gap: 20px; }
 .secure { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #9ef2ff; white-space: nowrap; }
 
@@ -63,14 +63,14 @@
   .header,
   .homeHeader { flex-wrap: wrap; row-gap: 0; column-gap: 16px; padding-bottom: 12px; }
   .header .nav,
-  .homeHeader .nav { order: 3; flex: 1 0 100%; }
+  .homeHeader .nav { order: 3; flex: 1 0 100%; box-sizing: border-box; max-width: 100%; }
   .header .nav,
   .homeHeader .nav { -webkit-mask-image: linear-gradient(to right, #000 82%, transparent); mask-image: linear-gradient(to right, #000 82%, transparent); padding-right: 32px; }
   .right { margin-left: auto; gap: 16px; }
   .homeHeader { row-gap: 4px; padding-top: 4px; min-height: 0; }
   .header { min-height: 0; padding-top: 4px; }
-  .homeLogo, .logoLink { width: 110px; height: 52px; }
-  .homeLogoImg, .logoImg { width: 130px; height: 130px; }
+  .homeLogo, .logoLink { height: 60px; }
+  .homeLogoImg, .logoImg { height: 44px; }
   /* The EUR/USD display switch is a desktop extra; checkout always charges EUR. */
   .cur { display: none; }
   /* Bag icon with a count badge instead of the "Warenkorb (0)" label. */

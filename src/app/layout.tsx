@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(publicEnv.siteUrl()),
   title: { default: 'TIC Originals® | Official Site', template: '%s | TIC Originals' },
   description,
-  icons: { icon: '/tic-logo.png' },
+  icons: { icon: '/icon.png', apple: '/icon.png' },
   alternates: { canonical: '/' },
   // Link previews on Instagram, WhatsApp, TikTok etc.; product pages set their own photo.
   openGraph: {

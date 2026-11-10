@@ -47,8 +47,8 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
         title: 'Versand & Zahlung',
         intro: 'Bestellungen bis 14 Uhr verlassen unser Lager am selben Werktag. Versand mit DHL.',
         blocks: [
-          { type: 'table', h: 'Versandkosten', rows: [['Deutschland (1 bis 4 Werktage)', s.de], ['International', s.intl], [`Ab ${s.free} Bestellwert`, 'Kostenlos']] },
-          { type: 'text', h: 'Kostenloser Versand', p: `Die ${s.free.replace(/\s/g, '-')}-Grenze gilt für den Warenwert nach Abzug von Rabattcodes.` },
+          { type: 'table', h: 'Versandkosten', rows: [['Deutschland (1 bis 4 Werktage)', s.de], ['EU-Länder', s.intl], [`Deutschland ab ${s.free} Bestellwert`, 'Kostenlos']] },
+          { type: 'text', h: 'Kostenloser Versand', p: `Die ${s.free.replace(/\s/g, '-')}-Grenze gilt für Lieferungen innerhalb Deutschlands und für den Warenwert nach Abzug von Rabattcodes. Wir liefern derzeit nur innerhalb der EU.` },
           { type: 'list', h: 'Zahlungsarten', items: ['Visa, Mastercard, American Express (über Stripe)', 'PayPal'] },
           { type: 'text', h: 'Preise', p: 'Alle Preise sind Endpreise in Euro zuzüglich Versandkosten. Gemäß § 19 UStG wird keine Umsatzsteuer berechnet (Kleinunternehmerregelung).' },
           { type: 'text', h: 'Sendungsverfolgung', p: 'Nach dem Versand erhältst du deine Sendungsnummer per E-Mail. Du kannst deine Bestellung jederzeit unter Track Order verfolgen.' },
@@ -59,8 +59,8 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
         title: 'Shipping & Payment',
         intro: 'Orders placed before 2 pm leave our warehouse the same business day. Shipped with DHL.',
         blocks: [
-          { type: 'table', h: 'Shipping rates', rows: [['Germany (1 to 4 business days)', s.de], ['International', s.intl], [`Orders over ${s.free}`, 'Free']] },
-          { type: 'text', h: 'Free shipping', p: `The ${s.free} threshold applies to the order value after discount codes.` },
+          { type: 'table', h: 'Shipping rates', rows: [['Germany (1 to 4 business days)', s.de], ['EU countries', s.intl], [`Germany, orders over ${s.free}`, 'Free']] },
+          { type: 'text', h: 'Free shipping', p: `The ${s.free} threshold applies to deliveries within Germany and to the order value after discount codes. We currently ship within the EU only.` },
           { type: 'list', h: 'Payment methods', items: ['Visa, Mastercard, American Express (via Stripe)', 'PayPal'] },
           { type: 'text', h: 'Prices', p: 'All prices are final prices in euros, plus shipping. No VAT is charged under § 19 UStG (German small business regulation).' },
           { type: 'text', h: 'Tracking', p: 'Once your order ships you receive a tracking number by email. Track it any time under Track Order.' },
@@ -199,7 +199,7 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
         blocks: [
           { type: 'text', h: '§ 1 Geltungsbereich', p: 'Diese AGB gelten für alle Bestellungen über ticoriginals.com zwischen TILL I COLLAPSE ORIGINALS und Verbrauchern.' },
           { type: 'text', h: '§ 2 Vertragsschluss', p: 'Die Darstellung der Produkte im Shop ist kein bindendes Angebot. Mit dem Klick auf „Zahlungspflichtig bestellen“ gibst du ein verbindliches Angebot ab. Der Vertrag kommt mit unserer Bestellbestätigung per E-Mail zustande.' },
-          { type: 'text', h: '§ 3 Preise und Versand', p: `Alle Preise sind Endpreise; gemäß § 19 UStG wird keine Umsatzsteuer berechnet. Versandkosten: Deutschland ${s.de}, International ${s.intl}, ab ${s.free} Bestellwert kostenlos.` },
+          { type: 'text', h: '§ 3 Preise und Versand', p: `Alle Preise sind Endpreise; gemäß § 19 UStG wird keine Umsatzsteuer berechnet. Wir liefern innerhalb der EU. Versandkosten: Deutschland ${s.de} (ab ${s.free} Bestellwert kostenlos), übrige EU-Länder ${s.intl}.` },
           { type: 'text', h: '§ 4 Zahlung', p: 'Zahlung per Kreditkarte (Visa, Mastercard, AMEX über Stripe) oder PayPal. Die Zahlung ist sofort fällig.' },
           { type: 'text', h: '§ 5 Eigentumsvorbehalt', p: 'Die Ware bleibt bis zur vollständigen Bezahlung unser Eigentum.' },
           { type: 'text', h: '§ 6 Widerrufsrecht', p: 'Verbrauchern steht ein gesetzliches Widerrufsrecht zu. Einzelheiten siehe Widerrufsbelehrung.' },
@@ -213,7 +213,7 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
         blocks: [
           { type: 'text', h: '§ 1 Scope', p: 'These terms apply to all orders placed via ticoriginals.com between TILL I COLLAPSE ORIGINALS and consumers.' },
           { type: 'text', h: '§ 2 Contract', p: 'Product listings are not a binding offer. By clicking "Place order" you submit a binding offer. The contract is concluded with our order confirmation email.' },
-          { type: 'text', h: '§ 3 Prices and shipping', p: `All prices are final prices; no VAT is charged under § 19 UStG. Shipping: Germany ${s.de}, international ${s.intl}, free over ${s.free}.` },
+          { type: 'text', h: '§ 3 Prices and shipping', p: `All prices are final prices; no VAT is charged under § 19 UStG. We deliver within the EU. Shipping: Germany ${s.de} (free over ${s.free}), other EU countries ${s.intl}.` },
           { type: 'text', h: '§ 4 Payment', p: 'Payment by card (Visa, Mastercard, AMEX via Stripe) or PayPal. Payment is due immediately.' },
           { type: 'text', h: '§ 5 Retention of title', p: 'Goods remain our property until paid in full.' },
           { type: 'text', h: '§ 6 Right of withdrawal', p: 'Consumers have a statutory right of withdrawal. See Right of Withdrawal for details.' },
@@ -251,20 +251,20 @@ export function faq(lang: Lang, s: ShipAmounts): [string, string][] {
   return lang === 'de'
     ? [
         ['Wie lange dauert der Versand?', 'Bestellungen bis 14 Uhr gehen am selben Werktag raus. Innerhalb Deutschlands dauert die Zustellung 1 bis 4 Werktage mit DHL.'],
-        ['Was kostet der Versand?', `Deutschland ${s.de}, international ${s.intl}. Ab ${s.free} Bestellwert ist der Versand kostenlos.`],
+        ['Was kostet der Versand?', `Deutschland ${s.de}, ab ${s.free} Bestellwert kostenlos. Übrige EU-Länder ${s.intl}.`],
         ['Kann ich meine Bestellung zurückgeben?', 'Ja, du hast 14 Tage Widerrufsrecht. Schreib uns an company@ticoriginals.com.'],
         ['Welche Zahlungsmethoden akzeptiert ihr?', 'Visa, Mastercard und AMEX über Stripe sowie PayPal.'],
-        ['Liefert ihr ins Ausland?', `Ja, international für ${s.intl} Versand.`],
+        ['Liefert ihr ins Ausland?', `Ja, in alle EU-Länder für ${s.intl} Versand. Lieferungen außerhalb der EU folgen später.`],
         ['Wie verfolge ich meine Bestellung?', 'Du bekommst nach dem Versand eine Sendungsnummer per E-Mail. Oder nutze Track Order mit deiner Bestellnummer.'],
         ['Welche Größen gibt es?', 'Die meisten Styles gibt es in XS bis 2XL. Die genaue Verfügbarkeit siehst du auf jeder Produktseite.'],
         ['Wird Mehrwertsteuer berechnet?', 'Nein. Als Kleinunternehmer gemäß § 19 UStG berechnen wir keine Umsatzsteuer. Die angezeigten Preise sind Endpreise.'],
       ]
     : [
         ['How long does shipping take?', 'Orders before 2 pm ship the same business day. Delivery within Germany takes 1 to 4 business days via DHL.'],
-        ['How much is shipping?', `Germany ${s.de}, international ${s.intl}. Free on orders over ${s.free}.`],
+        ['How much is shipping?', `Germany ${s.de}, free on orders over ${s.free}. Other EU countries ${s.intl}.`],
         ['Can I return my order?', 'Yes, you have a 14-day right of withdrawal. Email company@ticoriginals.com.'],
         ['Which payment methods do you accept?', 'Visa, Mastercard and AMEX via Stripe, plus PayPal.'],
-        ['Do you ship internationally?', `Yes, international shipping is ${s.intl}.`],
+        ['Do you ship internationally?', `Yes, to all EU countries for ${s.intl}. Shipping outside the EU will follow later.`],
         ['How do I track my order?', "You'll get a tracking number by email once it ships. Or use Track Order with your order number."],
         ['What sizes do you offer?', 'Most styles come in XS to 2XL. Exact availability is shown on each product page.'],
         ['Is VAT charged?', 'No. As a small business under § 19 UStG we do not charge VAT. Displayed prices are final prices.'],

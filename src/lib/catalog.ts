@@ -3,6 +3,7 @@ import { unstable_cache } from 'next/cache';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { createPublicClient } from './supabase/public';
 import type { Drop, Product, SiteSettings } from './types';
+import { normalizeCategory } from './categories';
 
 export const SIZES = ['XS', 'S', 'M', 'L', 'XL'];
 
@@ -17,7 +18,7 @@ export function mapProduct(r: Row): Product {
     id: r.id as string,
     slug: r.slug as string,
     name: r.name as string,
-    category: r.category as string,
+    category: normalizeCategory(r.category as string),
     priceCents: r.price_cents as number,
     model: (r.model as string) ?? '',
     preorder: (r.preorder as boolean) ?? false,

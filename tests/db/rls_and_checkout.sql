@@ -8,6 +8,9 @@ insert into auth.users (id, email, raw_user_meta_data) values
   ('00000000-0000-0000-0000-00000000000b', 'kunde@tic.test', '{"full_name":"Karl Kunde"}');
 update public.profiles set role = 'owner' where id = '00000000-0000-0000-0000-00000000000a';
 
+-- Test-only first-order code (the seed ships WELCOME10 and NOBLACKFRIDAY).
+insert into public.discount_codes (code, is_percent, value, first_order_only, active) values ('TIC15', true, 15, true, true);
+
 do $$ begin
   assert (select first_name || ' ' || last_name from public.profiles where id = '00000000-0000-0000-0000-00000000000b') = 'Karl Kunde',
     'profile names derived from full_name';
@@ -60,7 +63,7 @@ select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000
 do $$ begin
   assert public.is_owner(), 'owner is owner';
   assert (select count(*) from public.products) = 8, 'owner sees hidden products';
-  assert (select count(*) from public.discount_codes) = 1, 'owner reads discount codes';
+  assert (select count(*) from public.discount_codes) = 3, 'owner reads discount codes';
 end $$;
 reset role;
 
