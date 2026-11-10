@@ -14,7 +14,7 @@ import type { Product } from '@/lib/types';
 import { Photo } from '../Photo';
 import s from './Shop.module.css';
 
-const CARD_SIZES = '(max-width: 560px) 100vw, (max-width: 900px) 50vw, 25vw';
+const CARD_SIZES = '(max-width: 700px) 50vw, (max-width: 1100px) 33vw, 25vw';
 
 function Card({ p, small = false, index = 0 }: { p: Product; small?: boolean; index?: number }) {
   const { price, products, t } = useStore();
@@ -51,6 +51,13 @@ export function ShopList({ category }: { category: string }) {
   if (sort === 'desc') list = [...list].sort((a, b) => b.priceCents - a.priceCents);
   list = onePerModel(list);
   const chips = [{ slug: 'all', label: t.all }, ...categories];
+  const chipsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    // On phones the chips scroll sideways: bring the current category into view.
+    const row = chipsRef.current;
+    const el = row?.querySelector<HTMLElement>('[aria-current="page"]');
+    if (row && el && row.scrollWidth > row.clientWidth) row.scrollLeft = el.offsetLeft - row.offsetLeft - 20;
+  }, [category]);
   return (
     <div className={s.page}>
       <StoreHeader variant="shop" active={category} />
@@ -61,7 +68,7 @@ export function ShopList({ category }: { category: string }) {
             <span className={s.count}>{t.items(list.length)}</span>
           </div>
           <div className={s.filterRow}>
-            <div className={s.chips}>
+            <div className={s.chips} ref={chipsRef}>
               {chips.map((c) => (
                 <Link
                   key={c.slug}

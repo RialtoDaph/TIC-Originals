@@ -90,6 +90,20 @@
 .buyBar { display: none; }
 
 @media (max-width: 700px) {
+  /* Listing: two columns like most fashion stores, chips in one swipeable row. */
+  .main { padding-top: 32px; gap: 28px; }
+  .top { gap: 20px; padding-bottom: 20px; }
+  .chips { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 calc(-1 * clamp(20px, 5vw, 70px)); padding: 0 clamp(20px, 5vw, 70px); scroll-padding-inline: clamp(20px, 5vw, 70px); }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { flex-shrink: 0; display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; }
+  .filterRow { gap: 14px; }
+  .sortLabel { width: 100%; justify-content: space-between; }
+  .select { height: 40px; min-width: 0; flex: 0 1 200px; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 12px; row-gap: 36px; }
+  .card { gap: 8px; }
+  .name { font-size: 12px; letter-spacing: 0.04em; }
+  .price { font-size: 12px; margin-top: -2px; }
+
   .slides { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; margin: 0 calc(-1 * clamp(20px, 5vw, 70px)); }
   .slides::-webkit-scrollbar { display: none; }
   .slide { position: relative; flex: 0 0 100%; opacity: 1; scroll-snap-align: start; }

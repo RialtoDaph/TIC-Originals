@@ -79,3 +79,17 @@
 .dataBtns { display: flex; gap: 20px; flex-wrap: wrap; padding-top: 20px; font-size: 12px; align-items: center; }
 .dataBtn { background: transparent; border: 0; padding: 0; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; color: #111; font-size: 12px; }
 .dataBtnDanger { composes: dataBtn; color: #c2183b; }
+
+@media (max-width: 700px) {
+  .dash { padding-top: 32px; gap: 28px; }
+  .dashHead { padding-bottom: 20px; }
+  .dtabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 calc(-1 * clamp(20px, 5vw, 70px)); padding: 0 clamp(20px, 5vw, 70px); }
+  .dtabs::-webkit-scrollbar { display: none; }
+  .dtab { flex-shrink: 0; min-height: 40px; }
+  /* Order card: number + status on top, items and total below. */
+  .orderRow { grid-template-columns: minmax(0, 1fr) auto; gap: 10px 12px; padding: 18px 0; }
+  .orderRow .status { grid-row: 1; grid-column: 2; justify-self: end; align-self: start; }
+  .orderRow .itemsTxt, .orderRow .totalRow { grid-column: 1 / -1; }
+  .dataRow { flex-direction: column; gap: 4px; }
+  .dataV { text-align: left; }
+}

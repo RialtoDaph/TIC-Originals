@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { useStore } from './StoreProvider';
 import { LangToggle } from './LangToggle';
+import { CartDrawer } from './CartDrawer';
 import { AccountIcon, BagIcon, LockIcon, TICKER_ICONS, TickerIcon } from './icons';
 import s from './Header.module.css';
 
@@ -191,8 +192,15 @@ export function HomeHeader() {
 
 /** Header used by Shop (with strip + active underline), Account and Policies. */
 export function StoreHeader({ variant, active }: { variant: 'shop' | 'account' | 'policies'; active?: string }) {
-  const { t, cartCount, amount, settings } = useStore();
+  const { t, amount, settings } = useStore();
   const NAV = useNav();
+  const navRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    // The nav scrolls sideways on narrow screens: keep the current category visible.
+    const nav = navRef.current;
+    const el = nav?.querySelector<HTMLElement>('[aria-current="page"]');
+    if (nav && el && nav.scrollWidth > nav.clientWidth) nav.scrollLeft = Math.max(0, el.offsetLeft - nav.offsetLeft - 40);
+  }, [active]);
   return (
     <>
       {variant === 'shop' && (
@@ -207,7 +215,7 @@ export function StoreHeader({ variant, active }: { variant: 'shop' | 'account' |
       )}
       <header className={`${s.header} ${variant !== 'account' ? s.sticky : ''} ${variant === 'policies' ? s.policiesGap : ''}`}>
         <Logo />
-        <nav className={s.nav} aria-label="Shop">
+        <nav className={s.nav} aria-label="Shop" ref={navRef}>
           {NAV.map((n) =>
             variant === 'shop' ? (
               <Link key={n.slug} href={navHref(n.slug)} className={`${s.navLinkLine} ${active === n.slug ? s.navLinkActive : ''}`} aria-current={active === n.slug ? 'page' : undefined}>
@@ -234,9 +242,7 @@ export function StoreHeader({ variant, active }: { variant: 'shop' | 'account' |
           {variant === 'account' && (
             <>
               <LangToggle />
-              <Link href="/checkout" className={s.cartLink15}>
-                {t.cart} ({cartCount})
-              </Link>
+              <CartButton />
             </>
           )}
           {variant === 'policies' && (
@@ -245,13 +251,13 @@ export function StoreHeader({ variant, active }: { variant: 'shop' | 'account' |
               <Link href="/account" aria-label="Account" className={s.iconLink}>
                 <AccountIcon size={20} variant="policies" />
               </Link>
-              <Link href="/checkout" className={s.cartLink14}>
-                {t.cartLabel}
-              </Link>
+              <CartButton />
             </>
           )}
         </div>
       </header>
+      {/* Shop pages render their own drawer; elsewhere the header brings it along. */}
+      {variant !== 'shop' && <CartDrawer />}
     </>
   );
 }

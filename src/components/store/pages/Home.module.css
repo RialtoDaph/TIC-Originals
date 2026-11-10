@@ -128,7 +128,7 @@
   .available { font-size: 52px; }
   .heroContent { gap: 72px; }
   .limited { min-width: 0; }
-  .tab { left: 12px; padding: 14px 28px; font-size: 16px; }
+  .tab { left: 12px; padding: 11px 18px calc(11px + env(safe-area-inset-bottom)); font-size: 13px; letter-spacing: 0.02em; }
   .lookCopy { grid-column: 1 / -1; }
   .lookSideWrap { display: none; }
   .lookStrip { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(-1 * clamp(20px, 5vw, 70px)); padding: 0 clamp(20px, 5vw, 70px); scrollbar-width: none; }

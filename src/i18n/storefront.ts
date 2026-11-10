@@ -235,7 +235,7 @@ const de = {
   // Policies
   cartLabel: 'Warenkorb',
   // Locked shop (Promo → "Lock shop until drop"); not in the storefront designs.
-  lockedH: (name: string) => `Drop ${name}`,
+  lockedH: (name: string) => (/^drop\b/i.test(name.trim()) ? name : `Drop ${name}`),
   lockedNotify: 'Benachrichtige mich zum Drop',
   lockedDone: 'Du stehst auf der Liste ✓',
   subscribed: 'Fast geschafft: Bitte bestätige den Link in deiner E-Mail ✓',
@@ -463,7 +463,7 @@ const en: Dict = {
   confirmDelete: 'Click again to permanently delete your account',
   makeDefault: 'Make default',
   cartLabel: 'Cart',
-  lockedH: (name) => `Drop ${name}`,
+  lockedH: (name) => (/^drop\b/i.test(name.trim()) ? name : `Drop ${name}`),
   lockedNotify: 'Notify me at the drop',
   lockedDone: "You're on the list ✓",
   subscribed: 'Almost done: please confirm via the link in your email ✓',

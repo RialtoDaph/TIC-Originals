@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { useStore } from './StoreProvider';
 import { InstagramIcon, TikTokIcon, WhatsAppIcon } from './icons';
 import { COMPANY_ADDRESS_LINE, LINKS, LINK_LABELS, PAYMENT_BADGES, SHORT_LINK_LABELS } from '@/i18n/storefront';
-import { SITE_IMAGES, img } from '@/lib/images';
+import { SITE_IMAGES } from '@/lib/images';
+import { Photo } from './Photo';
 import { SOCIAL } from '@/config/business';
 import { subscribeNewsletter } from '@/app/(store)/actions';
 import s from './Footer.module.css';
@@ -106,8 +107,7 @@ export function HomeFooter() {
         <div className={s.galleryClip}>
           <div className={s.galleryTrack}>
             {gallery.map((g, i) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img key={i} src={img(g)} alt="TIC community" className={s.galleryImg} loading="lazy" />
+              <Photo key={i} src={g} alt={i < SITE_IMAGES.gallery.length ? 'TIC community' : ''} className={s.galleryImg} width={400} height={540} sizes="(max-width: 600px) 280px, 400px" />
             ))}
           </div>
         </div>

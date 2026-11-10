@@ -36,7 +36,7 @@ export function LockedShop() {
   }, [target]);
 
   return (
-    <main style={{ minHeight: '100vh', background: '#111', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28, padding: '48px 24px', textAlign: 'center' }}>
+    <main style={{ minHeight: '100dvh', boxSizing: 'border-box', background: '#111', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 28, padding: '48px 24px', textAlign: 'center' }}>
       <div style={{ height: 110, width: 200, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/tic-logo.png" alt="Till I Collapse" style={{ height: 260, width: 260, filter: 'invert(1)' }} />
