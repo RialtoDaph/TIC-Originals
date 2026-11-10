@@ -19,7 +19,9 @@ Storefront and Owner Dashboard for TIC Originals (Till I Collapse), built from t
 | Checkout | `src/components/store/pages/CheckoutPage.tsx` + `src/app/api/checkout/route.ts`. The cart is priced on the server (prices, stock, discount rules, shipping). "Zahlungspflichtig bestellen" is the final click and confirms the Payment Element. |
 | Orders | Created only by the Stripe webhook (`src/app/api/stripe/webhook/route.ts` → SQL `finalize_checkout`), atomically with stock and code usage. SEPA: an order appears as *Awaiting payment* with stock reserved while the debit is processing; a failed debit cancels it and releases the stock. |
 | Dashboard data | `src/lib/owner/load.ts` (reads), `src/lib/owner/derive.ts` (pure calculations: tasks, insights, restock, Kleinunternehmer, Buchhaltung), `src/app/owner/actions.ts` (mutations) |
-| Images | `src/lib/images.ts` — paths are configurable; see *Images* below |
+| Images | `src/lib/images.ts` — paths are configurable; see *Images* below. Rendered through `next/image` (`src/components/store/Photo.tsx`); Supabase Storage and `NEXT_PUBLIC_IMAGE_BASE_URL` are allowed in `next.config.ts` |
+| Storefront cache | `loadStorefront()` in `src/lib/catalog.ts` caches products, stock, settings and the drop (tag `catalog`, 60 s). Every owner action and every webhook order event invalidates it; checkout always reads live data |
+| Motion | `src/components/store/Motion.tsx` (Lenis, scroll reveals, page fade on client navigation), `src/components/store/dialog.ts` (scroll lock + focus trap for drawer/popup), keyframes in the CSS modules. Everything respects `prefers-reduced-motion` |
 
 ## Setup
 
@@ -83,5 +85,3 @@ dashboard actions — is tested without cloud accounts.
   yet (DHL Parcel DE API). Tracking numbers can be entered in the order drawer.
 - **GA4** (`TODO(ga4)`): "Connect GA4" is a placeholder (button + toast) as agreed.
 - **WhatsApp** (`TODO(whatsapp)`): the toggle is stored; sending needs a WhatsApp Business API provider.
-- **Newsletter double opt-in** (`TODO(double-opt-in)`): sign-ups are stored with `confirmed_at = null`.
-- **Product images upload** (`TODO(images)`): the product modal from the design has no image field; new products show a placeholder.

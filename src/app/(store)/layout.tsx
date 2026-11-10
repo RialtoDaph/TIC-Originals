@@ -3,8 +3,7 @@ import { StoreProvider } from '@/components/store/StoreProvider';
 import { CookieConsent } from '@/components/store/CookieConsent';
 import { Motion } from '@/components/store/Motion';
 import { StoreError } from '@/components/store/StoreError';
-import { createPublicClient } from '@/lib/supabase/public';
-import { loadCurrentDrop, loadProducts, loadSettings } from '@/lib/catalog';
+import { loadStorefront } from '@/lib/catalog';
 import { maybeMarkDropLive } from '@/lib/drops';
 import { getLang } from '@/lib/lang';
 
@@ -12,13 +11,7 @@ export default async function StoreLayout({ children }: { children: React.ReactN
   const lang = await getLang();
   let data;
   try {
-    const supabase = createPublicClient();
-    const [products, settings, drop] = await Promise.all([
-      loadProducts(supabase),
-      loadSettings(supabase),
-      loadCurrentDrop(supabase),
-    ]);
-    data = { products, settings, drop };
+    data = await loadStorefront();
   } catch (e) {
     console.error('storefront data failed to load', e);
     return (

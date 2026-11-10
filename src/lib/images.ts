@@ -16,6 +16,7 @@ const PLACEHOLDER = '/img/hf_20261002_221632_5de61919-3487-471c-98da-f50f80165bf
 export const SITE_IMAGES = {
   hero: '/img/hf_20261002_221632_5de61919-3487-471c-98da-f50f80165bf1.jpg',
   heroVideo: '/video/hero.mp4',
+  heroVideoMobile: '/video/hero-mobile.mp4',
   discountPopup: '/img/products/drop002/girls-04.jpg',
   accountSide: '/img/products/drop002/drop002-duo-02.jpg',
   /** Drop 002 editorial on the home page. */

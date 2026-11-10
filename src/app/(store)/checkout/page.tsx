@@ -1,15 +1,14 @@
 import type { Metadata } from 'next';
 import { CheckoutPage, type CheckoutPrefill } from '@/components/store/pages/CheckoutPage';
 import { LockedShop } from '@/components/store/LockedShop';
-import { createPublicClient } from '@/lib/supabase/public';
-import { loadCurrentDrop } from '@/lib/catalog';
+import { loadStorefront } from '@/lib/catalog';
 import { isShopLocked } from '@/lib/drops';
 import { getSessionUser } from '@/lib/auth';
 
 export const metadata: Metadata = { title: 'Kasse', robots: { index: false } };
 
 export default async function Page() {
-  const drop = await loadCurrentDrop(createPublicClient());
+  const drop = (await loadStorefront()).drop;
   if (isShopLocked(drop)) return <LockedShop />;
 
   // Prefill from the signed-in account (replaces the prototype's tic-user localStorage entry).
