@@ -149,13 +149,11 @@
 @keyframes popupImg { from { transform: scale(1.08); } to { transform: none; } }
 @keyframes popupRise { from { opacity: 0; transform: translate3d(0, 18px, 0); } to { opacity: 1; transform: none; } }
 
-/* Touch screens: the quick-add sizes become real buttons (≥ 40px) so a thumb can't add the wrong
-   size, or add one by accident while aiming for the product. */
+/* Touch screens: same plain text sizes as on desktop, just a bigger tap area per size. */
 @media (pointer: coarse) {
-  /* Touch: tappable fields without border (same look as the product page), XS–XL fit in one row. */
-  .sizes { display: grid; grid-template-columns: repeat(auto-fill, minmax(30px, 1fr)); gap: 4px; }
-  .size { min-width: 0; height: 40px; padding: 0; border: 0; background: #f2f2f2; color: #111; font-size: 12px; text-align: center; }
-  .size:disabled { background: #f7f7f7; }
+  .sizes { gap: 2px; flex-wrap: nowrap; }
+  .size { min-width: 30px; height: 40px; padding: 0 4px; font-size: 12px; color: #111; }
+  .size:first-child { margin-left: -4px; }
 }
 .added { animation: addedIn 0.4s var(--ease-out) both; }
 @keyframes addedIn { from { transform: translate3d(0, 100%, 0); } to { transform: none; } }
