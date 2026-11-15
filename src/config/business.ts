@@ -21,4 +21,10 @@ export const SOCIAL = {
  * Fajar's postal address and email. If the manufacturer is outside the EU, also set `euResponsible`
  * (the importer, i.e. the shop itself). The block is hidden while this is null.
  */
-export const MANUFACTURER: { name: string; address: string; email: string; euResponsible?: string } | null = null;
+export const MANUFACTURER: { name: string; address: string; email: string; euResponsible?: string } | null = {
+  name: 'Fajar',
+  address: 'Jl. Moh Toha Curug Candung No. 35B, RT 04/RW 05, Kel. Mekarwangi, Kec. Bojongloa Kidul, Bandung, Indonesia',
+  email: 'fadityaa33@gmail.com',
+  // Manufacturer outside the EU: the shop is the importer / responsible person.
+  euResponsible: `${BUSINESS.name}, ${BUSINESS.owner}, ${BUSINESS.street}, ${BUSINESS.zipCity}, ${BUSINESS.country}, ${BUSINESS.email}`,
+};

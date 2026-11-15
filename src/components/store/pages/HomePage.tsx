@@ -186,7 +186,7 @@ function Marquee({ text }: { text: string }) {
   );
 }
 
-/** Drop 002 editorial: lookbook photos with layered parallax and image reveals. */
+/** Drop 001 editorial: lookbook photos with layered parallax and image reveals. */
 function Lookbook() {
   const { t } = useStore();
   const side = useParallax<HTMLDivElement>(0.12);

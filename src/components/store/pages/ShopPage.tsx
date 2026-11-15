@@ -343,7 +343,7 @@ export function ProductDetail({ product: p }: { product: Product }) {
               </button>
               <SetPieces p={p} />
               <div className={s.perks}>
-                {/* Pre-orders don't ship same day: drop that perk. */}
+                {/* Pre-orders ship from their own date: drop the shipping-time perk. */}
                 {t.perks(amount(settings.freeShipCents)).slice(ships ? 1 : 0).map((pk) => (
                   <span key={pk} className={s.perk}>
                     <span className={s.perkDot} />
