@@ -98,7 +98,7 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
       de: {
         eyebrow: 'Service / Versand',
         title: 'Versand & Zahlung',
-        intro: 'Bestellungen bis 14 Uhr verlassen unser Lager am selben Werktag. Versand mit DHL.',
+        intro: 'Lagerware verschicken wir innerhalb von 1–3 Werktagen mit DHL. Vorbestellungen ab dem beim Artikel angegebenen Versandtermin.',
         blocks: [
           { type: 'table', h: 'Versandkosten', rows: [['Deutschland (1 bis 4 Werktage)', s.de], ['EU-Länder', s.intl], [`Deutschland ab ${s.free} Bestellwert`, 'Kostenlos']] },
           { type: 'text', h: 'Kostenloser Versand', p: `Die ${s.free.replace(/\s/g, '-')}-Grenze gilt für Lieferungen innerhalb Deutschlands und für den Warenwert nach Abzug von Rabattcodes. Wir liefern derzeit nur innerhalb der EU.` },
@@ -110,7 +110,7 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
       en: {
         eyebrow: 'Service / Shipping',
         title: 'Shipping & Payment',
-        intro: 'Orders placed before 2 pm leave our warehouse the same business day. Shipped with DHL.',
+        intro: 'In-stock items ship within 1–3 business days via DHL. Pre-orders ship from the date shown with the item.',
         blocks: [
           { type: 'table', h: 'Shipping rates', rows: [['Germany (1 to 4 business days)', s.de], ['EU countries', s.intl], [`Germany, orders over ${s.free}`, 'Free']] },
           { type: 'text', h: 'Free shipping', p: `The ${s.free} threshold applies to deliveries within Germany and to the order value after discount codes. We currently ship within the EU only.` },
@@ -313,7 +313,7 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
 export function faq(lang: Lang, s: ShipAmounts): [string, string][] {
   return lang === 'de'
     ? [
-        ['Wie lange dauert der Versand?', 'Bestellungen bis 14 Uhr gehen am selben Werktag raus. Innerhalb Deutschlands dauert die Zustellung 1 bis 4 Werktage mit DHL.'],
+        ['Wie lange dauert der Versand?', 'Lagerware verschicken wir innerhalb von 1–3 Werktagen. Innerhalb Deutschlands dauert die Zustellung danach 1 bis 4 Werktage mit DHL. Vorbestellungen versenden wir ab dem angegebenen Versandtermin.'],
         ['Was kostet der Versand?', `Deutschland ${s.de}, ab ${s.free} Bestellwert kostenlos. Übrige EU-Länder ${s.intl}.`],
         ['Kann ich meine Bestellung zurückgeben?', 'Ja, du hast ab Erhalt der Ware 14 Tage gesetzliches Widerrufsrecht, auch für Sale-Artikel und Vorbestellungen. Schreib uns an company@ticoriginals.com. Die Kosten der Rücksendung trägst du.'],
         ['Welche Zahlungsmethoden akzeptiert ihr?', `${PAYMENT_TEXT.de}.`],
@@ -323,7 +323,7 @@ export function faq(lang: Lang, s: ShipAmounts): [string, string][] {
         ['Wird Mehrwertsteuer berechnet?', 'Nein. Als Kleinunternehmer gemäß § 19 UStG berechnen wir keine Umsatzsteuer. Die angezeigten Preise sind Endpreise.'],
       ]
     : [
-        ['How long does shipping take?', 'Orders before 2 pm ship the same business day. Delivery within Germany takes 1 to 4 business days via DHL.'],
+        ['How long does shipping take?', 'In-stock items ship within 1–3 business days. Delivery within Germany then takes 1 to 4 business days via DHL. Pre-orders ship from the stated date.'],
         ['How much is shipping?', `Germany ${s.de}, free on orders over ${s.free}. Other EU countries ${s.intl}.`],
         ['Can I return my order?', 'Yes, you have a statutory 14-day right of withdrawal from delivery, including sale items and pre-orders. Email company@ticoriginals.com. You pay the return shipping.'],
         ['Which payment methods do you accept?', `${PAYMENT_TEXT.en}.`],

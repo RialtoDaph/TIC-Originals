@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     siteName: 'TIC Originals',
     title: 'TIC Originals® | Official Site',
     description,
-    images: [{ url: img(SITE_IMAGES.lookbook.lead), width: 1200, height: 1800, alt: 'TIC Originals – Drop 002' }],
+    images: [{ url: img(SITE_IMAGES.lookbook.lead), width: 1200, height: 1800, alt: 'TIC Originals – Drop 001' }],
   },
   twitter: { card: 'summary_large_image' },
 };

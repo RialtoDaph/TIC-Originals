@@ -1,4 +1,4 @@
-// All storefront imagery goes through here (Drop 002 lookbook photos; the hero is a video):
+// All storefront imagery goes through here (Drop 001 lookbook photos; the hero is a video):
 // either replace the files in /public/img, change the paths below / on the product, or point
 // NEXT_PUBLIC_IMAGE_BASE_URL at a CDN or Supabase Storage bucket that mirrors the same paths.
 
@@ -19,7 +19,7 @@ export const SITE_IMAGES = {
   heroVideoMobile: '/video/hero-mobile.mp4',
   discountPopup: '/img/products/drop002/look-weiss-01.jpg',
   accountSide: '/img/products/drop002/drop002-duo-02.jpg',
-  /** Drop 002 editorial on the home page. */
+  /** Drop 001 editorial on the home page. */
   lookbook: {
     lead: '/img/products/drop002/drop002-duo-01.jpg',
     side: '/img/products/drop002/look-mural-02.jpg',
