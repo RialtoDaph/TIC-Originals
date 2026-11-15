@@ -54,11 +54,13 @@
 .checkoutHeader { background: #111; color: #fff; padding: 0 clamp(20px, 4vw, 48px); min-height: 84px; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 16px; }
 .back { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #bdbdbd; white-space: nowrap; }
 .checkoutLogo { height: 64px; display: flex; align-items: center; justify-content: center; }
+.backShort { display: none; }
 .checkoutRight { display: flex; justify-content: flex-end; align-items: center; gap: 20px; }
 .secure { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #9ef2ff; white-space: nowrap; }
 
 @media (max-width: 560px) {
-  .back { white-space: normal; }
+  .backLong { display: none; }
+  .backShort { display: inline; }
   .secure span { display: none; }
 }
 

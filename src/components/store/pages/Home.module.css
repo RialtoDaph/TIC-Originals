@@ -152,9 +152,10 @@
 /* Touch screens: the quick-add sizes become real buttons (≥ 40px) so a thumb can't add the wrong
    size, or add one by accident while aiming for the product. */
 @media (pointer: coarse) {
-  .sizes { gap: 6px; }
-  .size { min-width: 34px; height: 40px; padding: 0 6px; border: 1px solid #d6d6d6; color: #111; font-size: 12px; }
-  .size:disabled { border-color: #ececec; }
+  /* Touch: tappable fields without border (same look as the product page), XS–XL fit in one row. */
+  .sizes { display: grid; grid-template-columns: repeat(auto-fill, minmax(30px, 1fr)); gap: 4px; }
+  .size { min-width: 0; height: 40px; padding: 0; border: 0; background: #f2f2f2; color: #111; font-size: 12px; text-align: center; }
+  .size:disabled { background: #f7f7f7; }
 }
 .added { animation: addedIn 0.4s var(--ease-out) both; }
 @keyframes addedIn { from { transform: translate3d(0, 100%, 0); } to { transform: none; } }
