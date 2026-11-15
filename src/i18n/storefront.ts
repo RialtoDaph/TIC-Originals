@@ -159,7 +159,7 @@ const de = {
     `Wir haben die Bestellbestätigung an ${e} geschickt. Sobald dein Paket unterwegs ist, bekommst du die Sendungsnummer per E-Mail.`,
   next: [
     { n: '01', p: 'Bestellbestätigung per E-Mail (Vertragsschluss)' },
-    { n: '02', p: 'Versand am selben Werktag bei Bestellung bis 14 Uhr' },
+    { n: '02', p: 'Versand mit DHL, Vorbestellungen ab dem angegebenen Versandtermin' },
     { n: '03', p: 'Sendungsnummer per E-Mail, verfolgbar unter Track Order' },
   ],
   keepShopping: 'Weiter shoppen',
@@ -393,7 +393,7 @@ const en: Dict = {
     `We sent the order confirmation to ${e}. Once your parcel ships you'll get the tracking number by email.`,
   next: [
     { n: '01', p: 'Order confirmation by email' },
-    { n: '02', p: 'Ships the same business day when ordered before 2 pm' },
+    { n: '02', p: 'Shipped with DHL; pre-orders from the stated shipping date' },
     { n: '03', p: 'Tracking number by email, trackable under Track Order' },
   ],
   keepShopping: 'Keep shopping',
