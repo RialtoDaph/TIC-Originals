@@ -16,6 +16,7 @@ import { fmtDate } from '@/lib/format';
 const GOOGLE_LOGIN = process.env.NEXT_PUBLIC_GOOGLE_LOGIN === 'true';
 import { SITE_IMAGES, img } from '@/lib/images';
 import { STORE_STATUS_BG } from '@/lib/tokens';
+import { LINK_LABELS } from '@/i18n/storefront';
 import { deleteAccount, makeDefaultAddress, saveAddress, type AddressForm } from '@/app/(store)/account/actions';
 import s from './Account.module.css';
 
@@ -366,6 +367,9 @@ function Dashboard({ data }: { data: AccountData }) {
                 <span className={s.total}>{money(o.totalCents / 100)}</span>
                 <Link href={`/policies/tracking?no=${encodeURIComponent(o.no)}`} className={s.track}>
                   {t.track}
+                </Link>
+                <Link href={`/vertrag-widerrufen?order=${encodeURIComponent(o.no)}`} className={s.track}>
+                  {LINK_LABELS[lang].cancel}
                 </Link>
               </div>
             </div>

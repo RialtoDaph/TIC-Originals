@@ -91,7 +91,7 @@ const en = {
     cancelled: 'Cancelled',
     returned: 'Returned',
   },
-  flags: { refundDue: 'Refund due', reminderSent: 'Reminder sent', since: (d: string) => `Since ${d}`, repeat: (n: number) => `Repeat ×${n}`, oversold: 'Oversold', amountMismatch: 'Paid amount differs from order total', preorder: 'Pre-order', preorderNote: 'Pre-order: ship once the goods have arrived (date in the item name).' },
+  flags: { refundDue: 'Refund due', reminderSent: 'Reminder sent', since: (d: string) => `Since ${d}`, repeat: (n: number) => `Repeat ×${n}`, oversold: 'Oversold', amountMismatch: 'Paid amount differs from order total', preorder: 'Pre-order', withdrawal: 'Withdrawal received', withdrawalNote: 'The customer withdrew via the website (receipt sent). Refund once the goods are back, or right away if not shipped yet.', preorderNote: 'Pre-order: ship once the goods have arrived (date in the item name).' },
   next: { remind: 'Send reminder', remindAgain: 'Remind again', label: 'Create DHL label', delivered: 'Mark delivered', refund: (amt: string) => `Refund ${amt}` },
   // Order drawer
   steps: ['Placed', 'Paid', 'Shipped', 'Delivered'],
@@ -438,7 +438,7 @@ const de: Dict = {
     cancelled: 'Storniert',
     returned: 'Retourniert',
   },
-  flags: { refundDue: 'Erstattung fällig', reminderSent: 'Erinnerung gesendet', since: (d) => `Seit ${d}`, repeat: (n) => `Wiederholt ×${n}`, oversold: 'Überverkauft', amountMismatch: 'Bezahlter Betrag weicht von der Bestellsumme ab', preorder: 'Vorbestellung', preorderNote: 'Vorbestellung: erst versenden, wenn die Ware da ist (Termin steht beim Artikel).' },
+  flags: { refundDue: 'Erstattung fällig', reminderSent: 'Erinnerung gesendet', since: (d) => `Seit ${d}`, repeat: (n) => `Wiederholt ×${n}`, oversold: 'Überverkauft', amountMismatch: 'Bezahlter Betrag weicht von der Bestellsumme ab', preorder: 'Vorbestellung', withdrawal: 'Widerruf eingegangen', withdrawalNote: 'Der Kunde hat über die Website widerrufen (Eingangsbestätigung verschickt). Erstatten, sobald die Ware zurück ist, oder sofort, wenn noch nicht versendet.', preorderNote: 'Vorbestellung: erst versenden, wenn die Ware da ist (Termin steht beim Artikel).' },
   next: { remind: 'Erinnerung senden', remindAgain: 'Erneut erinnern', label: 'DHL-Label erstellen', delivered: 'Als zugestellt markieren', refund: (amt) => `${amt} erstatten` },
   steps: ['Bestellt', 'Bezahlt', 'Versendet', 'Zugestellt'],
   primary: {

@@ -74,6 +74,9 @@ export function OrderDrawer() {
         {od.flags.includes('oversold') && (
           <div style={{ ...sx('margin:0 22px 12px;padding:10px 14px;border-radius:12px;font-size:13px'), background: TONE.red[0], color: TONE.red[1] }}>{t.flags.oversold}</div>
         )}
+        {od.flags.includes('withdrawal') && od.payment === 'paid' && (
+          <div style={{ ...sx('margin:0 22px 12px;padding:10px 14px;border-radius:12px;font-size:13px'), background: TONE.amber[0], color: TONE.amber[1] }}>{t.flags.withdrawalNote}</div>
+        )}
         {od.flags.includes('preorder') && (
           <div style={{ ...sx('margin:0 22px 12px;padding:10px 14px;border-radius:12px;font-size:13px'), background: TONE.blue[0], color: TONE.blue[1] }}>{t.flags.preorderNote}</div>
         )}
