@@ -105,7 +105,7 @@ export function HomeFooter() {
             ))}
           </div>
         </div>
-        <span className={s.galleryLabel}>TIC Originals® | Official Site</span>
+        <span className={s.galleryLabel}>TIC Originals | Official Site</span>
       </div>
       <div className={s.bottom}>
         <div className={s.brand}>

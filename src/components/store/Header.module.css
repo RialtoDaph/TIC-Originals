@@ -6,8 +6,12 @@
 .navLinkLine { white-space: nowrap; padding: 6px 0; border-bottom: 2px solid transparent; }
 .navLinkActive { border-bottom-color: #9ef2ff; }
 .right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
-.lang { display: flex; gap: 6px; cursor: pointer; font-size: 12px; font-weight: 600; background: transparent; border: 0; padding: 0; color: inherit; }
+.lang { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 12px; font-weight: 600; background: transparent; border: 0; padding: 0; color: inherit; }
 .langSep { color: #555; }
+.flag { display: block; width: 22px; height: 14px; border-radius: 2px; }
+.flagWrap { display: flex; padding: 3px; border-radius: 3px; opacity: 0.4; transition: opacity 0.15s; }
+.flagWrap[data-on="true"] { opacity: 1; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.7); }
+.lang:hover .flagWrap { opacity: 1; }
 .iconLink { display: flex; }
 .cartBtn { background: transparent; color: #fff; border: 0; font-size: 15px; cursor: pointer; white-space: nowrap; padding: 0; display: inline-flex; align-items: center; }
 .cartIcon { display: none; }

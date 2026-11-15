@@ -9,7 +9,7 @@ const description = 'Till I Collapse Originals. Born in Germany. No shortcuts.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(publicEnv.siteUrl()),
-  title: { default: 'TIC Originals® | Official Site', template: '%s | TIC Originals' },
+  title: { default: 'TIC Originals | Official Site', template: '%s | TIC Originals' },
   description,
   icons: { icon: '/icon.png', apple: '/icon.png' },
   alternates: { canonical: '/' },
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: 'TIC Originals',
-    title: 'TIC Originals® | Official Site',
+    title: 'TIC Originals | Official Site',
     description,
     images: [{ url: img(SITE_IMAGES.lookbook.lead), width: 1200, height: 1800, alt: 'TIC Originals – Drop 001' }],
   },

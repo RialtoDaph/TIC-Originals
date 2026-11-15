@@ -7,7 +7,7 @@ import { StoreHeader } from '../Headers';
 import { ShopFooter } from '../Footers';
 import { CartDrawer } from '../CartDrawer';
 import { categoryLabel } from '@/lib/categories';
-import { colorsOf, onePerModel } from '@/lib/models';
+import { colorsOf, displayName, onePerModel } from '@/lib/models';
 import { preorderDate } from '@/lib/preorder';
 import { ColorDots, ColorPicker } from '../Swatches';
 import type { Product } from '@/lib/types';
@@ -36,7 +36,7 @@ function Card({ p, small = false, index = 0 }: { p: Product; small?: boolean; in
         <Photo src={p.images[0]} alt={p.name} className={s.img} sizes={CARD_SIZES} />
         <Photo src={p.images[1] ?? p.images[0]} alt="" className={s.img} style={{ opacity: hover ? 1 : 0 }} sizes={CARD_SIZES} />
       </div>
-      <span className={small ? s.nameSm : s.name}>{colors.length > 1 && p.model.trim() ? p.model : p.name}</span>
+      <span className={small ? s.nameSm : s.name}>{displayName(p)}</span>
       <span className={small ? s.priceSm : s.price}>
         {price(p.priceCents / 100)}
         {p.preorder && <span className={s.preTag}>{t.preorder}</span>}
@@ -129,7 +129,7 @@ function SetPieces({ p }: { p: Product }) {
             </Link>
             <div className={s.setInfo}>
               <Link href={'/shop/' + x.slug} className={s.setName}>
-                {x.name}
+                {displayName(x)}
               </Link>
               <span className={s.setPrice}>
                 {price(x.priceCents / 100)}
@@ -252,7 +252,7 @@ export function ProductDetail({ product: p }: { product: Product }) {
             <span>/</span>
             <Link href={'/shop/' + p.category}>{catLabel}</Link>
             <span>/</span>
-            <span className={s.crumbCurrent}>{p.name}</span>
+            <span className={s.crumbCurrent}>{displayName(p)}</span>
           </nav>
           <div className={s.pdpGrid}>
             <div className={s.gallery}>
@@ -295,7 +295,7 @@ export function ProductDetail({ product: p }: { product: Product }) {
             <div className={s.buy}>
               <div className={s.head}>
                 <span className={s.eyebrow}>{catLabel}</span>
-                <h1 className={s.pdpH1}>{p.name}</h1>
+                <h1 className={s.pdpH1}>{displayName(p)}</h1>
                 <div className={s.priceBlock}>
                   <span className={s.pdpPrice}>{price}</span>
                   {ships && <span className={s.preorderBadge}>{t.preorderShips(ships)}</span>}
@@ -392,7 +392,7 @@ export function ProductDetail({ product: p }: { product: Product }) {
       <ShopFooter />
       <div className={s.buyBar} data-on={barOn} aria-hidden={!barOn}>
         <div className={s.buyBarInfo}>
-          <span className={s.buyBarName}>{p.name}</span>
+          <span className={s.buyBarName}>{displayName(p)}</span>
           <span className={s.buyBarPrice}>
             {price}
             {size ? ' · ' + size : ''}

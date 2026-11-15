@@ -44,8 +44,9 @@
 .guide { font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
 .guideBtn { padding: 0; border: 0; background: transparent; color: inherit; font: inherit; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .sizes { display: grid; grid-template-columns: repeat(auto-fit, minmax(56px, 1fr)); gap: 8px; }
-.sizeBtn { height: 48px; border: 1px solid #d6d6d6; background: #fff; color: #111; font-stretch: 125%; font-size: 12px; letter-spacing: 0.06em; cursor: pointer; padding: 0; }
-.sizeBtnActive { border-color: #111; background: #111; color: #fff; }
+.sizeBtn { height: 48px; border: 0; background: #f2f2f2; color: #111; font-stretch: 125%; font-size: 12px; letter-spacing: 0.06em; cursor: pointer; padding: 0; }
+.sizeBtnActive { background: #111; color: #fff; }
+.sizeBtn:hover:not(:disabled):not(.sizeBtnActive) { background: #e4e4e4; }
 .sizeBtn:disabled { color: #bdbdbd; text-decoration: line-through; cursor: not-allowed; }
 .err { font-size: 12px; color: #c2183b; }
 .addBtn { height: 60px; border: 0; background: #9ef2ff; color: #111; font-stretch: 125%; font-size: 13px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; cursor: pointer; }
@@ -75,8 +76,8 @@
 .setName { font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: #111; }
 .setPrice { font-size: 13px; color: #333; }
 .setSizes { display: flex; flex-wrap: wrap; gap: 6px; }
-.setSize { min-width: 44px; height: 34px; padding: 0 8px; border: 1px solid #d6d6d6; background: #fff; color: #111; font-size: 12px; letter-spacing: 0.06em; cursor: pointer; }
-.setSize:hover:not(:disabled) { border-color: #111; }
+.setSize { min-width: 44px; height: 34px; padding: 0 8px; border: 0; background: #f2f2f2; color: #111; font-size: 12px; letter-spacing: 0.06em; cursor: pointer; }
+.setSize:hover:not(:disabled) { background: #e4e4e4; }
 .setSize:disabled { color: #bbb; text-decoration: line-through; cursor: not-allowed; }
 
 /* PDP gallery: slides crossfade on wide screens; on phones they become a swipeable strip. */
