@@ -63,10 +63,10 @@ const de = {
   color: 'Farbe',
   colorsN: (n: number) => `${n} Farben`,
   preorder: 'Vorbestellung',
-  preorderShips: (d: string) => (isTbd(d) ? 'Vorbestellung · Versandtermin folgt' : `Vorbestellung · Versand voraussichtlich ab ${d}`),
+  preorderShips: (d: string) => (isTbd(d) ? 'Vorbestellung · Versandtermin folgt' : `Vorbestellung · Versand spätestens am ${d}`),
   preorderBtn: 'Vorbestellen',
   preorderNote: (d: string) =>
-    `Deine Bestellung enthält Vorbestellartikel. Wir versenden die gesamte Bestellung, sobald alle Artikel da sind${isTbd(d) ? ' – den Termin teilen wir dir per E-Mail mit' : ` – voraussichtlich ab ${d}`}.`,
+    `Deine Bestellung enthält Vorbestellartikel. Wir versenden die gesamte Bestellung, sobald alle Artikel da sind${isTbd(d) ? ' – den Termin teilen wir dir per E-Mail mit' : ` – spätestens am ${d}`}.`,
   completeSet: 'Komplettes Set',
   marquee: 'Drop 001 · Chosen1 · Pre-Order',
   lookEyebrow: 'Drop 001 — Lookbook',
@@ -166,6 +166,8 @@ const de = {
     { n: '03', p: 'Sendungsnummer per E-Mail, verfolgbar unter Track Order' },
   ],
   keepShopping: 'Weiter shoppen',
+  successPreorder: (d: string | null) =>
+    d ? `Vorbestellung: Wir versenden deine Bestellung spätestens am ${d}. Sobald sie unterwegs ist, bekommst du die DHL-Sendungsnummer per E-Mail.` : 'Vorbestellung: Den Versandtermin schicken wir dir per E-Mail, sobald er feststeht.',
   // Not in the designs: loading / error states.
   paying: 'Wird bearbeitet …',
   payFailed: 'Die Zahlung ist fehlgeschlagen. Bitte versuche es erneut oder wähle eine andere Zahlungsart.',
@@ -302,7 +304,7 @@ const en: Dict = {
   color: 'Colour',
   colorsN: (n: number) => `${n} colours`,
   preorder: 'Pre-order',
-  preorderShips: (d: string) => (isTbd(d) ? 'Pre-order · shipping date to follow' : `Pre-order · expected to ship from ${d}`),
+  preorderShips: (d: string) => (isTbd(d) ? 'Pre-order · shipping date to follow' : `Pre-order · ships by ${d}`),
   preorderBtn: 'Pre-order',
   preorderNote: (d: string) =>
     `Your order contains pre-order items. We ship the whole order once everything is in stock${isTbd(d) ? ' – we will email you the date' : ` – expected from ${d}`}.`,
@@ -403,6 +405,8 @@ const en: Dict = {
     { n: '03', p: 'Tracking number by email, trackable under Track Order' },
   ],
   keepShopping: 'Keep shopping',
+  successPreorder: (d: string | null) =>
+    d ? `Pre-order: we ship your order by ${d} at the latest. Once it's on its way, you'll get the DHL tracking number by email.` : "Pre-order: we'll email you the shipping date as soon as it's set.",
   paying: 'Processing …',
   payFailed: 'The payment failed. Please try again or choose another payment method.',
   pricesChanged: 'Prices or availability have changed. Please review your order.',

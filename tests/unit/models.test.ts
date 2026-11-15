@@ -72,7 +72,7 @@ describe('pre-order dates', async () => {
   it('phrases a missing date naturally', async () => {
     const { STORE } = await import('@/i18n/storefront');
     expect(STORE.de.preorderShips(preorderDate(pre(null), 'de')!)).toBe('Vorbestellung · Versandtermin folgt');
-    expect(STORE.de.preorderShips('15.12.2026')).toBe('Vorbestellung · Versand voraussichtlich ab 15.12.2026');
+    expect(STORE.de.preorderShips('15.12.2026')).toBe('Vorbestellung · Versand spätestens am 15.12.2026');
     expect(STORE.en.preorderShips(preorderDate(pre(null), 'en')!)).toBe('Pre-order · shipping date to follow');
   });
 
