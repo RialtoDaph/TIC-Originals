@@ -9,7 +9,7 @@ import { useStore } from '../StoreProvider';
 import { CheckoutHeader } from '../Headers';
 import { CheckoutFooter } from '../Footers';
 import { COUNTRIES } from '@/lib/countries';
-import { computeTotals, discountCents, type Totals } from '@/lib/pricing';
+import { CEO_SHIP_CENTS, computeTotals, discountCents, type ShipMethod, type Totals } from '@/lib/pricing';
 import { addressErrors, type AddressInput } from '@/lib/validation';
 import { Photo } from '../Photo';
 import { latestShipDate, preorderDate } from '@/lib/preorder';
@@ -114,17 +114,18 @@ export function CheckoutPage({ prefill }: { prefill: CheckoutPrefill }) {
   const [country, setCountry] = useState(prefill.country || 'DE');
   const [code, setCode] = useState<AppliedCode | null>(null);
   const [serverTotals, setServerTotals] = useState<Totals | null>(null);
+  const [shipMethod, setShipMethod] = useState<ShipMethod>('dhl');
 
   const subtotalCents = Math.round(cart.reduce((a, c) => a + c.eur * c.qty, 0) * 100);
   const totals =
     serverTotals ??
-    computeTotals({ subtotalCents, discountCents: code ? discountCents(code, subtotalCents) : 0, country, settings });
+    computeTotals({ subtotalCents, discountCents: code ? discountCents(code, subtotalCents) : 0, country, method: shipMethod, settings });
 
   // Any cart, code or country change invalidates totals returned by the server.
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reset derived server state when inputs change
     setServerTotals(null);
-  }, [subtotalCents, code, country]);
+  }, [subtotalCents, code, country, shipMethod]);
 
   const stripeP = getStripe();
   const options = useMemo(
@@ -167,6 +168,8 @@ export function CheckoutPage({ prefill }: { prefill: CheckoutPrefill }) {
       setCode={setCode}
       totals={totals}
       setServerTotals={setServerTotals}
+      shipMethod={shipMethod}
+      setShipMethod={setShipMethod}
       stripeReady={!!stripeP}
     />
   );
@@ -191,6 +194,8 @@ function CheckoutForm({
   setCode,
   totals,
   setServerTotals,
+  shipMethod,
+  setShipMethod,
   stripeReady,
 }: {
   prefill: CheckoutPrefill;
@@ -200,6 +205,8 @@ function CheckoutForm({
   setCode: (c: AppliedCode | null) => void;
   totals: Totals;
   setServerTotals: (t: Totals | null) => void;
+  shipMethod: ShipMethod;
+  setShipMethod: (m: ShipMethod) => void;
   stripeReady: boolean;
 }) {
   const { t, lang, cart, setQty, productById, money, amount, clearCart, settings } = useStore();
@@ -287,7 +294,7 @@ function CheckoutForm({
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...addr, lang, newsletter: news, items, code: code?.code ?? null, expectedTotalCents: totals.totalCents, checkoutId: checkoutId.current }),
+        body: JSON.stringify({ ...addr, lang, newsletter: news, items, code: code?.code ?? null, shipMethod, expectedTotalCents: totals.totalCents, checkoutId: checkoutId.current }),
       });
       const r = await res.json().catch(() => ({ error: 'server' }));
       if (!res.ok) {
@@ -408,12 +415,23 @@ function CheckoutForm({
 
         <section className={s.section}>
           <span className={s.sectionH}>03 · {t.shipping}</span>
-          <div className={s.shipBox}>
-            <div className={s.shipText}>
-              <span className={s.shipName}>{country === 'DE' ? t.shipDE : t.shipINT}</span>
-              <span className={s.shipEta}>{preShip ? t.preorderShips(preShip) : country === 'DE' ? t.etaDE : t.etaINT}</span>
-            </div>
-            <span className={s.shipPrice}>{shipLabel}</span>
+          <div role="radiogroup" aria-label={t.shipping} className={s.shipGroup}>
+            <label className={`${s.shipBox} ${s.shipOption} ${shipMethod === 'dhl' ? s.shipSelected : ''}`}>
+              <input type="radio" name="ship" className={s.shipRadio} checked={shipMethod === 'dhl'} onChange={() => setShipMethod('dhl')} />
+              <div className={s.shipText}>
+                <span className={s.shipName}>{country === 'DE' ? t.shipDE : t.shipINT}</span>
+                <span className={s.shipEta}>{preShip ? t.preorderShips(preShip) : country === 'DE' ? t.etaDE : t.etaINT}</span>
+              </div>
+              <span className={s.shipPrice}>{shipMethod === 'dhl' ? shipLabel : totals.subtotalCents === 0 || (country === 'DE' && totals.netCents >= settings.freeShipCents) ? t.free : money((country === 'DE' ? settings.shipDeCents : settings.shipIntlCents) / 100)}</span>
+            </label>
+            <label className={`${s.shipBox} ${s.shipOption} ${shipMethod === 'ceo' ? s.shipSelected : ''}`}>
+              <input type="radio" name="ship" className={s.shipRadio} checked={shipMethod === 'ceo'} onChange={() => setShipMethod('ceo')} />
+              <div className={s.shipText}>
+                <span className={s.shipName}>{t.shipCEO}</span>
+                <span className={s.shipEta}>{t.etaCEO}</span>
+              </div>
+              <span className={s.shipPrice}>{money(CEO_SHIP_CENTS / 100)}</span>
+            </label>
           </div>
         </section>
 
@@ -597,7 +615,7 @@ function CheckoutForm({
               <span>{t.shipping}</span>
               <span>{shipLabel}</span>
             </div>
-            <span className={s.shipHint}>{country !== 'DE' ? t.freeDeOnly(amount(settings.freeShipCents)) : totals.freeLeftCents === 0 ? t.freeOk(amount(settings.freeShipCents)) : t.freeLeft(money(totals.freeLeftCents / 100))}</span>
+            <span className={s.shipHint}>{shipMethod === 'ceo' ? t.ceoHint : country !== 'DE' ? t.freeDeOnly(amount(settings.freeShipCents)) : totals.freeLeftCents === 0 ? t.freeOk(amount(settings.freeShipCents)) : t.freeLeft(money(totals.freeLeftCents / 100))}</span>
           </div>
           <div className={s.totalRow}>
             <div className={s.totalLeft}>

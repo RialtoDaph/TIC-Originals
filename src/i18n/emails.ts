@@ -79,6 +79,14 @@ function preorderInfo(ships: string | 'tbd' | null, lang: Lang): string {
     : `\nPRE-ORDER: Your order contains pre-order items. We ship the whole order by ${fmtShipDate(ships, lang)} at the latest. Once it's on its way, you'll get an email with the DHL tracking number.`;
 }
 
+/** Orders with the CEO shipping option: no DHL tracking, the date is agreed by email. */
+function ceoInfo(o: EmailOrder, lang: Lang): string {
+  if (o.carrier !== 'CEO') return '';
+  return lang === 'de'
+    ? '\nVERSAND: Du hast „Delivery by CEO“ gewählt. Dein Paket bringt unser CEO John Luca Rasch persönlich zu dir, es gibt keine DHL-Sendungsnummer. Wir melden uns per E-Mail, um den Liefertermin mit dir abzusprechen.'
+    : '\nSHIPPING: You chose "Delivery by CEO". Our CEO John Luca Rasch delivers your parcel to you in person, so there is no DHL tracking number. We will email you to agree the delivery date.';
+}
+
 export function orderConfirmation(o: EmailOrder, items: EmailItem[], lang: Lang, paymentPending: boolean, ships: string | 'tbd' | null = null): Email {
   if (lang === 'de') {
     return {
@@ -89,6 +97,7 @@ export function orderConfirmation(o: EmailOrder, items: EmailItem[], lang: Lang,
         `danke für deine Bestellung ${o.order_no}. Hiermit bestätigen wir den Eingang und nehmen deine Bestellung an.`,
         paymentPending ? 'Deine Lastschrift wird noch von der Bank bestätigt. Wir versenden, sobald die Zahlung eingegangen ist.' : '',
         preorderInfo(ships, lang),
+        ceoInfo(o, lang),
         '',
         lines(items, o, lang),
         '',
@@ -113,6 +122,7 @@ export function orderConfirmation(o: EmailOrder, items: EmailItem[], lang: Lang,
       `thanks for your order ${o.order_no}. This email confirms we received and accepted your order.`,
       paymentPending ? "Your direct debit is still being confirmed by the bank. We'll ship as soon as the payment arrives." : '',
       preorderInfo(ships, lang),
+      ceoInfo(o, lang),
       '',
       lines(items, o, lang),
       '',

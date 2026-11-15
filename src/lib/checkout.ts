@@ -1,6 +1,6 @@
 import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { checkCode, computeTotals, discountCents, type CodeProblem, type Totals } from './pricing';
+import { checkCode, computeTotals, discountCents, type CodeProblem, type ShipMethod, type Totals } from './pricing';
 import { loadSettings, mapProduct, PRODUCT_SELECT } from './catalog';
 import type { DiscountCode, Lang } from './types';
 import { isTbd, preorderDate } from './preorder';
@@ -48,7 +48,7 @@ export function mapCode(r: Record<string, unknown>): DiscountCode {
  */
 export async function priceCart(
   admin: SupabaseClient,
-  input: { items: CartItemInput[]; code?: string | null; email?: string | null; country: string; lang?: Lang },
+  input: { items: CartItemInput[]; code?: string | null; email?: string | null; country: string; lang?: Lang; shipMethod?: ShipMethod },
 ): Promise<PriceResult> {
   if (!input.items.length) return { ok: false, error: 'empty' };
   const ids = [...new Set(input.items.map((i) => i.id))];
@@ -91,6 +91,7 @@ export async function priceCart(
     subtotalCents: subtotal,
     discountCents: code && !codeProblem ? discountCents(code, subtotal) : 0,
     country: input.country,
+    method: input.shipMethod,
     settings,
   });
   return { ok: true, lines, totals, code: codeProblem ? null : code, codeProblem, codeMinCents: code?.minOrderCents ?? 0 };
