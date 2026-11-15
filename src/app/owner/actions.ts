@@ -152,6 +152,34 @@ export async function refundOrder(id: string, taskKey: string | null): Promise<R
   });
 }
 
+/** Not shipped yet: refund the full amount through Stripe, cancel the order and put the stock back. */
+export async function cancelAndRefund(id: string): Promise<Result> {
+  return wrap(async () => {
+    const { supabase, user } = await owner();
+    const [o] = await loadOrders(supabase, [id]);
+    if (!o) return { ok: false, error: 'not found' };
+    if (o.payment_status !== 'paid' || !['confirmed', 'processing'].includes(o.status as string)) return { ok: false, error: 'only paid orders that are not shipped yet' };
+    if (o.tracking && dhlLive()) await cancelLabelForOrder(createAdminClient(), id);
+    const amount = (o.total_cents as number) - (o.refunded_cents as number);
+    if (amount > 0 && o.payment_intent_id) {
+      await stripe().refunds.create({ payment_intent: o.payment_intent_id as string, amount }, { idempotencyKey: `refund-${o.id}-${amount}` });
+    }
+    const now = new Date().toISOString();
+    const { data, error } = await supabase
+      .from('orders')
+      .update({ status: 'cancelled', cancelled_at: now, payment_status: 'refunded', refunded_cents: o.total_cents, refunded_at: now })
+      .eq('id', id)
+      .in('status', ['confirmed', 'processing'])
+      .select('id');
+    if (error) throw error;
+    if (data?.length) await supabase.rpc('owner_return_stock', { p_order_id: id });
+    const r = amount > 0 ? await sendEmail({ to: o.email, ...refundEmail(o, amount, o.lang === 'en' ? 'en' : 'de') }) : { sent: false };
+    await notifyOwner('refund', `↩️ Storniert + erstattet ${fmtCents(amount, 'de')} · ${o.order_no}`);
+    await log(supabase, user.id, `Cancelled ${o.order_no} and refunded ${fmtCents(amount, 'en')}`, null, null);
+    return { ok: true, emailed: r.sent ? 1 : 0, emailOff: !emailConfigured() };
+  });
+}
+
 export async function remindPayment(id: string, taskKey: string | null): Promise<Result> {
   return wrap(async () => {
     const { supabase, user } = await owner();
