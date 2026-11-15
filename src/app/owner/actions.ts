@@ -434,6 +434,21 @@ export async function setProductVisible(id: string, visible: boolean): Promise<R
   });
 }
 
+/** Permanently removes a product that is hidden from the shop. Order lines keep their snapshot (product_id is set null). */
+export async function deleteProduct(id: string): Promise<Result> {
+  return wrap(async () => {
+    const { supabase, user } = await owner();
+    const { data: p, error: e1 } = await supabase.from('products').select('name, visible').eq('id', id).maybeSingle();
+    if (e1) throw e1;
+    if (!p) throw new Error('Product not found');
+    if (p.visible) throw new Error('Hide the product before deleting it');
+    const { error } = await supabase.from('products').delete().eq('id', id);
+    if (error) throw error;
+    await log(supabase, user.id, `Deleted product ${p.name}`);
+    return { ok: true };
+  });
+}
+
 export async function addStock(variantId: string, delta: number): Promise<Result> {
   return wrap(async () => {
     const { supabase, user } = await owner();

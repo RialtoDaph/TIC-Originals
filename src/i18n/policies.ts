@@ -105,6 +105,7 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
           { type: 'list', h: 'Zahlungsarten', items: ['Kreditkarte (Visa, Mastercard, AMEX)', 'PayPal', 'Klarna', 'Ggf. weitere im Checkout angezeigte Zahlungsarten (z. B. Apple Pay, Google Pay, SEPA-Lastschrift)', 'Alle Zahlungen werden über Stripe abgewickelt.'] },
           { type: 'text', h: 'Preise', p: 'Alle Preise sind Endpreise in Euro zuzüglich Versandkosten. Gemäß § 19 UStG wird keine Umsatzsteuer berechnet (Kleinunternehmerregelung).' },
           { type: 'text', h: 'Sendungsverfolgung', p: 'Nach dem Versand erhältst du deine Sendungsnummer per E-Mail. Du kannst deine Bestellung jederzeit unter Track Order verfolgen.' },
+          { type: 'text', h: 'Versand von DHL', p: 'Versand von DHL, delivered by CEO.' },
         ],
       },
       en: {
@@ -117,6 +118,7 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
           { type: 'list', h: 'Payment methods', items: ['Credit card (Visa, Mastercard, AMEX)', 'PayPal', 'Klarna', 'Other payment methods where shown at checkout (e.g. Apple Pay, Google Pay, SEPA Direct Debit)', 'All payments are processed by Stripe.'] },
           { type: 'text', h: 'Prices', p: 'All prices are final prices in euros, plus shipping. No VAT is charged under § 19 UStG (German small business regulation).' },
           { type: 'text', h: 'Tracking', p: 'Once your order ships you receive a tracking number by email. Track it any time under Track Order.' },
+          { type: 'text', h: 'Shipped by DHL', p: 'Shipped by DHL, delivered by CEO.' },
         ],
       },
     },

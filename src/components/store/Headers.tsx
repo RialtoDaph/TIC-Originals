@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useStore } from './StoreProvider';
 import { LangToggle } from './LangToggle';
 import { CartDrawer } from './CartDrawer';
-import { AccountIcon, BagIcon, LockIcon, TICKER_ICONS, TickerIcon } from './icons';
+import { createClient } from '@/lib/supabase/client';
+import { AccountIcon, BagIcon, ShieldIcon, LockIcon, TICKER_ICONS, TickerIcon } from './icons';
 import s from './Header.module.css';
 
 function useNav() {
@@ -163,6 +164,34 @@ function CurrencySelect() {
   );
 }
 
+/** Shield link to the owner dashboard, shown only when the signed-in user has the owner role. */
+function OwnerLink({ size = 22 }: { size?: number }) {
+  const [isOwner, setIsOwner] = useState(false);
+  useEffect(() => {
+    let live = true;
+    (async () => {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        const { data } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
+        if (live && data?.role === 'owner') setIsOwner(true);
+      } catch {
+        /* not signed in or offline: no button */
+      }
+    })();
+    return () => {
+      live = false;
+    };
+  }, []);
+  if (!isOwner) return null;
+  return (
+    <Link href="/owner" title="Owner Dashboard" className={s.iconLink} aria-label="Owner Dashboard">
+      <ShieldIcon size={size} />
+    </Link>
+  );
+}
+
 export function HomeHeader() {
   const NAV = useNav();
   return (
@@ -180,6 +209,7 @@ export function HomeHeader() {
         <div className={s.right}>
           <LangToggle />
           <CurrencySelect />
+          <OwnerLink size={24} />
           <Link href="/account" title="Account" className={s.iconLink} aria-label="Account">
             <AccountIcon size={24} />
           </Link>
@@ -233,6 +263,7 @@ export function StoreHeader({ variant, active }: { variant: 'shop' | 'account' |
             <>
               <LangToggle />
               <CurrencySelect />
+              <OwnerLink />
               <Link href="/account" title="Account" className={s.iconLink} aria-label="Account">
                 <AccountIcon size={22} />
               </Link>
@@ -242,12 +273,14 @@ export function StoreHeader({ variant, active }: { variant: 'shop' | 'account' |
           {variant === 'account' && (
             <>
               <LangToggle />
+              <OwnerLink />
               <CartButton />
             </>
           )}
           {variant === 'policies' && (
             <>
               <LangToggle />
+              <OwnerLink size={20} />
               <Link href="/account" aria-label="Account" className={s.iconLink}>
                 <AccountIcon size={20} variant="policies" />
               </Link>
