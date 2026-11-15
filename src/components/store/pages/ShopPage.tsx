@@ -13,6 +13,8 @@ import { ColorDots, ColorPicker } from '../Swatches';
 import type { Product } from '@/lib/types';
 import { Photo } from '../Photo';
 import { MANUFACTURER } from '@/config/business';
+import { sizeChartFor } from '@/config/size-charts';
+import { SizeGuide } from '../SizeGuide';
 import s from './Shop.module.css';
 
 const CARD_SIZES = '(max-width: 700px) 50vw, (max-width: 1100px) 33vw, 25vw';
@@ -170,6 +172,8 @@ export function ProductDetail({ product: p }: { product: Product }) {
   const [needSize, setNeedSize] = useState(false);
   const [added, setAdded] = useState(false);
   const [accOpen, setAccOpen] = useState<number | null>(0);
+  const [guideOpen, setGuideOpen] = useState(false);
+  const chart = sizeChartFor(p.model);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
   const track = useRef<HTMLDivElement>(null);
@@ -310,9 +314,15 @@ export function ProductDetail({ product: p }: { product: Product }) {
                     {t.size}
                     {size ? ': ' + size : ''}
                   </span>
-                  <Link href="/policies/faq" className={s.guide}>
-                    {t.sizeGuide}
-                  </Link>
+                  {chart ? (
+                    <button type="button" className={s.guideBtn} onClick={() => setGuideOpen(true)}>
+                      {t.sizeGuide}
+                    </button>
+                  ) : (
+                    <Link href="/policies/faq" className={s.guide}>
+                      {t.sizeGuide}
+                    </Link>
+                  )}
                 </div>
                 <div className={s.sizes} role="radiogroup" aria-label={t.size}>
                   {p.variants.map((v) => (
@@ -393,6 +403,7 @@ export function ProductDetail({ product: p }: { product: Product }) {
         </button>
       </div>
       <CartDrawer />
+      {chart && <SizeGuide chart={chart} title={p.model} open={guideOpen} onClose={() => setGuideOpen(false)} selected={size} />}
     </div>
   );
 }
