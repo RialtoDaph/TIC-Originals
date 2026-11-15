@@ -22,7 +22,7 @@ export const SOCIAL = {
  * (the importer, i.e. the shop itself). The block is hidden while this is null.
  */
 export const MANUFACTURER: { name: string; address: string; email: string; euResponsible?: string } | null = {
-  name: 'Fajar',
+  name: 'Fast Creative Production (Inh. Fajar)',
   address: 'Jl. Moh Toha Curug Candung No. 35B, RT 04/RW 05, Kel. Mekarwangi, Kec. Bojongloa Kidul, Bandung, Indonesia',
   email: 'fadityaa33@gmail.com',
   // Manufacturer outside the EU: the shop is the importer / responsible person.
