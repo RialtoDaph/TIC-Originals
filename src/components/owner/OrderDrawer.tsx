@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { countryName } from '@/lib/countries';
 import { awaiting, customerName, customerStats, needsAtt, shortName, toShip } from '@/lib/owner/derive';
 import { TONE } from '@/lib/tokens';
-import { cancelDhlLabel, createDhlLabel, deleteOrder, emailInvoice, markDelivered, markReturned, refundOrder, remindPayment, shipOrders, updateOrderFields } from '@/app/owner/actions';
+import { cancelAndRefund, cancelDhlLabel, createDhlLabel, deleteOrder, emailInvoice, markDelivered, markReturned, refundOrder, remindPayment, shipOrders, updateOrderFields } from '@/app/owner/actions';
 import { useOwner } from './OwnerContext';
 import { sx } from './sx';
 import { Thumb } from './ui';
@@ -20,6 +20,7 @@ export function OrderDrawer() {
   const [armed, setArmed] = useState(false);
   const [invMsg, setInvMsg] = useState('');
   const [cancelArmed, setCancelArmed] = useState(false);
+  const [refundArmed, setRefundArmed] = useState(false);
 
   useEffect(() => closeRef.current?.focus(), []);
   if (!od) return null;
@@ -198,7 +199,23 @@ export function OrderDrawer() {
           </button>
           {invMsg && <span style={sx('font-size:12px;color:#4ED29A')}>{invMsg}</span>}
         </div>
-        <div style={sx('margin-top:auto;padding:16px 22px 22px;display:flex;justify-content:flex-end')}>
+        <div style={sx('margin-top:auto;padding:16px 22px 22px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap')}>
+          {toShip(od) ? (
+            <button
+              disabled={busy}
+              onBlur={() => setRefundArmed(false)}
+              onClick={async () => {
+                if (!refundArmed) return setRefundArmed(true);
+                setRefundArmed(false);
+                await run(() => cancelAndRefund(od.id), t.cancelRefundDone(od.no));
+              }}
+              style={{ ...sx('height:34px;padding:0 12px;border:0;border-radius:9px;font-size:13px;cursor:pointer'), background: refundArmed ? '#FF6B5E' : 'rgba(255,107,94,.12)', color: refundArmed ? '#14161A' : '#FF8A80' }}
+            >
+              {refundArmed ? t.cancelRefundConfirm(eur(amount)) : t.cancelRefund(eur(amount))}
+            </button>
+          ) : (
+            <span />
+          )}
           <button
             disabled={busy}
             onBlur={() => setArmed(false)}
