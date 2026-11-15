@@ -178,11 +178,11 @@ export function HomeHeader() {
           ))}
         </nav>
         <div className={s.right}>
+          <LangToggle />
+          <CurrencySelect />
           <Link href="/account" title="Account" className={s.iconLink} aria-label="Account">
             <AccountIcon size={24} />
           </Link>
-          <LangToggle />
-          <CurrencySelect />
           <CartButton />
         </div>
       </header>
@@ -267,7 +267,8 @@ export function CheckoutHeader() {
   return (
     <header className={s.checkoutHeader}>
       <Link href="/shop" className={s.back}>
-        ← {t.back}
+        ← <span className={s.backLong}>{t.back}</span>
+        <span className={s.backShort}>Shop</span>
       </Link>
       <Link href="/" className={s.checkoutLogo} aria-label="TIC Originals – Home">
         {/* eslint-disable-next-line @next/next/no-img-element */}
