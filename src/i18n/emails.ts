@@ -83,8 +83,8 @@ function preorderInfo(ships: string | 'tbd' | null, lang: Lang): string {
 function ceoInfo(o: EmailOrder, lang: Lang): string {
   if (o.carrier !== 'CEO') return '';
   return lang === 'de'
-    ? '\nVERSAND: Du hast „Delivery by CEO“ gewählt. Dein Paket bringt unser CEO John Luca Rasch persönlich zu dir, es gibt keine DHL-Sendungsnummer. Wir melden uns per E-Mail, um den Liefertermin mit dir abzusprechen.'
-    : '\nSHIPPING: You chose "Delivery by CEO". Our CEO John Luca Rasch delivers your parcel to you in person, so there is no DHL tracking number. We will email you to agree the delivery date.';
+    ? '\nVERSAND: Du hast „Delivery by CEO“ gewählt. Dein Paket bringt unser CEO persönlich zu dir, es gibt keine DHL-Sendungsnummer. Wir melden uns per E-Mail, um den Liefertermin mit dir abzusprechen.'
+    : '\nSHIPPING: You chose "Delivery by CEO". Our CEO delivers your parcel to you in person, so there is no DHL tracking number. We will email you to agree the delivery date.';
 }
 
 export function orderConfirmation(o: EmailOrder, items: EmailItem[], lang: Lang, paymentPending: boolean, ships: string | 'tbd' | null = null): Email {

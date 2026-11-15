@@ -105,7 +105,7 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
           { type: 'list', h: 'Zahlungsarten', items: ['Kreditkarte (Visa, Mastercard, AMEX)', 'PayPal', 'Klarna', 'Ggf. weitere im Checkout angezeigte Zahlungsarten (z. B. Apple Pay, Google Pay, SEPA-Lastschrift)', 'Alle Zahlungen werden über Stripe abgewickelt.'] },
           { type: 'text', h: 'Preise', p: 'Alle Preise sind Endpreise in Euro zuzüglich Versandkosten. Gemäß § 19 UStG wird keine Umsatzsteuer berechnet (Kleinunternehmerregelung).' },
           { type: 'text', h: 'Sendungsverfolgung', p: 'Nach dem Versand erhältst du deine Sendungsnummer per E-Mail. Du kannst deine Bestellung jederzeit unter Track Order verfolgen.' },
-          { type: 'text', h: 'Delivery by CEO', p: 'Im Checkout kannst du statt DHL „Delivery by CEO“ wählen: Dein Paket bringt unser CEO John Luca Rasch persönlich zu dir, ohne DHL. Pauschalpreis 10.000,00 €, kein kostenloser Versand. Den Liefertermin sprechen wir nach der Bestellung per E-Mail mit dir ab.' },
+          { type: 'text', h: 'Delivery by CEO', p: 'Im Checkout kannst du statt DHL „Delivery by CEO“ wählen: Dein Paket bringt unser CEO persönlich zu dir, ohne DHL. Pauschalpreis 10.000,00 €, kein kostenloser Versand. Den Liefertermin sprechen wir nach der Bestellung per E-Mail mit dir ab.' },
         ],
       },
       en: {
@@ -118,7 +118,7 @@ export function policyPage(key: PolicyKey, lang: Lang, s: ShipAmounts): PolicyPa
           { type: 'list', h: 'Payment methods', items: ['Credit card (Visa, Mastercard, AMEX)', 'PayPal', 'Klarna', 'Other payment methods where shown at checkout (e.g. Apple Pay, Google Pay, SEPA Direct Debit)', 'All payments are processed by Stripe.'] },
           { type: 'text', h: 'Prices', p: 'All prices are final prices in euros, plus shipping. No VAT is charged under § 19 UStG (German small business regulation).' },
           { type: 'text', h: 'Tracking', p: 'Once your order ships you receive a tracking number by email. Track it any time under Track Order.' },
-          { type: 'text', h: 'Delivery by CEO', p: 'At checkout you can choose "Delivery by CEO" instead of DHL: our CEO John Luca Rasch delivers your parcel to you in person, without DHL. Flat price €10,000.00, free shipping does not apply. We agree the delivery date with you by email after you order.' },
+          { type: 'text', h: 'Delivery by CEO', p: 'At checkout you can choose "Delivery by CEO" instead of DHL: our CEO delivers your parcel to you in person, without DHL. Flat price €10,000.00, free shipping does not apply. We agree the delivery date with you by email after you order.' },
         ],
       },
     },
