@@ -234,3 +234,49 @@ export function newsletterConfirmEmail(token: string, lang: Lang): Email {
     ].join('\n'),
   };
 }
+
+/** § 356a Abs. 4 BGB: receipt for a withdrawal sent through the website (content, date and time). */
+export function withdrawalReceipt(w: { name: string; orderNo: string; email: string; receivedAt: string }, lang: Lang): Email {
+  const when = new Date(w.receivedAt).toLocaleString(lang === 'de' ? 'de-DE' : 'en-GB', { timeZone: 'Europe/Berlin', dateStyle: 'long', timeStyle: 'medium' });
+  return lang === 'de'
+    ? {
+        subject: `Eingangsbestätigung deines Widerrufs (${w.orderNo})`,
+        text: [
+          `Hallo ${w.name},`,
+          '',
+          'wir bestätigen den Eingang deines Widerrufs, den du über die Widerrufsfunktion auf ticoriginals.com erklärt hast:',
+          '',
+          `Erklärung: Ich widerrufe den Vertrag über die Bestellung ${w.orderNo}.`,
+          `Name: ${w.name}`,
+          `Bestellnummer: ${w.orderNo}`,
+          `E-Mail: ${w.email}`,
+          `Eingegangen am: ${when} (Uhrzeit Deutschland)`,
+          '',
+          `So geht es weiter: Schick die Ware bitte innerhalb von 14 Tagen an ${'TILL I COLLAPSE ORIGINALS, An der Oberen Au 4, 85072 Eichstätt, Deutschland'}. Die Rückzahlung erhältst du über dein ursprüngliches Zahlungsmittel, sobald die Ware bei uns ist oder du die Rücksendung nachweist. Bestellungen, die noch nicht versendet sind, erstatten wir direkt.`,
+          '',
+          'Diese E-Mail bestätigt nur den Eingang deiner Erklärung. Bei Fragen antworte einfach auf diese E-Mail oder schreib an company@ticoriginals.com.',
+          '',
+          sig,
+        ].join('\n'),
+      }
+    : {
+        subject: `Receipt of your withdrawal (${w.orderNo})`,
+        text: [
+          `Hi ${w.name},`,
+          '',
+          'we confirm receipt of the withdrawal you declared through the withdrawal function on ticoriginals.com:',
+          '',
+          `Statement: I withdraw from the contract for order ${w.orderNo}.`,
+          `Name: ${w.name}`,
+          `Order number: ${w.orderNo}`,
+          `Email: ${w.email}`,
+          `Received on: ${when} (German time)`,
+          '',
+          'Next steps: please send the goods back within 14 days to TILL I COLLAPSE ORIGINALS, An der Oberen Au 4, 85072 Eichstätt, Germany. You get your money back via your original payment method once the goods have arrived or you have shown proof of return. Orders that have not shipped yet are refunded right away.',
+          '',
+          'This email only confirms that we received your statement. Questions? Just reply or write to company@ticoriginals.com.',
+          '',
+          sig,
+        ].join('\n'),
+      };
+}

@@ -21,7 +21,7 @@ function useGroups() {
   return {
     shop,
     support: (['contact', 'faq', 'track', 'shipping', 'returns'] as LinkKey[]).map(link),
-    legal: (['impressum', 'datenschutz', 'agb', 'widerruf', 'gewaehrleistung'] as LinkKey[]).map(link),
+    legal: (['impressum', 'datenschutz', 'agb', 'widerruf', 'cancel', 'gewaehrleistung'] as LinkKey[]).map(link),
     t,
   };
 }
@@ -147,6 +147,9 @@ export function HomeFooter() {
         </div>
         <div className={s.legalRow}>
           <Badges />
+          <Link href={LINKS.cancel} className={s.cancelLink}>
+            {t.cancelLink}
+          </Link>
           <span className={s.addr}>{COMPANY_ADDRESS_LINE}</span>
           <span className={s.copy}>{t.copyright}</span>
         </div>
@@ -188,7 +191,7 @@ export function ShopFooter() {
 export function CheckoutFooter() {
   const { lang } = useStore();
   const L = SHORT_LINK_LABELS[lang];
-  const keys: LinkKey[] = ['shipping', 'returns', 'agb', 'widerruf', 'gewaehrleistung', 'datenschutz', 'impressum'];
+  const keys: LinkKey[] = ['shipping', 'returns', 'agb', 'widerruf', 'cancel', 'gewaehrleistung', 'datenschutz', 'impressum'];
   return (
     <footer className={s.checkout}>
       {keys.map((k) => (
@@ -203,7 +206,7 @@ export function CheckoutFooter() {
 export function AccountFooter() {
   const { lang, t } = useStore();
   const L = SHORT_LINK_LABELS[lang];
-  const keys: LinkKey[] = ['contact', 'faq', 'agb', 'datenschutz', 'impressum'];
+  const keys: LinkKey[] = ['contact', 'faq', 'agb', 'cancel', 'datenschutz', 'impressum'];
   return (
     <footer className={s.account}>
       <div className={s.accountLinks}>
@@ -219,10 +222,11 @@ export function AccountFooter() {
 }
 
 export function PoliciesFooter() {
-  const { t } = useStore();
+  const { t, lang } = useStore();
   return (
     <footer className={s.policies}>
       <span>{COMPANY_ADDRESS_LINE}</span>
+      <Link href={LINKS.cancel}>{LINK_LABELS[lang].cancel}</Link>
       <span className={s.policiesCopy}>{t.copyright}</span>
     </footer>
   );

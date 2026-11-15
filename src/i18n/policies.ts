@@ -56,7 +56,7 @@ export function withdrawalSections(lang: Lang): [string, string][] {
           'Widerrufsrecht',
           'Du hast das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen.\n\n' +
             'Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag, an dem du oder ein von dir benannter Dritter, der nicht der Beförderer ist, die Waren in Besitz genommen hast bzw. hat.\n\n' +
-            `Um dein Widerrufsrecht auszuüben, musst du uns (${WITHDRAWAL_CONTACT.de}) mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder E-Mail) über deinen Entschluss, diesen Vertrag zu widerrufen, informieren. Du kannst dafür das beigefügte Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist.\n\n` +
+            `Um dein Widerrufsrecht auszuüben, musst du uns (${WITHDRAWAL_CONTACT.de}) mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder E-Mail) über deinen Entschluss, diesen Vertrag zu widerrufen, informieren. Du kannst dafür das beigefügte Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist. Du kannst den Widerruf auch über die Widerrufsfunktion auf unserer Website erklären (Schaltfläche „Vertrag widerrufen“, www.ticoriginals.com/vertrag-widerrufen); wir bestätigen dir den Eingang dann unverzüglich per E-Mail.\n\n` +
             'Zur Wahrung der Widerrufsfrist reicht es aus, dass du die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absendest.',
         ],
         [
@@ -73,7 +73,7 @@ export function withdrawalSections(lang: Lang): [string, string][] {
           'Right of withdrawal',
           'You have the right to withdraw from this contract within fourteen days without giving any reason.\n\n' +
             'The withdrawal period will expire after fourteen days from the day on which you acquire, or a third party other than the carrier and indicated by you acquires, physical possession of the goods.\n\n' +
-            `To exercise the right of withdrawal, you must inform us (${WITHDRAWAL_CONTACT.en}) of your decision to withdraw from this contract by an unequivocal statement (e.g. a letter sent by post or email). You may use the attached sample withdrawal form, but it is not obligatory.\n\n` +
+            `To exercise the right of withdrawal, you must inform us (${WITHDRAWAL_CONTACT.en}) of your decision to withdraw from this contract by an unequivocal statement (e.g. a letter sent by post or email). You may use the attached sample withdrawal form, but it is not obligatory. You can also declare your withdrawal through the withdrawal function on our website (button "Withdraw from contract", www.ticoriginals.com/vertrag-widerrufen); we will then confirm receipt by email without delay.\n\n` +
             'To meet the withdrawal deadline, it is sufficient for you to send your communication concerning your exercise of the right of withdrawal before the withdrawal period has expired.',
         ],
         [

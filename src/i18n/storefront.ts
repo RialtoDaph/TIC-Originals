@@ -75,6 +75,7 @@ const de = {
   lookCta: 'Kollektion entdecken',
   setHint: 'Passt zusammen – Größe wählen und direkt hinzufügen.',
   sizeGuide: 'Größentabelle',
+  cancelLink: 'Vertrag widerrufen',
   sgUnit: 'Einheit',
   sgNote: 'Alle Maße am flach liegenden Kleidungsstück, Toleranz ±1–2 cm. Tipp: Leg ein Teil, das dir gut passt, flach hin und vergleiche.',
   pickSize: 'Bitte wähle eine Größe.',
@@ -313,6 +314,7 @@ const en: Dict = {
   lookCta: 'Explore the collection',
   setHint: 'Made to match – pick a size and add it straight away.',
   sizeGuide: 'Size guide',
+  cancelLink: 'Withdraw from contract',
   sgUnit: 'Unit',
   sgNote: 'All measurements taken with the garment lying flat, tolerance ±1–2 cm. Tip: lay a piece that fits you well flat and compare.',
   pickSize: 'Please select a size.',
@@ -492,6 +494,7 @@ export const LINKS = {
   agb: '/policies/agb',
   widerruf: '/policies/widerruf',
   gewaehrleistung: '/policies/gewaehrleistung',
+  cancel: '/vertrag-widerrufen',
 };
 
 export const LINK_LABELS: Record<Lang, Record<keyof typeof LINKS, string>> = {
@@ -508,6 +511,7 @@ export const LINK_LABELS: Record<Lang, Record<keyof typeof LINKS, string>> = {
     agb: 'AGB',
     widerruf: 'Widerrufsrecht',
     gewaehrleistung: 'Gewährleistung',
+    cancel: 'Vertrag widerrufen',
   },
   en: {
     shopAll: 'Shop All',
@@ -522,13 +526,14 @@ export const LINK_LABELS: Record<Lang, Record<keyof typeof LINKS, string>> = {
     agb: 'Terms (AGB)',
     widerruf: 'Right of Withdrawal',
     gewaehrleistung: 'Legal Guarantee',
+    cancel: 'Withdraw from contract',
   },
 };
 
 /** Short labels used in the checkout/account footers. */
 export const SHORT_LINK_LABELS: Record<Lang, Partial<Record<keyof typeof LINKS, string>>> = {
-  de: { agb: 'AGB', datenschutz: 'Datenschutz', impressum: 'Impressum', widerruf: 'Widerrufsrecht', gewaehrleistung: 'Gewährleistung', shipping: 'Versand & Zahlung', returns: 'Rückgabe', contact: 'Kontakt', faq: 'FAQ' },
-  en: { agb: 'Terms', datenschutz: 'Privacy', impressum: 'Imprint', widerruf: 'Right of Withdrawal', gewaehrleistung: 'Legal Guarantee', shipping: 'Shipping & Payment', returns: 'Returns', contact: 'Contact', faq: 'FAQ' },
+  de: { cancel: 'Vertrag widerrufen', agb: 'AGB', datenschutz: 'Datenschutz', impressum: 'Impressum', widerruf: 'Widerrufsrecht', gewaehrleistung: 'Gewährleistung', shipping: 'Versand & Zahlung', returns: 'Rückgabe', contact: 'Kontakt', faq: 'FAQ' },
+  en: { cancel: 'Withdraw from contract', agb: 'Terms', datenschutz: 'Privacy', impressum: 'Imprint', widerruf: 'Right of Withdrawal', gewaehrleistung: 'Legal Guarantee', shipping: 'Shipping & Payment', returns: 'Returns', contact: 'Contact', faq: 'FAQ' },
 };
 
 export const PAYMENT_BADGES = ['VISA', 'Mastercard', 'AMEX', 'PayPal', 'Klarna'];
