@@ -30,7 +30,7 @@ Storefront and Owner Dashboard for TIC Originals (Till I Collapse), built from t
 1. Create a project (region EU, e.g. Frankfurt).
 2. Apply the database: `npx supabase link --project-ref <ref>` then `npx supabase db push`, or paste the files in
    `supabase/migrations/` (in order) into the SQL editor.
-3. Load `supabase/seed.sql` (settings, the `TIC15` popup code, the next drop) and — optionally — `supabase/seed.products.sql`
+3. Load `supabase/seed.sql` (settings, the `WELCOME10` popup code and `NOBLACKFRIDAY`, the next drop) and — optionally — `supabase/seed.products.sql`
    (the 8 products from the design with placeholder images; editable in the dashboard, delete the file once the real catalogue is in).
 4. **Authentication → URL configuration:** Site URL = your domain; add `https://<domain>/**` (and `http://localhost:3000/**`) to redirect URLs.
 5. **Authentication → Providers → Email:** keep "Confirm email" on. In **Email templates → Confirm signup** include the

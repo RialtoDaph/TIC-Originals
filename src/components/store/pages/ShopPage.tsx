@@ -12,6 +12,7 @@ import { preorderDate } from '@/lib/preorder';
 import { ColorDots, ColorPicker } from '../Swatches';
 import type { Product } from '@/lib/types';
 import { Photo } from '../Photo';
+import { MANUFACTURER } from '@/config/business';
 import s from './Shop.module.css';
 
 const CARD_SIZES = '(max-width: 700px) 50vw, (max-width: 1100px) 33vw, 25vw';
@@ -218,6 +219,16 @@ export function ProductDetail({ product: p }: { product: Product }) {
       [t.accH[0], details],
       [t.accH[1], care],
       [t.accH[2], t.shipText(amount(settings.shipDeCents), amount(settings.freeShipCents))],
+      [
+        t.safetyH,
+        MANUFACTURER &&
+          [
+            `${t.manufacturer}: ${MANUFACTURER.name}, ${MANUFACTURER.address}, ${MANUFACTURER.email}`,
+            MANUFACTURER.euResponsible ? `${t.euResponsible}: ${MANUFACTURER.euResponsible}` : '',
+          ]
+            .filter(Boolean)
+            .join(' · '),
+      ],
     ] as [string, string | null][]
   ).filter((x): x is [string, string] => !!x[1]);
   const colors = colorsOf(p, products);
@@ -332,7 +343,8 @@ export function ProductDetail({ product: p }: { product: Product }) {
               </button>
               <SetPieces p={p} />
               <div className={s.perks}>
-                {t.perks(amount(settings.freeShipCents)).map((pk) => (
+                {/* Pre-orders don't ship same day: drop that perk. */}
+                {t.perks(amount(settings.freeShipCents)).slice(ships ? 1 : 0).map((pk) => (
                   <span key={pk} className={s.perk}>
                     <span className={s.perkDot} />
                     {pk}

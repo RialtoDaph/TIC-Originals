@@ -1,13 +1,6 @@
 /* Home footer */
 .home { background: #1a1a1a; color: #fff; padding: 36px 0 40px; display: flex; flex-direction: column; }
-.commWrap { padding: 0 clamp(20px, 4vw, 48px); }
-.comm { max-width: 1100px; margin: 0 auto; border: 1px solid #333; border-radius: 14px; padding: 18px 20px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
-.commIcon { width: 56px; height: 56px; border-radius: 12px; background: #9ef2ff; color: #111; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.commText { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 4px; }
-.commTitle { font-size: 17px; font-weight: 700; }
-.commSub { font-size: 14px; color: #bdbdbd; }
-.join { background: #9ef2ff; color: #111; padding: 16px 28px; border-radius: 8px; font-size: 14px; font-weight: 700; white-space: nowrap; }
-.galleryWrap { position: relative; margin-top: 36px; }
+.galleryWrap { position: relative; }
 .galleryClip { overflow: hidden; }
 .galleryTrack { display: flex; gap: 16px; width: max-content; animation: tic-gal 60s linear infinite; }
 .galleryImg { width: 400px; height: 540px; flex-shrink: 0; object-fit: cover; display: block; }

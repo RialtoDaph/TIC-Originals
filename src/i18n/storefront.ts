@@ -20,7 +20,7 @@ const de = {
   trust: [
     { h: 'Versand am selben Werktag', p: 'Bestellungen bis 14 Uhr gehen heute raus.' },
     { h: '14 Tage Rückgabe', p: 'Unkompliziert zurücksenden.' },
-    { h: 'Sicher bezahlen', p: 'Visa, Mastercard, AMEX über Stripe und PayPal.' },
+    { h: 'Sicher bezahlen', p: 'Karte, PayPal und Klarna – sicher über Stripe.' },
   ],
   categories: 'Kategorien',
   copyright: '© 2026 TIC Originals. Alle Rechte vorbehalten.',
@@ -35,9 +35,6 @@ const de = {
   subtotal: 'Zwischensumme',
   checkout: 'Zur Kasse',
   remove: 'Entfernen',
-  commTitle: 'Tritt der TIC Community bei',
-  commSub: 'Early Access · Exklusive Drops · Specials',
-  join: 'Jetzt beitreten',
   brandLine: 'Geboren in Deutschland. Keine Abkürzungen. Till I Collapse.',
   movement: 'Join the Movement',
   movementSub: 'Als Erste:r neue Drops, limitierte Restocks und exklusive Angebote.',
@@ -85,6 +82,9 @@ const de = {
   soldOut: 'Ausverkauft',
   perks: (free: M) => ['Versand am selben Werktag bei Bestellung bis 14 Uhr', `Kostenloser Versand in DE ab ${free}`, '14 Tage Rückgabe'],
   accH: ['Details', 'Pflege', 'Versand & Rückgabe'],
+  safetyH: 'Produktsicherheit',
+  manufacturer: 'Hersteller',
+  euResponsible: 'Verantwortliche Person in der EU',
   material: 'Material',
   shipText: (de: M, free: M) =>
     `DHL, 1 bis 4 Werktage innerhalb Deutschlands (${de}, ab ${free} kostenlos). Rückgabe innerhalb von 14 Tagen, die Rücksendekosten trägt der Kunde.`,
@@ -257,7 +257,7 @@ const en: Dict = {
   trust: [
     { h: 'Ships same business day', p: 'Orders before 2 pm leave today.' },
     { h: '14-day returns', p: 'Easy, no questions.' },
-    { h: 'Secure payment', p: 'Visa, Mastercard, AMEX via Stripe, and PayPal.' },
+    { h: 'Secure payment', p: 'Card, PayPal and Klarna – securely via Stripe.' },
   ],
   categories: 'Categories',
   copyright: '© 2026 TIC Originals. All rights reserved.',
@@ -272,9 +272,6 @@ const en: Dict = {
   subtotal: 'Subtotal',
   checkout: 'Checkout',
   remove: 'Remove',
-  commTitle: 'Join the TIC Community',
-  commSub: 'Early Access · Exclusive Drops · Specials',
-  join: 'Join Now',
   brandLine: 'Born in Germany. No shortcuts. Till I Collapse.',
   movement: 'Join the Movement',
   movementSub: 'First access to new drops, limited restocks and exclusive offers.',
@@ -321,6 +318,9 @@ const en: Dict = {
   soldOut: 'Sold out',
   perks: (free) => ['Ships same business day when ordered before 2 pm', `Free shipping in Germany over ${free}`, '14-day returns'],
   accH: ['Details', 'Care', 'Shipping & returns'],
+  safetyH: 'Product safety',
+  manufacturer: 'Manufacturer',
+  euResponsible: 'Responsible person in the EU',
   material: 'Material',
   shipText: (de, free) =>
     `DHL, 1 to 4 business days within Germany (${de}, free over ${free}). Returns within 14 days, return shipping paid by the customer.`,
@@ -527,5 +527,5 @@ export const SHORT_LINK_LABELS: Record<Lang, Partial<Record<keyof typeof LINKS, 
   en: { agb: 'Terms', datenschutz: 'Privacy', impressum: 'Imprint', widerruf: 'Right of Withdrawal', gewaehrleistung: 'Legal Guarantee', shipping: 'Shipping & Payment', returns: 'Returns', contact: 'Contact', faq: 'FAQ' },
 };
 
-export const PAYMENT_BADGES = ['VISA', 'Mastercard', 'AMEX', 'PayPal'];
+export const PAYMENT_BADGES = ['VISA', 'Mastercard', 'AMEX', 'PayPal', 'Klarna'];
 export const COMPANY_ADDRESS_LINE = 'An der Oberen Au 4 · 85072 Eichstätt · Germany';

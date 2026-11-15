@@ -411,7 +411,7 @@ function CheckoutForm({
           <div className={s.shipBox}>
             <div className={s.shipText}>
               <span className={s.shipName}>{country === 'DE' ? t.shipDE : t.shipINT}</span>
-              <span className={s.shipEta}>{country === 'DE' ? t.etaDE : t.etaINT}</span>
+              <span className={s.shipEta}>{preShip ? t.preorderShips(preShip) : country === 'DE' ? t.etaDE : t.etaINT}</span>
             </div>
             <span className={s.shipPrice}>{shipLabel}</span>
           </div>

@@ -14,5 +14,11 @@ export const BUSINESS = {
 export const SOCIAL = {
   instagram: 'https://www.instagram.com/tillicollapseoriginals/',
   tiktok: 'https://www.tiktok.com/@tillicollapseoriginals',
-  community: 'https://chat.whatsapp.com/EqURZfTVdA6JiUoDXsPdku',
 };
+
+/**
+ * GPSR (EU 2023/988): manufacturer shown on every product page. Fill in once the client sends
+ * Fajar's postal address and email. If the manufacturer is outside the EU, also set `euResponsible`
+ * (the importer, i.e. the shop itself). The block is hidden while this is null.
+ */
+export const MANUFACTURER: { name: string; address: string; email: string; euResponsible?: string } | null = null;

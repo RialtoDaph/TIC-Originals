@@ -24,6 +24,10 @@ export async function afterOrderEvent(admin: SupabaseClient, orderId: string, ev
     await sendEmail({ to: order.email, ...mail });
     const items = order.order_items.reduce((a, i) => a + i.qty, 0);
     await notifyOwner('order', `🛍 Neue Bestellung ${order.order_no} · ${order.first_name} ${order.last_name} · ${items} Artikel · ${fmtCents(order.total_cents, 'de')}`);
+    // Two shoppers paid for the last piece at the same time: take_stock flagged the order.
+    if (((order as unknown as { flags?: string[] }).flags ?? []).includes('oversold')) {
+      await notifyOwner('stock', `⚠️ Überverkauft: ${order.order_no} (${order.first_name} ${order.last_name}). Bitte Bestand prüfen und ggf. Kunden kontaktieren oder erstatten.`);
+    }
     await notifyLowStock(admin, order.order_items.map((i) => i.product_id).filter(Boolean) as string[]);
     await rememberCustomer(admin, order);
   }
