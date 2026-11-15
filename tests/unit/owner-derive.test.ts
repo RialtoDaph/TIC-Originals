@@ -52,6 +52,8 @@ function order(p: Partial<OOrder> = {}): OOrder {
     method: 'Card (Stripe)',
     carrier: 'DHL',
     tracking: '',
+    hasLabel: false,
+    labelError: '',
     note: '',
     flags: [],
     invoiceNo: null,

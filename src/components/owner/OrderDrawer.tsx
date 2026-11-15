@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { countryName } from '@/lib/countries';
 import { awaiting, customerName, customerStats, needsAtt, shortName, toShip } from '@/lib/owner/derive';
 import { TONE } from '@/lib/tokens';
-import { deleteOrder, emailInvoice, markDelivered, markReturned, refundOrder, remindPayment, shipOrders, updateOrderFields } from '@/app/owner/actions';
+import { cancelDhlLabel, createDhlLabel, deleteOrder, emailInvoice, markDelivered, markReturned, refundOrder, remindPayment, shipOrders, updateOrderFields } from '@/app/owner/actions';
 import { useOwner } from './OwnerContext';
 import { sx } from './sx';
 import { Thumb } from './ui';
@@ -19,6 +19,7 @@ export function OrderDrawer() {
   const [note, setNote] = useState(od?.note ?? '');
   const [armed, setArmed] = useState(false);
   const [invMsg, setInvMsg] = useState('');
+  const [cancelArmed, setCancelArmed] = useState(false);
 
   useEffect(() => closeRef.current?.focus(), []);
   if (!od) return null;
@@ -74,6 +75,11 @@ export function OrderDrawer() {
         )}
         {od.flags.includes('preorder') && (
           <div style={{ ...sx('margin:0 22px 12px;padding:10px 14px;border-radius:12px;font-size:13px'), background: TONE.blue[0], color: TONE.blue[1] }}>{t.flags.preorderNote}</div>
+        )}
+        {od.labelError && od.labelError !== 'creating' && (
+          <div style={{ ...sx('margin:0 22px 12px;padding:10px 14px;border-radius:12px;font-size:13px;overflow-wrap:anywhere'), background: od.labelError.startsWith('Hinweis') ? TONE.amber[0] : TONE.red[0], color: od.labelError.startsWith('Hinweis') ? TONE.amber[1] : TONE.red[1] }}>
+            {od.labelError.startsWith('Hinweis') ? od.labelError : `${t.dhl.failed}: ${od.labelError}`}
+          </div>
         )}
         {od.flags.includes('amount_mismatch') && (
           <div style={{ ...sx('margin:0 22px 12px;padding:10px 14px;border-radius:12px;font-size:13px'), background: TONE.red[0], color: TONE.red[1] }}>{t.flags.amountMismatch}</div>
@@ -152,6 +158,31 @@ export function OrderDrawer() {
           <textarea value={note} onChange={(e) => setNote(e.target.value)} onBlur={() => note !== od.note && run(() => updateOrderFields(od.id, { note }), `${t.note} ✓`)} placeholder={t.notePh} rows={2} style={sx('padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#14161A;color:#ECEEF1;font-size:14px;outline:none;resize:vertical')} />
         </label>
         <div style={sx('padding:0 22px 14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center')}>
+          {od.hasLabel && (
+            <a href={`/owner/label/${od.id}`} target="_blank" rel="noreferrer" style={sx('height:36px;padding:0 14px;border:0;border-radius:10px;background:#FFCC00;color:#14161A;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center')}>
+              {t.dhl.label}
+            </a>
+          )}
+          {!od.tracking && od.payment === 'paid' && (od.status === 'confirmed' || od.status === 'processing') && od.carrier === 'DHL' && (
+            <button disabled={busy} onClick={() => run(() => createDhlLabel(od.id), t.dhl.created(''))} style={sx('height:36px;padding:0 14px;border:0;border-radius:10px;background:#2A2E36;color:#ECEEF1;font-size:13px;font-weight:500;cursor:pointer')}>
+              {t.dhl.create}
+            </button>
+          )}
+          {od.hasLabel && (od.status === 'confirmed' || od.status === 'processing') && (
+            <button
+              disabled={busy}
+              onBlur={() => setCancelArmed(false)}
+              onClick={async () => {
+                if (!cancelArmed) return setCancelArmed(true);
+                setCancelArmed(false);
+                const ok = await run(() => cancelDhlLabel(od.id), t.dhl.cancelled);
+                if (ok) setTracking('');
+              }}
+              style={{ ...sx('height:36px;padding:0 14px;border:0;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer'), background: cancelArmed ? '#FF6B5E' : '#2A2E36', color: cancelArmed ? '#14161A' : '#ECEEF1' }}
+            >
+              {cancelArmed ? t.dhl.cancelConfirm : t.dhl.cancel}
+            </button>
+          )}
           <a href={`/owner/invoice/${od.id}`} target="_blank" rel="noreferrer" style={sx('height:36px;padding:0 14px;border:0;border-radius:10px;background:#2A2E36;color:#ECEEF1;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center')}>
             {t.invoicePdf}
           </a>

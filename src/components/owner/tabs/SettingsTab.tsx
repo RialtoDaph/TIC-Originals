@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { berlinDay } from '@/lib/owner/derive';
 import type { SiteSettings } from '@/lib/types';
-import { saveNotif, saveSettings, testNotification, type SettingsDraft } from '@/app/owner/actions';
+import { saveNotif, saveSettings, testDhlConnection, testNotification, type SettingsDraft } from '@/app/owner/actions';
 import { useOwner } from '../OwnerContext';
 import { sx } from '../sx';
 import { S, ToggleTrack } from '../ui';
@@ -31,6 +31,7 @@ export function SettingsTab() {
   const saved = toDraft(data.settings);
   const [draft, setDraft] = useState<SettingsDraft>(saved);
   const [notif, setNotif] = useState(data.notif);
+  const [dhlMsg, setDhlMsg] = useState('');
   const savedKey = JSON.stringify(saved);
   // After a save the server data refreshes: show the normalised saved values again.
   useEffect(() => {
@@ -146,6 +147,23 @@ export function SettingsTab() {
           >
             {t.testMsg}
           </button>
+        </div>
+        <div style={sx('background:#1C1F25;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px')}>
+          <span style={sx('font-size:15px;font-weight:600')}>{t.dhl.title}</span>
+          <span style={sx('font-size:13px;line-height:1.5;color:#9AA1AC')}>{t.dhl.hint}</span>
+          <button
+            disabled={busy}
+            onClick={async () => {
+              setDhlMsg('…');
+              const r = await testDhlConnection();
+              const d = r.ok ? (r.data as { mode: string; shipmentNo: string; warnings: string[] }) : null;
+              setDhlMsg(d ? t.dhl.ok(d.mode, d.shipmentNo) + (d.warnings.length ? ` · ${d.warnings.join(' · ')}` : '') : `✗ ${!r.ok ? r.error : ''}`);
+            }}
+            style={sx('align-self:flex-start;height:34px;padding:0 14px;border:0;border-radius:10px;background:#2A2E36;color:#ECEEF1;font-size:13px;font-weight:500;cursor:pointer')}
+          >
+            {t.dhl.test}
+          </button>
+          {dhlMsg && <span style={{ ...sx('font-size:13px;line-height:1.5;overflow-wrap:anywhere'), color: dhlMsg.startsWith('✗') ? '#FF6B5E' : '#4ED29A' }}>{dhlMsg}</span>}
         </div>
         <div style={sx('background:#1C1F25;border-radius:16px;padding:6px 0 8px')}>
           <div style={sx('display:flex;justify-content:space-between;align-items:center;padding:12px 18px')}>

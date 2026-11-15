@@ -3,6 +3,7 @@ import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { sendEmail } from './email';
 import { notifyOwner } from './notify';
+import { createLabelForOrder } from './dhl';
 import { fmtCents } from './format';
 import { orderConfirmation, paymentFailedEmail, type EmailItem, type EmailOrder } from '@/i18n/emails';
 import type { Lang } from './types';
@@ -30,6 +31,11 @@ export async function afterOrderEvent(admin: SupabaseClient, orderId: string, ev
     }
     await notifyLowStock(admin, order.order_items.map((i) => i.product_id).filter(Boolean) as string[]);
     await rememberCustomer(admin, order);
+  }
+  // Paid (directly, or later for SEPA/Klarna): book the DHL label. Pre-orders wait for the "Versand" click.
+  if (event === 'created_paid' || event === 'paid') {
+    const r = await createLabelForOrder(admin, order.id, { auto: true });
+    if (!r.ok && r.error) await notifyOwner('order', `⚠️ DHL-Label für ${order.order_no} fehlgeschlagen: ${r.error}`);
   }
   if (event === 'failed') {
     await sendEmail({ to: order.email, ...paymentFailedEmail(order, lang) });

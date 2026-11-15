@@ -12,6 +12,8 @@ import { stripe } from '@/lib/stripe';
 import { fmtCents } from '@/lib/format';
 import { serverEnv } from '@/lib/env';
 import { invoicePdf } from '@/lib/invoice';
+import { createAdminClient } from '@/lib/supabase/admin';
+import { cancelLabelForOrder, createLabelForOrder, dhlLive, testDhl } from '@/lib/dhl';
 import { mapOrder } from '@/lib/owner/load';
 import { CATEGORIES, normalizeCategory, slugify } from '@/lib/categories';
 import { CATALOG_TAG, SIZES } from '@/lib/catalog';
@@ -60,17 +62,29 @@ async function loadOrders(supabase: SupabaseClient, ids: string[]) {
 export async function shipOrders(ids: string[], taskKey: string | null): Promise<Result> {
   return wrap(async () => {
     const { supabase, user } = await owner();
-    const orders = (await loadOrders(supabase, ids)).filter(
+    let orders = (await loadOrders(supabase, ids)).filter(
       (o) => o.payment_status === 'paid' && (o.status === 'confirmed' || o.status === 'processing'),
     );
     if (!orders.length) return { ok: true, emailed: 0 };
+    // DHL labels for orders without a tracking number yet (pre-orders, or a failed automatic attempt).
+    // Orders whose label fails stay unshipped, so no "shipped" email goes out without tracking.
+    const labelErrors: string[] = [];
+    if (dhlLive()) {
+      const admin = createAdminClient();
+      for (const o of orders.filter((x) => !x.tracking && (x.carrier || 'DHL') === 'DHL')) {
+        const r = await createLabelForOrder(admin, o.id);
+        if (r.ok) o.tracking = r.shipmentNo;
+        else if (r.error) labelErrors.push(`${o.order_no}: ${r.error}`);
+      }
+      orders = orders.filter((o) => !!o.tracking || (o.carrier || 'DHL') !== 'DHL');
+      if (!orders.length) return { ok: false, error: labelErrors.join('\n') || 'DHL label failed' };
+    }
     const prev = orders.map((o) => ({ id: o.id, status: o.status }));
     const { error } = await supabase
       .from('orders')
       .update({ status: 'shipped', shipped_at: new Date().toISOString() })
       .in('id', orders.map((o) => o.id));
     if (error) throw error;
-    // TODO(dhl): create shipping labels through the DHL Parcel DE API and store the tracking number.
     let emailed = 0;
     for (const o of orders) {
       const r = await sendEmail({ to: o.email, ...shippedEmail({ ...o, carrier: o.carrier as string, tracking: o.tracking as string }, o.lang === 'en' ? 'en' : 'de') });
@@ -78,6 +92,7 @@ export async function shipOrders(ids: string[], taskKey: string | null): Promise
     }
     const text = orders.length === 1 ? `Shipped ${o0(orders).order_no}` : `Shipped ${orders.length} orders`;
     await log(supabase, user.id, text, taskKey, { type: 'ship', prev });
+    if (labelErrors.length) return { ok: false, error: `${text}. DHL-Label fehlgeschlagen für ${labelErrors.join('\n')}` };
     return { ok: true, emailed, emailOff: !emailConfigured() };
   });
 }
@@ -568,5 +583,37 @@ export async function testNotification(): Promise<{ ok: boolean; result?: Notify
   } catch (e) {
     console.error(e);
     return { ok: false };
+  }
+}
+
+// --- DHL ----------------------------------------------------------------------
+
+export async function createDhlLabel(id: string): Promise<Result> {
+  return wrap(async () => {
+    const { supabase, user } = await owner();
+    if (!dhlLive()) return { ok: false, error: 'DHL ist noch nicht eingerichtet' };
+    const r = await createLabelForOrder(createAdminClient(), id);
+    if (!r.ok) return { ok: false, error: r.error ?? `Kein Label (${r.skipped})` };
+    await log(supabase, user.id, `DHL label ${r.shipmentNo}`);
+    return { ok: true, data: r.shipmentNo };
+  });
+}
+
+export async function cancelDhlLabel(id: string): Promise<Result> {
+  return wrap(async () => {
+    const { supabase, user } = await owner();
+    await cancelLabelForOrder(createAdminClient(), id);
+    await log(supabase, user.id, 'DHL label cancelled');
+    return { ok: true };
+  });
+}
+
+export async function testDhlConnection(): Promise<Result> {
+  try {
+    await owner();
+    const r = await testDhl();
+    return { ok: true, data: r };
+  } catch (e) {
+    return fail(e);
   }
 }
