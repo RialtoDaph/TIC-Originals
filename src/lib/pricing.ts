@@ -31,6 +31,10 @@ export function checkCode(
   return null;
 }
 
+/** Joke-but-real shipping option: the CEO delivers in person. Flat price, never free, any country. */
+export const CEO_SHIP_CENTS = 1_000_000;
+export type ShipMethod = 'dhl' | 'ceo';
+
 export interface Totals {
   subtotalCents: number;
   discountCents: number;
@@ -46,14 +50,16 @@ export function computeTotals(input: {
   subtotalCents: number;
   discountCents: number;
   country: string;
+  method?: ShipMethod;
   settings: Pick<SiteSettings, 'freeShipCents' | 'shipDeCents' | 'shipIntlCents'>;
 }): Totals {
   const { subtotalCents, settings } = input;
   const discount = Math.min(input.discountCents, subtotalCents);
   const net = subtotalCents - discount;
   const domestic = input.country === 'DE';
-  const free = domestic && net >= settings.freeShipCents;
-  const shipping = subtotalCents === 0 || free ? 0 : domestic ? settings.shipDeCents : settings.shipIntlCents;
+  const ceo = input.method === 'ceo';
+  const free = !ceo && domestic && net >= settings.freeShipCents;
+  const shipping = subtotalCents === 0 ? 0 : ceo ? CEO_SHIP_CENTS : free ? 0 : domestic ? settings.shipDeCents : settings.shipIntlCents;
   return {
     subtotalCents,
     discountCents: discount,

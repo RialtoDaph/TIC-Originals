@@ -20,3 +20,16 @@ describe('order confirmation pre-order note', () => {
     expect(orderConfirmation(order, items, 'de', false).text).not.toContain('VORBESTELLUNG');
   });
 });
+
+describe('Delivery by CEO orders', () => {
+  const ceo = { ...order, carrier: 'CEO' };
+  it('explains the personal hand-over and promises no DHL tracking, even for pre-orders', () => {
+    const de = orderConfirmation(ceo, items, 'de', false, '2026-12-01').text;
+    expect(de).toContain('Delivery by CEO');
+    expect(de).not.toContain('bekommst du eine E-Mail mit der DHL-Sendungsnummer');
+    expect(orderConfirmation(ceo, items, 'en', false, '2026-12-01').text).not.toContain("you'll get an email with the DHL tracking number");
+  });
+  it('leaves DHL orders unchanged', () => {
+    expect(orderConfirmation({ ...order, carrier: 'DHL' }, items, 'de', false).text).not.toContain('Delivery by CEO');
+  });
+});

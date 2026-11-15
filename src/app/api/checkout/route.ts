@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { priceCart, sanitizeItems } from '@/lib/checkout';
+import type { ShipMethod } from '@/lib/pricing';
 import { addressErrors, cleanAddress } from '@/lib/validation';
 import { stripe } from '@/lib/stripe';
 import { loadCurrentDrop } from '@/lib/catalog';
@@ -35,10 +36,11 @@ async function handle(req: Request) {
   if (Object.keys(addressErrors(addr)).length) return NextResponse.json({ error: 'invalid' }, { status: 400 });
   const lang = body.lang === 'en' ? 'en' : 'de';
   const items = sanitizeItems(body.items);
+  const shipMethod: ShipMethod = body.shipMethod === 'ceo' ? 'ceo' : 'dhl';
 
   if (isShopLocked(await loadCurrentDrop(admin))) return NextResponse.json({ error: 'locked' }, { status: 409 });
 
-  const priced = await priceCart(admin, { items, code: body.code ?? null, email: addr.email, country: addr.country, lang });
+  const priced = await priceCart(admin, { items, code: body.code ?? null, email: addr.email, country: addr.country, lang, shipMethod });
   if (!priced.ok) return NextResponse.json({ error: priced.error, name: priced.name, size: priced.size }, { status: 409 });
   if (body.code && priced.codeProblem) {
     return NextResponse.json({ error: 'code', problem: priced.codeProblem, minCents: priced.codeMinCents }, { status: 409 });
@@ -76,6 +78,8 @@ async function handle(req: Request) {
     discount_cents: totals.discountCents,
     shipping_cents: totals.shippingCents,
     total_cents: totals.totalCents,
+    // Only set for CEO orders, so normal checkouts keep working even before the carrier migration is applied.
+    ...(shipMethod === 'ceo' ? { carrier: 'CEO' } : {}),
   };
   const shipping = {
     name: `${addr.first} ${addr.last}`,

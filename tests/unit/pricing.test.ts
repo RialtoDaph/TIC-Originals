@@ -23,6 +23,10 @@ describe('computeTotals (checkout reference rules)', () => {
     expect(t.shippingCents).toBe(495);
     expect(t.totalCents).toBe(8978 - 1347 + 495);
   });
+  it('charges the flat 10.000 € for Delivery by CEO, even above the free-shipping threshold', () => {
+    const t = computeTotals({ subtotalCents: 20000, discountCents: 0, country: 'DE', method: 'ceo', settings });
+    expect(t).toMatchObject({ shippingCents: 1_000_000, totalCents: 1_020_000 });
+  });
   it('ships free at exactly the threshold within Germany', () => {
     expect(computeTotals({ subtotalCents: 8000, discountCents: 0, country: 'DE', settings }).shippingCents).toBe(0);
   });
