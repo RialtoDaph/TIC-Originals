@@ -41,6 +41,8 @@ export interface OOrder {
   method: string;
   carrier: string;
   tracking: string;
+  hasLabel: boolean;
+  labelError: string;
   note: string;
   flags: string[];
   invoiceNo: string | null;

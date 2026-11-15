@@ -45,6 +45,8 @@ export function mapOrder(r: Row): OOrder {
     method: r.payment_method as string,
     carrier: r.carrier as string,
     tracking: r.tracking as string,
+    hasLabel: !!r.label_path,
+    labelError: (r.label_error as string) ?? '',
     note: r.note as string,
     flags: (r.flags as string[]) ?? [],
     invoiceNo: (r.invoice_no as string) ?? null,
