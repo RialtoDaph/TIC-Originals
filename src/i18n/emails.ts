@@ -2,6 +2,7 @@
 import type { Lang } from '@/lib/types';
 import { fmtCents } from '@/lib/format';
 import { countryName } from '@/lib/countries';
+import { POLICY_T, withdrawalSections } from './policies';
 
 export interface EmailOrder {
   order_no: string;
@@ -50,6 +51,16 @@ function lines(items: EmailItem[], o: EmailOrder, lang: Lang) {
   ].join('\n');
 }
 
+const RULE = '────────────────────────────';
+
+/** Widerrufsbelehrung and Muster-Widerrufsformular in full, as § 312f BGB requires them on a durable medium. */
+function withdrawalInfo(lang: Lang) {
+  const sections = withdrawalSections(lang).map(([h, p]) => `${h.toUpperCase()}\n\n${p}`);
+  const formH = lang === 'de' ? 'MUSTER-WIDERRUFSFORMULAR' : 'SAMPLE WITHDRAWAL FORM';
+  const formIntro = lang === 'de' ? '(Wenn du den Vertrag widerrufen willst, dann fülle bitte dieses Formular aus und sende es zurück.)' : '(Complete and return this form only if you wish to withdraw from the contract.)';
+  return [RULE, lang === 'de' ? 'WIDERRUFSBELEHRUNG' : 'INFORMATION ON THE RIGHT OF WITHDRAWAL', RULE, '', sections.join('\n\n'), '', RULE, formH, RULE, '', formIntro, '', POLICY_T[lang].formText].join('\n');
+}
+
 function address(o: EmailOrder, lang: Lang) {
   return [`${o.first_name} ${o.last_name}`, o.street, o.extra, `${o.zip} ${o.city}`, countryName(o.country, lang)].filter(Boolean).join('\n');
 }
@@ -71,9 +82,11 @@ export function orderConfirmation(o: EmailOrder, items: EmailItem[], lang: Lang,
         '',
         `Bestellung verfolgen: ${site()}/policies/tracking`,
         `AGB: ${site()}/policies/agb`,
-        `Widerrufsbelehrung und Muster-Widerrufsformular: ${site()}/policies/widerruf`,
+        `Widerrufsbelehrung und Muster-Widerrufsformular (auch unten in dieser E-Mail): ${site()}/policies/widerruf`,
         '',
         sig,
+        '',
+        withdrawalInfo(lang),
       ].join('\n'),
     };
   }
@@ -92,9 +105,11 @@ export function orderConfirmation(o: EmailOrder, items: EmailItem[], lang: Lang,
       '',
       `Track your order: ${site()}/policies/tracking`,
       `Terms: ${site()}/policies/agb`,
-      `Right of withdrawal and sample form: ${site()}/policies/widerruf`,
+      `Right of withdrawal and sample form (also included below): ${site()}/policies/widerruf`,
       '',
       sig,
+      '',
+      withdrawalInfo(lang),
     ].join('\n'),
   };
 }

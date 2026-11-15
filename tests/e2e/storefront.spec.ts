@@ -83,8 +83,8 @@ test('checkout API → Stripe webhook creates the order, takes stock, shows than
 
   await page.goto(`/checkout/success?payment_intent=${pi}`);
   await expect(page.getByRole('heading', { name: 'Danke für deine Bestellung' })).toBeVisible();
-  await expect(page.getByText(`Bestellung ${orderNo}`)).toBeVisible();
-  await expect(page.getByText('neu@kunde.de')).toBeVisible();
+  await expect(page.getByText(`Bestellung ${orderNo}`).first()).toBeVisible();
+  await expect(page.getByText('neu@kunde.de').first()).toBeVisible();
 
   // Public tracking shows the order without personal data.
   await page.goto(`/policies/tracking?no=${orderNo}`);

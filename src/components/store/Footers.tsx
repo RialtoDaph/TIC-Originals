@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useStore } from './StoreProvider';
-import { InstagramIcon, TikTokIcon, WhatsAppIcon } from './icons';
+import { InstagramIcon, TikTokIcon } from './icons';
 import { COMPANY_ADDRESS_LINE, LINKS, LINK_LABELS, PAYMENT_BADGES, SHORT_LINK_LABELS } from '@/i18n/storefront';
 import { SITE_IMAGES } from '@/lib/images';
 import { Photo } from './Photo';
@@ -89,20 +89,6 @@ export function HomeFooter() {
   const gallery = [...SITE_IMAGES.gallery, ...SITE_IMAGES.gallery];
   return (
     <footer className={s.home}>
-      <div className={s.commWrap}>
-        <div className={s.comm}>
-          <span className={s.commIcon}>
-            <WhatsAppIcon />
-          </span>
-          <div className={s.commText}>
-            <span className={s.commTitle}>{t.commTitle}</span>
-            <span className={s.commSub}>{t.commSub}</span>
-          </div>
-          <a href={SOCIAL.community} className={s.join} target="_blank" rel="noreferrer">
-            {t.join}
-          </a>
-        </div>
-      </div>
       <div className={s.galleryWrap}>
         <div className={s.galleryClip}>
           <div className={s.galleryTrack}>
