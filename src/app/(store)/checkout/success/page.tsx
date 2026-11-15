@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { CheckoutSuccess } from '@/components/store/pages/CheckoutSuccess';
 import { stripe } from '@/lib/stripe';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { orderShipDate } from '@/lib/preorder-order';
 
 export const metadata: Metadata = { title: 'Danke', robots: { index: false } };
 
@@ -12,16 +13,19 @@ export default async function Page({ searchParams }: PageProps<'/checkout/succes
   let state: 'ok' | 'pending' | 'failed' | 'unknown' = 'unknown';
   let orderNo = '';
   let email = '';
+  let ships: string | 'tbd' | null = null;
   if (/^pi_[A-Za-z0-9_]+$/.test(piId)) {
     try {
       const pi = await stripe().paymentIntents.retrieve(piId);
       state = pi.status === 'succeeded' ? 'ok' : pi.status === 'processing' ? 'pending' : pi.status === 'requires_payment_method' ? 'failed' : 'unknown';
-      const { data } = await createAdminClient().from('checkouts').select('order_no, email').eq('payment_intent_id', piId).maybeSingle();
+      const admin = createAdminClient();
+      const { data } = await admin.from('checkouts').select('order_no, email, items').eq('payment_intent_id', piId).maybeSingle();
       orderNo = data?.order_no ?? '';
       email = data?.email ?? '';
+      ships = await orderShipDate(admin, ((data?.items as { product_id: string }[] | null) ?? []).map((i) => i.product_id));
     } catch (e) {
       console.error('success page', e);
     }
   }
-  return <CheckoutSuccess state={state} orderNo={orderNo} email={email} />;
+  return <CheckoutSuccess state={state} orderNo={orderNo} email={email} ships={ships} />;
 }

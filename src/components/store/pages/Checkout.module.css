@@ -71,6 +71,7 @@
 .orderNo { font-family: ui-monospace, Menlo, monospace; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #6e6e6e; }
 .thanks { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(48px, 9vw, 96px); line-height: 0.88; text-transform: uppercase; }
 .doneP { margin: 0; font-size: 16px; line-height: 1.6; color: #444; text-wrap: pretty; }
+.shipsBy { border-left: 3px solid #9ef2ff; padding: 10px 14px; background: #f3fdff; color: #111; }
 .steps { display: flex; flex-direction: column; border-top: 2px solid #111; }
 .step { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; padding: 16px 0; border-bottom: 1px solid #e4e4e4; font-size: 14px; line-height: 1.5; }
 .stepN { font-family: ui-monospace, Menlo, monospace; color: #5fc7d6; font-weight: 700; }

@@ -2,6 +2,7 @@
 import type { Lang } from '@/lib/types';
 import { fmtCents } from '@/lib/format';
 import { countryName } from '@/lib/countries';
+import { fmtShipDate } from '@/lib/preorder';
 import { POLICY_T, withdrawalSections } from './policies';
 
 export interface EmailOrder {
@@ -65,7 +66,20 @@ function address(o: EmailOrder, lang: Lang) {
   return [`${o.first_name} ${o.last_name}`, o.street, o.extra, `${o.zip} ${o.city}`, countryName(o.country, lang)].filter(Boolean).join('\n');
 }
 
-export function orderConfirmation(o: EmailOrder, items: EmailItem[], lang: Lang, paymentPending: boolean): Email {
+/** Pre-order paragraph: when the order ships and that the tracking number follows by email. */
+function preorderInfo(ships: string | 'tbd' | null, lang: Lang): string {
+  if (!ships) return '';
+  if (lang === 'de') {
+    return ships === 'tbd'
+      ? '\nVORBESTELLUNG: Deine Bestellung enthält Vorbestellartikel. Den Versandtermin teilen wir dir per E-Mail mit, sobald er feststeht. Wir versenden die gesamte Bestellung zusammen.'
+      : `\nVORBESTELLUNG: Deine Bestellung enthält Vorbestellartikel. Wir versenden die gesamte Bestellung spätestens am ${fmtShipDate(ships, lang)}. Sobald sie unterwegs ist, bekommst du eine E-Mail mit der DHL-Sendungsnummer.`;
+  }
+  return ships === 'tbd'
+    ? "\nPRE-ORDER: Your order contains pre-order items. We'll email you the shipping date as soon as it's set. The whole order ships together."
+    : `\nPRE-ORDER: Your order contains pre-order items. We ship the whole order by ${fmtShipDate(ships, lang)} at the latest. Once it's on its way, you'll get an email with the DHL tracking number.`;
+}
+
+export function orderConfirmation(o: EmailOrder, items: EmailItem[], lang: Lang, paymentPending: boolean, ships: string | 'tbd' | null = null): Email {
   if (lang === 'de') {
     return {
       subject: `Bestellbestätigung ${o.order_no}`,
@@ -74,6 +88,7 @@ export function orderConfirmation(o: EmailOrder, items: EmailItem[], lang: Lang,
         '',
         `danke für deine Bestellung ${o.order_no}. Hiermit bestätigen wir den Eingang und nehmen deine Bestellung an.`,
         paymentPending ? 'Deine Lastschrift wird noch von der Bank bestätigt. Wir versenden, sobald die Zahlung eingegangen ist.' : '',
+        preorderInfo(ships, lang),
         '',
         lines(items, o, lang),
         '',
@@ -97,6 +112,7 @@ export function orderConfirmation(o: EmailOrder, items: EmailItem[], lang: Lang,
       '',
       `thanks for your order ${o.order_no}. This email confirms we received and accepted your order.`,
       paymentPending ? "Your direct debit is still being confirmed by the bank. We'll ship as soon as the payment arrives." : '',
+      preorderInfo(ships, lang),
       '',
       lines(items, o, lang),
       '',

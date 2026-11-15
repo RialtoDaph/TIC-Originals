@@ -6,10 +6,11 @@ import { useStore } from '../StoreProvider';
 import { CheckoutHeader } from '../Headers';
 import { CheckoutFooter } from '../Footers';
 import { CLAIMED_CODE_KEY } from '@/lib/constants';
+import { fmtShipDate } from '@/lib/preorder';
 import s from './Checkout.module.css';
 
-export function CheckoutSuccess({ state, orderNo, email }: { state: 'ok' | 'pending' | 'failed' | 'unknown'; orderNo: string; email: string }) {
-  const { t, clearCart, cartLoaded } = useStore();
+export function CheckoutSuccess({ state, orderNo, email, ships = null }: { state: 'ok' | 'pending' | 'failed' | 'unknown'; orderNo: string; email: string; ships?: string | 'tbd' | null }) {
+  const { t, lang, clearCart, cartLoaded } = useStore();
   const placed = state === 'ok' || state === 'pending';
 
   useEffect(() => {
@@ -32,6 +33,7 @@ export function CheckoutSuccess({ state, orderNo, email }: { state: 'ok' | 'pend
             <h1 className={s.thanks}>{t.thanks}</h1>
             <p className={s.doneP}>{t.done(email)}</p>
             {state === 'pending' && <p className={s.doneP}>{t.pendingPayment}</p>}
+            {ships && <p className={`${s.doneP} ${s.shipsBy}`}>{t.successPreorder(ships === 'tbd' ? null : fmtShipDate(ships, lang))}</p>}
             <div className={s.steps}>
               {t.next.map((n) => (
                 <div key={n.n} className={s.step}>

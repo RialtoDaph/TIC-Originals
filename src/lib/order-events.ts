@@ -4,6 +4,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { sendEmail } from './email';
 import { notifyOwner } from './notify';
 import { createLabelForOrder } from './dhl';
+import { orderShipDate } from './preorder-order';
 import { fmtCents } from './format';
 import { orderConfirmation, paymentFailedEmail, type EmailItem, type EmailOrder } from '@/i18n/emails';
 import type { Lang } from './types';
@@ -21,7 +22,8 @@ export async function afterOrderEvent(admin: SupabaseClient, orderId: string, ev
 
   if (event === 'created_paid' || event === 'created_pending') {
     await flagPreorder(admin, order.id, order.order_items.map((i) => i.product_id).filter(Boolean) as string[]);
-    const mail = orderConfirmation(order, order.order_items, lang, event === 'created_pending');
+    const ships = await orderShipDate(admin, order.order_items.map((i) => i.product_id).filter(Boolean) as string[]).catch(() => null);
+    const mail = orderConfirmation(order, order.order_items, lang, event === 'created_pending', ships);
     await sendEmail({ to: order.email, ...mail });
     const items = order.order_items.reduce((a, i) => a + i.qty, 0);
     await notifyOwner('order', `🛍 Neue Bestellung ${order.order_no} · ${order.first_name} ${order.last_name} · ${items} Artikel · ${fmtCents(order.total_cents, 'de')}`);
