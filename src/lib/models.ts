@@ -5,6 +5,9 @@ import type { Product } from './types';
 
 const key = (p: Product) => p.model.trim().toLowerCase() || 'id:' + p.id;
 
+/** Name without the colour suffix ("Chosen1 Crewneck — Grau" → "Chosen1 Crewneck"): the swatches show the colour. */
+export const displayName = (p: Product) => p.model.trim() || p.name;
+
 /** All colours of p's model in catalogue order (just [p] for a standalone product). */
 export function colorsOf(p: Product, products: Product[]): Product[] {
   const k = key(p);

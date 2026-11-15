@@ -7,7 +7,7 @@ import { HomeHeader } from '../Headers';
 import { HomeFooter } from '../Footers';
 import { CartDrawer } from '../CartDrawer';
 import { categoryLabel } from '@/lib/categories';
-import { colorsOf, onePerModel } from '@/lib/models';
+import { colorsOf, displayName, onePerModel } from '@/lib/models';
 import { ColorDots } from '../Swatches';
 import { SITE_IMAGES, img } from '@/lib/images';
 import type { Lang, Product } from '@/lib/types';
@@ -82,7 +82,7 @@ function ProductTile({ p, index }: { p: Product; index: number }) {
         {justAdded && <span className={s.added}>{t.added}</span>}
       </Link>
       <Link href={href} className={s.name}>
-        {p.name}
+        {displayName(p)}
       </Link>
       <ColorDots colors={colors} label={t.colorsN(colors.length)} />
       <div className={s.details}>
