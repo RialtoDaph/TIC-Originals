@@ -77,8 +77,9 @@ async function handle(req: Request) {
     discount_code: priced.code?.code ?? null,
     discount_cents: totals.discountCents,
     shipping_cents: totals.shippingCents,
-    carrier: shipMethod === 'ceo' ? 'CEO' : 'DHL',
     total_cents: totals.totalCents,
+    // Only set for CEO orders, so normal checkouts keep working even before the carrier migration is applied.
+    ...(shipMethod === 'ceo' ? { carrier: 'CEO' } : {}),
   };
   const shipping = {
     name: `${addr.first} ${addr.last}`,

@@ -67,16 +67,16 @@ function address(o: EmailOrder, lang: Lang) {
 }
 
 /** Pre-order paragraph: when the order ships and that the tracking number follows by email. */
-function preorderInfo(ships: string | 'tbd' | null, lang: Lang): string {
+function preorderInfo(ships: string | 'tbd' | null, lang: Lang, ceo = false): string {
   if (!ships) return '';
   if (lang === 'de') {
     return ships === 'tbd'
       ? '\nVORBESTELLUNG: Deine Bestellung enthält Vorbestellartikel. Den Versandtermin teilen wir dir per E-Mail mit, sobald er feststeht. Wir versenden die gesamte Bestellung zusammen.'
-      : `\nVORBESTELLUNG: Deine Bestellung enthält Vorbestellartikel. Wir versenden die gesamte Bestellung spätestens am ${fmtShipDate(ships, lang)}. Sobald sie unterwegs ist, bekommst du eine E-Mail mit der DHL-Sendungsnummer.`;
+      : `\nVORBESTELLUNG: Deine Bestellung enthält Vorbestellartikel. Wir versenden die gesamte Bestellung spätestens am ${fmtShipDate(ships, lang)}. ${ceo ? 'Wir melden uns, um die Übergabe mit dir abzusprechen.' : 'Sobald sie unterwegs ist, bekommst du eine E-Mail mit der DHL-Sendungsnummer.'}`;
   }
   return ships === 'tbd'
     ? "\nPRE-ORDER: Your order contains pre-order items. We'll email you the shipping date as soon as it's set. The whole order ships together."
-    : `\nPRE-ORDER: Your order contains pre-order items. We ship the whole order by ${fmtShipDate(ships, lang)} at the latest. Once it's on its way, you'll get an email with the DHL tracking number.`;
+    : `\nPRE-ORDER: Your order contains pre-order items. We ship the whole order by ${fmtShipDate(ships, lang)} at the latest. ${ceo ? "We'll contact you to agree the hand-over." : "Once it's on its way, you'll get an email with the DHL tracking number."}`;
 }
 
 /** Orders with the CEO shipping option: no DHL tracking, the date is agreed by email. */
@@ -96,7 +96,7 @@ export function orderConfirmation(o: EmailOrder, items: EmailItem[], lang: Lang,
         '',
         `danke für deine Bestellung ${o.order_no}. Hiermit bestätigen wir den Eingang und nehmen deine Bestellung an.`,
         paymentPending ? 'Deine Lastschrift wird noch von der Bank bestätigt. Wir versenden, sobald die Zahlung eingegangen ist.' : '',
-        preorderInfo(ships, lang),
+        preorderInfo(ships, lang, o.carrier === 'CEO'),
         ceoInfo(o, lang),
         '',
         lines(items, o, lang),
@@ -121,7 +121,7 @@ export function orderConfirmation(o: EmailOrder, items: EmailItem[], lang: Lang,
       '',
       `thanks for your order ${o.order_no}. This email confirms we received and accepted your order.`,
       paymentPending ? "Your direct debit is still being confirmed by the bank. We'll ship as soon as the payment arrives." : '',
-      preorderInfo(ships, lang),
+      preorderInfo(ships, lang, o.carrier === 'CEO'),
       ceoInfo(o, lang),
       '',
       lines(items, o, lang),
@@ -141,7 +141,8 @@ export function orderConfirmation(o: EmailOrder, items: EmailItem[], lang: Lang,
 }
 
 export function shippedEmail(o: EmailOrder, lang: Lang): Email {
-  const tracking = o.tracking ? `${o.carrier}: ${o.tracking}` : o.carrier ?? '';
+  const ceo = o.carrier === 'CEO';
+  const tracking = ceo ? '' : o.tracking ? `${o.carrier}: ${o.tracking}` : o.carrier ?? '';
   return lang === 'de'
     ? {
         subject: `Deine Bestellung ${o.order_no} ist unterwegs`,
