@@ -3,7 +3,7 @@
 import { dm, restockSuggestions, shortName, SIZES } from '@/lib/owner/derive';
 import { categoryLabel } from '@/lib/categories';
 import { TONE } from '@/lib/tokens';
-import { addStock, setProductVisible, setRestockOrdered, type ProductDraft } from '@/app/owner/actions';
+import { addStock, deleteProduct, setProductVisible, setRestockOrdered, type ProductDraft } from '@/app/owner/actions';
 import { useOwner } from '../OwnerContext';
 import { sx } from '../sx';
 import { S, Thumb, Toggle } from '../ui';
@@ -39,7 +39,7 @@ export function productDraft(p?: OProduct): ProductDraft {
 export function ProductsTab() {
   const { data, t, now, setUi, run, eur, busy } = useOwner();
   const rs = restockSuggestions(data.products, data.orders, now);
-  const grid = `minmax(0,2.2fr) 84px repeat(${SIZES.length},54px) minmax(0,1fr) 84px 50px`;
+  const grid = `minmax(0,2.2fr) 84px repeat(${SIZES.length},54px) minmax(0,1fr) 84px 110px`;
 
   return (
     <>
@@ -116,9 +116,22 @@ export function ProductsTab() {
               })}
               <span style={{ fontSize: 12, color: w.length ? '#A9BCFF' : '#4A505A' }}>{w.length ? w.map(([z, n]) => t.waitingFor(n, z)).join(', ') : '—'}</span>
               <Toggle on={p.visible} label={`${p.name}: ${t.prodHead.visible}`} disabled={busy} onClick={() => run(() => setProductVisible(p.id, !p.visible), p.visible ? t.hidden(shortName(p.name)) : t.visibleNow(shortName(p.name)))} />
-              <button onClick={() => setUi({ modal: { kind: 'product', draft: productDraft(p) }, modalErr: '' })} style={S.linkBtn}>
-                {t.edit}
-              </button>
+              <span style={sx('display:flex;align-items:center;gap:12px')}>
+                <button onClick={() => setUi({ modal: { kind: 'product', draft: productDraft(p) }, modalErr: '' })} style={S.linkBtn}>
+                  {t.edit}
+                </button>
+                {!p.visible && (
+                  <button
+                    disabled={busy}
+                    onClick={() => {
+                      if (window.confirm(t.deleteProductAsk(shortName(p.name)))) run(() => deleteProduct(p.id), t.productDeleted(shortName(p.name)));
+                    }}
+                    style={{ ...S.linkBtn, color: '#FF6B5E' }}
+                  >
+                    {t.deleteProduct}
+                  </button>
+                )}
+              </span>
             </div>
           );
         })}

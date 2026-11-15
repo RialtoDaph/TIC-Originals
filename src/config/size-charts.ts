@@ -29,4 +29,14 @@ export const SIZE_CHARTS: Record<string, SizeChart> = {
   },
 };
 
+// Slim tee, XS–L. Values are standard slim-fit measurements: confirm with the manufacturer before launch.
+SIZE_CHARTS['I Love My Choppa Slim Tee'] = {
+  sizes: ['XS', 'S', 'M', 'L'],
+  rows: [
+    { de: 'Brustbreite', en: 'Chest width', howDe: 'Flach gemessen, von Achsel zu Achsel', howEn: 'Measured flat, armpit to armpit', cm: [44, 46, 48, 50] },
+    { de: 'Länge', en: 'Length', howDe: 'Vom höchsten Schulterpunkt bis zum Saum', howEn: 'From the highest shoulder point to the hem', cm: [62, 64, 66, 68] },
+    { de: 'Schulterbreite', en: 'Shoulder width', howDe: 'Flach gemessen, von Naht zu Naht', howEn: 'Measured flat, seam to seam', cm: [39, 41, 43, 45] },
+  ],
+};
+
 export const sizeChartFor = (model: string) => SIZE_CHARTS[model] ?? null;

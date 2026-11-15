@@ -58,7 +58,7 @@ function HeroVideo() {
     if (!saveData && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) v.play().catch(() => {});
   }, []);
   return (
-    <video ref={ref} poster={img(SITE_IMAGES.hero)} className={`${s.heroVideo} tic-bw`} muted loop playsInline preload="none" aria-hidden="true">
+    <video ref={ref} poster={img(SITE_IMAGES.hero)} className={s.heroVideo} muted loop playsInline preload="none" aria-hidden="true">
       {/* Phones get a smaller portrait crop (~0.3 MB instead of ~0.9 MB). */}
       <source src={img(SITE_IMAGES.heroVideoMobile)} type="video/mp4" media="(max-width: 700px)" />
       <source src={img(SITE_IMAGES.heroVideo)} type="video/mp4" />
