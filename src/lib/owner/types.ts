@@ -21,6 +21,8 @@ export interface OOrder {
   returnedAt: string | null;
   refundedAt: string | null;
   remindedAt: string | null;
+  /** When the customer's withdrawal (Widerruf) declaration arrived through the website, if any. */
+  withdrawnAt: string | null;
   firstName: string;
   lastName: string;
   email: string;
