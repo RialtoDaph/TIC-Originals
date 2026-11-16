@@ -17,6 +17,7 @@ const GOOGLE_LOGIN = process.env.NEXT_PUBLIC_GOOGLE_LOGIN === 'true';
 import { SITE_IMAGES, img } from '@/lib/images';
 import { STORE_STATUS_BG } from '@/lib/tokens';
 import { LINK_LABELS } from '@/i18n/storefront';
+import { isValidOtp } from '@/lib/otp';
 import { deleteAccount, makeDefaultAddress, saveAddress, type AddressForm } from '@/app/(store)/account/actions';
 import s from './Account.module.css';
 
@@ -80,7 +81,7 @@ function AuthForm() {
     if (!f.pw2) e.pw2 = 'req';
     else if (f.pw2 !== f.pw) e.pw2 = 'mismatch';
   }
-  if (mode === 'otp' && !/^\d{6,8}$/.test(f.otp.trim())) e.otp = 'badOtp';
+  if (mode === 'otp' && !isValidOtp(f.otp)) e.otp = 'badOtp';
 
   const fld = (k: keyof typeof f, label: string, type: string, ac: string, span: 1 | 2) => {
     const err = tried && e[k];
