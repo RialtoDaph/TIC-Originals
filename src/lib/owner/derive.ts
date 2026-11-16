@@ -32,6 +32,19 @@ export function lastDays(now: Date, n: number, offset = 0) {
 export const isPaid = (o: OOrder) => o.payment === 'paid';
 export const toShip = (o: OOrder) => o.payment === 'paid' && (o.status === 'confirmed' || o.status === 'processing');
 export const needsAtt = (o: OOrder) => o.status === 'returned' && o.payment === 'paid';
+/** § 357 BGB: the refund is due within 14 days of receiving the withdrawal declaration. */
+export const WITHDRAWAL_REFUND_DAYS = 14;
+
+/**
+ * Where an open withdrawal stands: which day it is (1 = day received) and how many days are left.
+ * Null when there is no withdrawal or it is already refunded / not paid.
+ */
+export function withdrawalClock(o: OOrder, now = Date.now()) {
+  if (!o.withdrawnAt || o.payment !== 'paid') return null;
+  const day = Math.floor((now - new Date(o.withdrawnAt).getTime()) / DAY) + 1;
+  return { day: Math.max(day, 1), left: WITHDRAWAL_REFUND_DAYS - Math.max(day, 1), urgent: WITHDRAWAL_REFUND_DAYS - Math.max(day, 1) <= 3 };
+}
+
 export const awaiting = (o: OOrder) => o.payment === 'pending' && o.status === 'pending';
 export const onTheWay = (o: OOrder) => o.status === 'shipped';
 

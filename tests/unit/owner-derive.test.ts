@@ -13,6 +13,7 @@ import {
   shortNo,
   statusOf,
   toCsv,
+  withdrawalClock,
 } from '@/lib/owner/derive';
 import type { OOrder, OProduct } from '@/lib/owner/types';
 
@@ -30,6 +31,7 @@ function order(p: Partial<OOrder> = {}): OOrder {
     shippedAt: null,
     deliveredAt: null,
     returnedAt: null,
+    withdrawnAt: null,
     refundedAt: null,
     remindedAt: null,
     firstName: 'A',
@@ -192,5 +194,22 @@ describe('helpers', () => {
   it('formats compact order numbers and Berlin days', () => {
     expect(shortNo('TIC-2026-AB12CD')).toBe('TIC-AB12CD');
     expect(berlinDay('2026-10-19T22:30:00Z')).toBe('2026-10-20');
+  });
+});
+
+describe('withdrawalClock', () => {
+  const day = 864e5;
+  const now = new Date('2026-11-16T12:00:00Z').getTime();
+  const paid = (withdrawnAt: string | null, payment: 'paid' | 'refunded' = 'paid') => ({ ...order(), payment, withdrawnAt });
+  it('counts day 1 on the day the declaration arrives', () => {
+    expect(withdrawalClock(paid(new Date(now - 3600e3).toISOString()), now)).toEqual({ day: 1, left: 13, urgent: false });
+  });
+  it('turns urgent with 3 days or less left and overdue after 14', () => {
+    expect(withdrawalClock(paid(new Date(now - 11 * day).toISOString()), now)?.urgent).toBe(true);
+    expect(withdrawalClock(paid(new Date(now - 15 * day).toISOString()), now)?.left).toBeLessThan(0);
+  });
+  it('is null without a withdrawal or once refunded', () => {
+    expect(withdrawalClock(paid(null), now)).toBeNull();
+    expect(withdrawalClock(paid(new Date(now - day).toISOString(), 'refunded'), now)).toBeNull();
   });
 });

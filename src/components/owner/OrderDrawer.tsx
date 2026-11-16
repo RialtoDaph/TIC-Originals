@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { countryName } from '@/lib/countries';
-import { awaiting, customerName, customerStats, needsAtt, shortName, toShip } from '@/lib/owner/derive';
+import { awaiting, customerName, customerStats, needsAtt, shortName, toShip, dm, DAY, WITHDRAWAL_REFUND_DAYS, withdrawalClock } from '@/lib/owner/derive';
 import { TONE } from '@/lib/tokens';
 import { cancelAndRefund, cancelDhlLabel, createDhlLabel, deleteOrder, emailInvoice, markDelivered, markReturned, refundOrder, remindPayment, shipOrders, updateOrderFields } from '@/app/owner/actions';
 import { useOwner } from './OwnerContext';
@@ -14,6 +14,7 @@ const CARRIERS = ['DHL', 'DPD', 'Hermes', 'UPS', 'GLS'];
 export function OrderDrawer() {
   const { data, t, ui, setUi, run, eur, busy } = useOwner();
   const od = data.orders.find((o) => o.id === ui.orderId);
+  const wc = od ? withdrawalClock(od) : null;
   const closeRef = useRef<HTMLButtonElement>(null);
   const [tracking, setTracking] = useState(od?.tracking ?? '');
   const [note, setNote] = useState(od?.note ?? '');
@@ -75,7 +76,7 @@ export function OrderDrawer() {
           <div style={{ ...sx('margin:0 22px 12px;padding:10px 14px;border-radius:12px;font-size:13px'), background: TONE.red[0], color: TONE.red[1] }}>{t.flags.oversold}</div>
         )}
         {od.flags.includes('withdrawal') && od.payment === 'paid' && (
-          <div style={{ ...sx('margin:0 22px 12px;padding:10px 14px;border-radius:12px;font-size:13px'), background: TONE.amber[0], color: TONE.amber[1] }}>{t.flags.withdrawalNote}</div>
+          <div style={{ ...sx('margin:0 22px 12px;padding:10px 14px;border-radius:12px;font-size:13px'), background: TONE.amber[0], color: TONE.amber[1] }}>{t.flags.withdrawalNote}{wc && ' ' + t.flags.withdrawalDue(dm(new Date(new Date(od.withdrawnAt!).getTime() + WITHDRAWAL_REFUND_DAYS * DAY).toISOString()), wc.left)}</div>
         )}
         {od.flags.includes('preorder') && (
           <div style={{ ...sx('margin:0 22px 12px;padding:10px 14px;border-radius:12px;font-size:13px'), background: TONE.blue[0], color: TONE.blue[1] }}>{t.flags.preorderNote}</div>

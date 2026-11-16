@@ -217,6 +217,7 @@ const de = {
   myAcc: 'Mein Konto',
   hi: (n: string) => 'Hey ' + n,
   logout: 'Abmelden',
+  ownerDash: 'Dashboard',
   accTabs: ['Bestellungen', 'Adressen', 'Meine Daten'],
   track: 'Sendung verfolgen',
   st: {
@@ -461,6 +462,7 @@ const en: Dict = {
   myAcc: 'My account',
   hi: (n) => 'Hey ' + n,
   logout: 'Log out',
+  ownerDash: 'Dashboard',
   accTabs: ['Orders', 'Addresses', 'My details'],
   track: 'Track parcel',
   st: {

@@ -25,6 +25,7 @@ export function mapOrder(r: Row): OOrder {
     returnedAt: (r.returned_at as string) ?? null,
     refundedAt: (r.refunded_at as string) ?? null,
     remindedAt: (r.reminded_at as string) ?? null,
+    withdrawnAt: ((r.withdrawals as Row[] | null) ?? []).map((w) => w.received_at as string).sort()[0] ?? null,
     firstName: r.first_name as string,
     lastName: r.last_name as string,
     email: r.email as string,
@@ -77,7 +78,7 @@ export async function loadOwnerData(supabase: SupabaseClient): Promise<OwnerData
   const year = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Berlin', year: 'numeric' }).format(now);
 
   const [orders, products, waitlist, restock, codes, bundles, checkouts, drops, settings, notif, activity, vip, kuAck] = await Promise.all([
-    supabase.from('orders').select('*, order_items(*)').is('deleted_at', null).order('placed_at', { ascending: false }),
+    supabase.from('orders').select('*, order_items(*), withdrawals(received_at)').is('deleted_at', null).order('placed_at', { ascending: false }),
     supabase.from('products').select('*, product_variants(id, size, stock, sort_order)').order('sort_order').order('created_at'),
     supabase.from('waitlist').select('product_id, size').is('notified_at', null),
     supabase.from('restock_marks').select('product_id'),

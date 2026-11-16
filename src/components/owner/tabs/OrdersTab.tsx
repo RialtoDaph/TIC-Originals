@@ -1,6 +1,6 @@
 'use client';
 
-import { awaiting, customerName, shortNo, deDec, dm, itemsText, needsAtt, statusOf, toCsv, toShip } from '@/lib/owner/derive';
+import { awaiting, customerName, shortNo, deDec, dm, itemsText, needsAtt, statusOf, toCsv, toShip, withdrawalClock } from '@/lib/owner/derive';
 import type { OOrder } from '@/lib/owner/types';
 import { TONE } from '@/lib/tokens';
 import { markDelivered, refundOrder, remindPayment, shipOrders } from '@/app/owner/actions';
@@ -21,7 +21,7 @@ const LF: Record<UiState['lf'], (o: OOrder) => boolean> = {
   ship: toShip,
   way: (o) => o.status === 'shipped',
   done: (o) => o.status === 'delivered',
-  issue: (o) => needsAtt(o) || awaiting(o) || o.status === 'cancelled' || o.status === 'returned' || o.flags.includes('oversold') || o.flags.includes('amount_mismatch'),
+  issue: (o) => needsAtt(o) || awaiting(o) || o.status === 'cancelled' || o.status === 'returned' || o.flags.includes('oversold') || (o.flags.includes('withdrawal') && o.payment === 'paid') || o.flags.includes('amount_mismatch'),
 };
 
 export function matchSearch(o: OOrder, q: string) {
@@ -46,13 +46,18 @@ export function OrdersTab() {
   ];
   const closed = qo.filter((o) => !COLS.some((c) => c[2](o)));
   const listed = qo.filter(LF[ui.lf]);
+  // Open withdrawals first, oldest declaration on top: they carry the 14-day refund deadline.
+  if (ui.lf === 'issue') listed.sort((a, b) => (withdrawalClock(b)?.day ?? 0) - (withdrawalClock(a)?.day ?? 0));
   const shipList = data.orders.filter(toShip);
 
   const card = (o: OOrder, ci: number) => {
+    const wc = withdrawalClock(o);
     const flag = o.flags.includes('oversold')
       ? t.flags.oversold
       : o.flags.includes('withdrawal') && o.payment === 'paid'
-        ? t.flags.withdrawal
+        ? wc
+          ? t.flags.withdrawalDay(wc.day)
+          : t.flags.withdrawal
       : o.flags.includes('preorder') && toShip(o)
         ? t.flags.preorder
       : ci === 3
@@ -72,7 +77,7 @@ export function OrdersTab() {
       [t.next.delivered, () => run(() => markDelivered(o.id), t.toast.delivered(o.no))],
       [t.next.refund(eur(o.totalCents - o.refundedCents)), () => run(() => refundOrder(o.id, null), t.toast.refund(eur(o.totalCents - o.refundedCents)))],
     ];
-    const red = ci === 3 || o.flags.includes('oversold');
+    const red = ci === 3 || o.flags.includes('oversold') || !!wc?.urgent;
     return (
       <div
         key={o.id}
