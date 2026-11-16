@@ -168,6 +168,11 @@ test('registration with email OTP', async ({ page }) => {
   await page.fill('#acc-pw2', 'longpassword');
   await page.getByRole('button', { name: 'Konto erstellen' }).click();
   await expect(page.getByText('Wir haben den Code an neo@test.de geschickt.')).toBeVisible();
+  await page.fill('#acc-otp', '87654321');
+  await page.getByRole('button', { name: 'Bestätigen' }).click();
+  await expect(page.getByText('Der Code ist falsch oder abgelaufen.')).toBeVisible();
+  await page.getByRole('button', { name: 'Neuen Code senden' }).click();
+  await expect(page.getByText('Wir haben dir einen neuen Code geschickt.')).toBeVisible();
   await page.fill('#acc-otp', '12345678');
   await page.getByRole('button', { name: 'Bestätigen' }).click();
   await expect(page.getByRole('heading', { name: 'Hey Neo' })).toBeVisible();

@@ -108,6 +108,7 @@ async function auth(req, res, path, url) {
     pending.delete(String(body.email).toLowerCase());
     return send(res, 200, session(rows[0]));
   }
+  if (path === '/resend') return send(res, 200, { message_id: crypto.randomUUID() });
   if (path === '/recover') return send(res, 200, {});
   if (path === '/logout') return send(res, 204);
   if (path === '/user') {
