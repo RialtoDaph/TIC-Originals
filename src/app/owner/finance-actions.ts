@@ -7,7 +7,7 @@
 import { refresh } from 'next/cache';
 import { requireOwner } from '@/lib/auth';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { parseEuroCents } from '@/lib/owner/derive';
+import { berlinDay, parseEuroCents } from '@/lib/owner/derive';
 import { EXPENSE_CATEGORIES, type ExpenseCategory } from '@/lib/owner/types';
 import type { Result } from './actions';
 
@@ -23,10 +23,10 @@ function fail(e: unknown): Result {
 }
 
 /** Like the other owner actions but without busting the storefront cache: expenses never show on the shop. */
-async function wrap(fn: () => Promise<Result>): Promise<Result> {
+async function wrap(fn: () => Promise<Result>, reload = true): Promise<Result> {
   try {
     const r = await fn();
-    refresh();
+    if (reload) refresh();
     return r;
   } catch (e) {
     return fail(e);
@@ -49,7 +49,7 @@ export async function createReceiptUpload(input: { mime: string; size: number })
     const { data, error } = await createAdminClient().storage.from(BUCKET).createSignedUploadUrl(path);
     if (error) throw error;
     return { ok: true, data: { path, token: data.token } };
-  });
+  }, false);
 }
 
 export interface ExpenseInput {
@@ -69,10 +69,29 @@ export interface ExpenseInput {
 export async function saveExpense(input: ExpenseInput): Promise<Result> {
   return wrap(async () => {
     const { supabase, user } = await requireOwner();
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(input.paidOn) || Number.isNaN(new Date(input.paidOn + 'T00:00:00Z').getTime())) return { ok: false, error: 'date' };
+    const year = Number(input.paidOn.slice(0, 4));
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(input.paidOn) || Number.isNaN(new Date(input.paidOn + 'T00:00:00Z').getTime()) || year < 2000 || input.paidOn > berlinDay(new Date(Date.now() + 366 * 864e5))) return { ok: false, error: 'date' };
     if (!EXPENSE_CATEGORIES.includes(input.category as ExpenseCategory)) return { ok: false, error: 'category' };
     const amountCents = parseEuroCents(input.amount);
     if (amountCents === null) return { ok: false, error: 'amount' };
+    if (input.id && !UUID_RE.test(input.id)) return { ok: false, error: 'id' };
+
+    // Check the receipt BEFORE writing anything, so a failure cannot leave a saved expense behind
+    // (the user would retry and create a duplicate that can only be voided).
+    let receipt: { path: string; mime: string; size: number; name: string } | undefined;
+    if (input.receipt) {
+      const { path, mime, name } = input.receipt;
+      if (!PATH_RE.test(path) || EXT[mime] !== path.split('.').pop()) return { ok: false, error: 'receipt' };
+      // The browser uploaded the file itself: make sure it is really there and within the limit.
+      const [folder, file] = path.split('/');
+      const { data: found, error: listErr } = await createAdminClient().storage.from(BUCKET).list(folder, { search: file, limit: 5 });
+      if (listErr) throw listErr;
+      const obj = found?.find((f) => f.name === file);
+      const size = Number((obj?.metadata as { size?: number } | null)?.size ?? 0);
+      if (!obj || size <= 0 || size > MAX_BYTES) return { ok: false, error: 'receipt' };
+      receipt = { path, mime, size, name: name.replace(/[\u0000-\u001f"\\/]/g, '').trim().slice(0, 160) };
+    }
+
     const row = {
       paid_on: input.paidOn,
       category: input.category,
@@ -84,32 +103,18 @@ export async function saveExpense(input: ExpenseInput): Promise<Result> {
 
     let expenseId = input.id;
     if (expenseId) {
-      if (!UUID_RE.test(expenseId)) return { ok: false, error: 'id' };
-      const { error } = await supabase.from('expenses').update(row).eq('id', expenseId).is('deleted_at', null);
+      // A stale tab may still show an expense that was voided meanwhile: then nothing matches and we say so.
+      const { data, error } = await supabase.from('expenses').update(row).eq('id', expenseId).is('deleted_at', null).select('id');
       if (error) throw error;
+      if (!data?.length) return { ok: false, error: 'id' };
     } else {
       const { data, error } = await supabase.from('expenses').insert(row).select('id').single();
       if (error) throw error;
       expenseId = data.id as string;
     }
 
-    if (input.receipt) {
-      const { path, mime, name } = input.receipt;
-      if (!PATH_RE.test(path) || EXT[mime] !== path.split('.').pop()) return { ok: false, error: 'receipt' };
-      // The browser uploaded the file itself: make sure it is really there and within the limit.
-      const [folder, file] = path.split('/');
-      const { data: found, error: listErr } = await createAdminClient().storage.from(BUCKET).list(folder, { search: file, limit: 5 });
-      if (listErr) throw listErr;
-      const obj = found?.find((f) => f.name === file);
-      const size = Number((obj?.metadata as { size?: number } | null)?.size ?? 0);
-      if (!obj || size <= 0 || size > MAX_BYTES) return { ok: false, error: 'receipt' };
-      const { error } = await supabase.from('expense_receipts').insert({
-        expense_id: expenseId,
-        path,
-        mime,
-        size_bytes: size,
-        original_name: name.replace(/[\u0000-\u001f"\\/]/g, '').trim().slice(0, 160),
-      });
+    if (receipt) {
+      const { error } = await supabase.from('expense_receipts').insert({ expense_id: expenseId, path: receipt.path, mime: receipt.mime, size_bytes: receipt.size, original_name: receipt.name });
       if (error) throw error;
     }
 
@@ -126,6 +131,7 @@ export async function voidExpense(id: string): Promise<Result> {
     if (!UUID_RE.test(id)) return { ok: false, error: 'id' };
     const { data, error } = await supabase.from('expenses').update({ deleted_at: new Date().toISOString() }).eq('id', id).is('deleted_at', null).select('vendor, amount_cents');
     if (error) throw error;
+    if (!data?.length) return { ok: false, error: 'id' };
     await supabase.from('activity_log').insert({ actor: user.id, text: `Voided expense ${data?.[0]?.vendor ?? ''}`, task_key: null, undo: null });
     return { ok: true };
   });

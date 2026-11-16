@@ -311,26 +311,25 @@ export const shortNo = (no: string) => no.replace(/^TIC-\d{4}-/, 'TIC-');
  */
 export function parseEuroCents(raw: string): number | null {
   let s = raw.replace(/[€\s]/g, '').replace(/^\+/, '');
-  if (!/^-?[\d.,]+$/.test(s)) return null;
   const neg = s.startsWith('-');
   if (neg) s = s.slice(1);
-  const lastComma = s.lastIndexOf(',');
-  const lastDot = s.lastIndexOf('.');
-  const decAt = Math.max(lastComma, lastDot);
-  let intPart = s;
+  let intPart: string;
   let frac = '';
-  if (decAt >= 0) {
-    const after = s.length - decAt - 1;
-    // A lone separator followed by exactly 3 digits is a thousands separator ("1.234"), otherwise a decimal one.
-    const isThousands = after === 3 && (lastComma < 0 || lastDot < 0) && s.split(s[decAt]).length === 2;
-    if (!isThousands) {
-      intPart = s.slice(0, decAt);
-      frac = s.slice(decAt + 1);
-    }
+  // Thousands groups ("1.234", "1.234,56", "1,234,567.89"): one separator kind for the groups, a different one for the decimals.
+  const grouped = /^(\d{1,3}(?:[.,]\d{3})+)(?:([.,])(\d{1,2}))?$/.exec(s);
+  if (grouped) {
+    const groupSep = grouped[1].match(/[.,]/)![0];
+    if (grouped[1].split(groupSep).length - 1 !== grouped[1].replace(/\d/g, '').length) return null;
+    if (grouped[2] && grouped[2] === groupSep) return null;
+    intPart = grouped[1].replace(/[.,]/g, '');
+    frac = grouped[3] ?? '';
+  } else {
+    const plain = /^(\d+)(?:[.,](\d{1,2}))?$/.exec(s);
+    if (!plain) return null;
+    intPart = plain[1];
+    frac = plain[2] ?? '';
   }
-  intPart = intPart.replace(/[.,]/g, '');
-  if (!/^\d*$/.test(intPart) || !/^\d{0,2}$/.test(frac) || (intPart === '' && frac === '')) return null;
-  const cents = Number(intPart || '0') * 100 + Number(frac.padEnd(2, '0') || '0');
+  const cents = Number(intPart) * 100 + Number(frac.padEnd(2, '0') || '0');
   if (!Number.isSafeInteger(cents) || cents === 0) return null;
   return neg ? -cents : cents;
 }
@@ -363,7 +362,10 @@ export interface FinanceSummary {
  * Hidden/deleted orders are part of `orders` on purpose; unpaid orders have no paidAt and are ignored.
  * This is a cash result, not the tax result: unsold stock and depreciation are not considered.
  */
-export function financeSummary(orders: OOrder[], expenses: OExpense[], now: Date): FinanceSummary {
+export function financeSummary(orders: OOrder[], allExpenses: OExpense[], now: Date): FinanceSummary {
+  // Cash basis: an expense dated in the future has not left the account yet.
+  const today = berlinDay(now);
+  const expenses = allExpenses.filter((e) => e.paidOn <= today);
   const byMonth = new Map<string, { income: number; expenses: number }>();
   const cell = (ym: string) => byMonth.get(ym) ?? byMonth.set(ym, { income: 0, expenses: 0 }).get(ym)!;
   const ymOf = (d: Date | string) => berlinDay(d).slice(0, 7);

@@ -231,6 +231,13 @@ describe('parseEuroCents', () => {
     expect(parseEuroCents('abc')).toBeNull();
     expect(parseEuroCents('0')).toBeNull();
     expect(parseEuroCents('1,234,567.891')).toBeNull();
+    expect(parseEuroCents('1.23.45')).toBeNull();
+    expect(parseEuroCents('1,2,3')).toBeNull();
+    expect(parseEuroCents('.5')).toBeNull();
+    expect(parseEuroCents('1e3')).toBeNull();
+    expect(parseEuroCents('1.234.56')).toBeNull();
+    expect(parseEuroCents('1.234.567,89')).toBe(123456789);
+    expect(parseEuroCents('1,234.56')).toBe(123456);
     expect(parseEuroCents('12,345')).toBe(1234500);
   });
 });
@@ -267,6 +274,10 @@ describe('financeSummary', () => {
     expect(r.months.find((m) => m.month === '2026-12')?.income).toBe(0);
     expect(r.months.at(-1)?.month).toBe('2027-02');
     expect(r.year.income).toBe(1000);
+  });
+  it('does not count an expense dated in the future yet', () => {
+    const r = financeSummary([], [exp({ paidOn: '2026-12-01', amountCents: 9000 }), exp({ paidOn: '2026-10-20', amountCents: 1000 })], NOW);
+    expect(r.allTime.expenses).toBe(1000);
   });
   it('treats a credit note as money back, groups by category and counts missing receipts', () => {
     const r = financeSummary([], [exp({ amountCents: 10000, category: 'shipping' }), exp({ amountCents: -2000, category: 'shipping', receipts: [{ id: 'r', name: 'a.pdf', mime: 'application/pdf', sizeBytes: 1, uploadedAt: '' }] })], NOW);

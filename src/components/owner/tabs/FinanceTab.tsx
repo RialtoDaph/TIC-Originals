@@ -1,9 +1,9 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { createReceiptUpload, saveExpense, voidExpense } from '@/app/owner/finance-actions';
-import { deDec, financeLedger, financeSummary, toCsv } from '@/lib/owner/derive';
+import { deDec, financeLedger, financeSummary, parseEuroCents, toCsv } from '@/lib/owner/derive';
 import { EXPENSE_CATEGORIES, type ExpenseCategory, type OExpense } from '@/lib/owner/types';
 import { MONTHS_DE } from '@/i18n/owner';
 import { useOwner } from '../OwnerContext';
@@ -50,7 +50,7 @@ export function FinanceTab() {
 
   const exportLedger = () =>
     download(
-      f.csvName(now.getFullYear()),
+      f.csvName(today),
       toCsv([
         ['Datum', 'Art', 'Kategorie', 'Lieferant / Bestellung', 'Beschreibung', 'Rechnungsnr.', 'Betrag EUR (Einnahme +, Ausgabe −)', 'Beleg'],
         ...financeLedger(data.financeOrders, data.expenses, (c) => f.cat[c]).map((r) => [r.date, r.kind, r.category, r.who, r.text, r.invoiceNo, deDec(r.cents), r.receipt]),
@@ -161,7 +161,7 @@ export function FinanceTab() {
           <div key={e.id} style={sx('display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:11px 18px;border-top:1px solid rgba(255,255,255,.04);font-size:13px')}>
             <button
               onClick={() => setDraft({ id: e.id, paidOn: e.paidOn, category: e.category, vendor: e.vendor, invoiceNo: e.invoiceNo, description: e.description, amount: deDec(e.amountCents), receipts: e.receipts })}
-              style={sx('all:unset;cursor:pointer;display:flex;gap:12px;align-items:center;flex-wrap:wrap;flex:1 1 320px;min-width:0')}
+              style={sx('background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;text-align:left;cursor:pointer;display:flex;gap:12px;align-items:center;flex-wrap:wrap;flex:1 1 320px;min-width:0')}
               aria-label={`${f.edit}: ${e.vendor || f.cat[e.category]}`}
             >
               <span style={sx(`${MONO};color:#9AA1AC;width:84px`)}>{e.paidOn.split('-').reverse().join('.')}</span>
@@ -175,9 +175,10 @@ export function FinanceTab() {
               <span style={{ ...sx(`${MONO};min-width:90px;text-align:right`), color: e.amountCents < 0 ? GREEN : '#ECEEF1' }}>{eur(-e.amountCents)}</span>
             </button>
             <span style={sx('display:flex;gap:8px;align-items:center;min-width:120px;justify-content:flex-end')}>
+              {e.paidOn > today && <span style={{ ...sx('font-size:12px;padding:3px 9px;border-radius:20px'), background: 'rgba(124,156,255,.14)', color: '#7C9CFF' }}>{f.planned}</span>}
               {e.receipts.length === 0 && <span style={{ ...sx('font-size:12px;padding:3px 9px;border-radius:20px'), background: 'rgba(255,200,87,.14)', color: '#FFC857' }}>{f.noReceipt}</span>}
               {e.receipts.map((r, i) => (
-                <a key={r.id} href={`/owner/receipt/${r.id}`} target="_blank" rel="noreferrer" title={r.name || f.openReceipt} style={sx('font-size:12px;color:#7C9CFF;text-decoration:underline;text-underline-offset:3px')}>
+                <a key={r.id} href={`/owner/receipt/${r.id}`} target="_blank" rel="noreferrer" title={r.name || f.openReceipt} aria-label={`${f.openReceipt}: ${e.vendor || f.cat[e.category]} ${e.paidOn}${e.receipts.length > 1 ? ` (${i + 1})` : ''}`} style={sx('font-size:12px;color:#7C9CFF;text-decoration:underline;text-underline-offset:3px')}>
                   {f.openReceipt}
                   {e.receipts.length > 1 ? ` ${i + 1}` : ''}
                 </a>
@@ -202,44 +203,62 @@ export function FinanceTab() {
 }
 
 function ExpenseModal({ draft, onClose, onSaved, onVoid }: { draft: Draft; onClose: () => void; onSaved: () => void; onVoid: (id: string) => void }) {
-  const { t, run } = useOwner();
+  const { t, toast, eur, now } = useOwner();
   const f = t.fin;
   const [d, setD] = useState(draft);
   const [file, setFile] = useState<File | null>(null);
+  // A receipt that is already in storage but not yet attached (the save failed): reused on retry instead of uploading again.
+  const uploaded = useRef<{ file: File; path: string; mime: string; name: string } | null>(null);
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
   const [armed, setArmed] = useState(false);
   const input = useRef<HTMLInputElement>(null);
+  const first = useRef<HTMLInputElement>(null);
   const set = <K extends keyof Draft>(k: K, v: Draft[K]) => setD((p) => ({ ...p, [k]: v }));
+  const parsed = parseEuroCents(d.amount);
+  const maxDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Berlin' }).format(new Date(now.getTime() + 366 * 864e5));
+
+  useEffect(() => first.current?.focus(), []);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose]);
 
   function pick(files: FileList | null) {
     const picked = files?.[0];
+    // Reset so choosing the same file again after an error still fires onChange.
+    if (input.current) input.current.value = '';
     if (!picked) return;
     setErr('');
     if (!ACCEPT.split(',').includes(picked.type)) return setErr(f.err.type);
     if (picked.size > MAX_BYTES) return setErr(f.err.size);
+    uploaded.current = null;
     setFile(picked);
   }
 
   async function save() {
     setErr('');
+    if (parsed === null) return setErr(f.err.amount);
     setBusy(true);
     try {
       let receipt: { path: string; mime: string; name: string } | undefined;
       if (file) {
-        // Straight to storage with a one-time token from the server: the file never passes through a function.
-        const up = await createReceiptUpload({ mime: file.type, size: file.size });
-        if (!up.ok) return setErr(f.err[up.error as keyof typeof f.err] ?? f.err.failed);
-        const { path, token } = up.data as { path: string; token: string };
-        const { error } = await createClient().storage.from('receipts').uploadToSignedUrl(path, token, file, { contentType: file.type });
-        if (error) return setErr(f.err.receipt);
-        receipt = { path, mime: file.type, name: file.name };
+        if (uploaded.current?.file !== file) {
+          // Straight to storage with a one-time token from the server: the file never passes through a function.
+          const up = await createReceiptUpload({ mime: file.type, size: file.size });
+          if (!up.ok) return setErr(f.err[up.error as keyof typeof f.err] ?? f.err.failed);
+          const { path, token } = up.data as { path: string; token: string };
+          const { error } = await createClient().storage.from('receipts').uploadToSignedUrl(path, token, file, { contentType: file.type });
+          if (error) return setErr(f.err.receipt);
+          uploaded.current = { file, path, mime: file.type, name: file.name };
+        }
+        receipt = { path: uploaded.current.path, mime: uploaded.current.mime, name: uploaded.current.name };
       }
-      const ok = await run(
-        () => saveExpense({ id: d.id, paidOn: d.paidOn, category: d.category, vendor: d.vendor, invoiceNo: d.invoiceNo, description: d.description, amount: d.amount, receipt }),
-        f.saved,
-      );
-      if (ok) onSaved();
+      const r = await saveExpense({ id: d.id, paidOn: d.paidOn, category: d.category, vendor: d.vendor, invoiceNo: d.invoiceNo, description: d.description, amount: d.amount, receipt });
+      if (!r.ok) return setErr(f.err[r.error as keyof typeof f.err] ?? f.err.failed);
+      toast(f.saved);
+      onSaved();
     } catch {
       setErr(f.err.failed);
     } finally {
@@ -265,8 +284,8 @@ function ExpenseModal({ draft, onClose, onSaved, onVoid }: { draft: Draft; onClo
             ×
           </button>
         </div>
-        <div style={sx('padding:0 22px 8px;display:grid;grid-template-columns:1fr 1fr;gap:14px')}>
-          {label(f.form.date, <input type="date" value={d.paidOn} onChange={(e) => set('paidOn', e.target.value)} style={inputStyle} />)}
+        <div style={sx('padding:0 22px 8px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px')}>
+          {label(f.form.date, <input ref={first} type="date" min="2000-01-01" max={maxDate} value={d.paidOn} onChange={(e) => set('paidOn', e.target.value)} style={inputStyle} />)}
           {label(
             f.form.category,
             <select value={d.category} onChange={(e) => set('category', e.target.value as ExpenseCategory)} style={inputStyle}>
@@ -279,7 +298,7 @@ function ExpenseModal({ draft, onClose, onSaved, onVoid }: { draft: Draft; onClo
           )}
           {label(f.form.vendor, <input value={d.vendor} onChange={(e) => set('vendor', e.target.value)} maxLength={120} style={inputStyle} />)}
           {label(f.form.invoiceNo, <input value={d.invoiceNo} onChange={(e) => set('invoiceNo', e.target.value)} maxLength={80} style={inputStyle} />)}
-          {label(f.form.amount, <input inputMode="decimal" value={d.amount} onChange={(e) => set('amount', e.target.value)} placeholder="0,00" style={{ ...inputStyle, ...sx(MONO) }} />, f.form.amountHint)}
+          {label(f.form.amount, <input inputMode="decimal" value={d.amount} onChange={(e) => set('amount', e.target.value)} placeholder="0,00" style={{ ...inputStyle, ...sx(MONO) }} />, parsed !== null ? f.parsed(eur(-parsed)) : f.form.amountHint)}
           {label(f.form.description, <input value={d.description} onChange={(e) => set('description', e.target.value)} maxLength={500} style={inputStyle} />)}
           <div style={sx('grid-column:1 / -1;display:flex;flex-direction:column;gap:8px')}>
             <span style={sx('font-size:12px;color:#9AA1AC')}>{f.form.receipt}</span>
