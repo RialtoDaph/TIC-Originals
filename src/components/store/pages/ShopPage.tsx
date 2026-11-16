@@ -314,14 +314,10 @@ export function ProductDetail({ product: p }: { product: Product }) {
                     {t.size}
                     {size ? ': ' + size : ''}
                   </span>
-                  {chart ? (
+                  {chart && (
                     <button type="button" className={s.guideBtn} onClick={() => setGuideOpen(true)}>
                       {t.sizeGuide}
                     </button>
-                  ) : (
-                    <Link href="/policies/faq" className={s.guide}>
-                      {t.sizeGuide}
-                    </Link>
                   )}
                 </div>
                 <div className={s.sizes} role="radiogroup" aria-label={t.size}>
