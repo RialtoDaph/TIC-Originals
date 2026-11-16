@@ -1,6 +1,6 @@
 // Pure dashboard calculations (no I/O) — unit tested in tests/unit/owner-derive.test.ts.
 import type { Tone } from '@/lib/tokens';
-import type { OOrder, OProduct, ODrop } from './types';
+import type { ExpenseCategory, OExpense, OOrder, OProduct, ODrop } from './types';
 
 export const SIZES = ['XS', 'S', 'M', 'L', 'XL'];
 export const DAY = 864e5;
@@ -303,3 +303,133 @@ export function customerStats(orders: OOrder[], email: string) {
 
 /** Compact order number for cards and task rows: TIC-2026-ABC123 → TIC-ABC123 (as in the design). */
 export const shortNo = (no: string) => no.replace(/^TIC-\d{4}-/, 'TIC-');
+
+// --- Finanzen (cash result) ---------------------------------------------------
+/**
+ * Parses a money input the way people type it in Germany or elsewhere ("1.234,56", "1234.56", "12,5 €")
+ * into integer cents. Returns null for anything that is not a plain amount. Negative = credit note.
+ */
+export function parseEuroCents(raw: string): number | null {
+  let s = raw.replace(/[€\s]/g, '').replace(/^\+/, '');
+  const neg = s.startsWith('-');
+  if (neg) s = s.slice(1);
+  let intPart: string;
+  let frac = '';
+  // Thousands groups ("1.234", "1.234,56", "1,234,567.89"): one separator kind for the groups, a different one for the decimals.
+  const grouped = /^(\d{1,3}(?:[.,]\d{3})+)(?:([.,])(\d{1,2}))?$/.exec(s);
+  if (grouped) {
+    const groupSep = grouped[1].match(/[.,]/)![0];
+    if (grouped[1].split(groupSep).length - 1 !== grouped[1].replace(/\d/g, '').length) return null;
+    if (grouped[2] && grouped[2] === groupSep) return null;
+    intPart = grouped[1].replace(/[.,]/g, '');
+    frac = grouped[3] ?? '';
+  } else {
+    const plain = /^(\d+)(?:[.,](\d{1,2}))?$/.exec(s);
+    if (!plain) return null;
+    intPart = plain[1];
+    frac = plain[2] ?? '';
+  }
+  const cents = Number(intPart) * 100 + Number(frac.padEnd(2, '0') || '0');
+  if (!Number.isSafeInteger(cents) || cents === 0) return null;
+  return neg ? -cents : cents;
+}
+
+export interface FinanceRow {
+  /** YYYY-MM */
+  month: string;
+  income: number;
+  expenses: number;
+  result: number;
+  /** Running total of all results up to and including this month: can go (deeply) negative. */
+  cumulative: number;
+}
+
+export interface FinanceSummary {
+  allTime: { income: number; expenses: number; result: number };
+  year: { income: number; expenses: number; result: number };
+  month: { income: number; expenses: number; result: number };
+  months: FinanceRow[];
+  byCategory: Record<ExpenseCategory, number>;
+  /** Expenses without any receipt attached. */
+  withoutReceipt: number;
+  /** Refunds without a refund date (partial refunds): counted in the month the order was paid. */
+  undatedRefunds: number;
+}
+
+/**
+ * Cash result since the business started. Income = what customers paid (order total, shipping included)
+ * on the day of payment, minus refunds on the day of the refund. Expenses count on the day they were paid.
+ * Hidden/deleted orders are part of `orders` on purpose; unpaid orders have no paidAt and are ignored.
+ * This is a cash result, not the tax result: unsold stock and depreciation are not considered.
+ */
+export function financeSummary(orders: OOrder[], allExpenses: OExpense[], now: Date): FinanceSummary {
+  // Cash basis: an expense dated in the future has not left the account yet.
+  const today = berlinDay(now);
+  const expenses = allExpenses.filter((e) => e.paidOn <= today);
+  const byMonth = new Map<string, { income: number; expenses: number }>();
+  const cell = (ym: string) => byMonth.get(ym) ?? byMonth.set(ym, { income: 0, expenses: 0 }).get(ym)!;
+  const ymOf = (d: Date | string) => berlinDay(d).slice(0, 7);
+  let undatedRefunds = 0;
+
+  for (const o of orders) {
+    if (!o.paidAt) continue;
+    cell(ymOf(o.paidAt)).income += o.totalCents;
+    if (o.refundedCents) {
+      if (!o.refundedAt) undatedRefunds++;
+      cell(ymOf(o.refundedAt ?? o.paidAt)).income -= o.refundedCents;
+    }
+  }
+  const byCategory: Record<ExpenseCategory, number> = { production: 0, shipping: 0, packaging: 0, marketing: 0, software: 0, fees: 0, other: 0 };
+  let withoutReceipt = 0;
+  for (const e of expenses) {
+    cell(e.paidOn.slice(0, 7)).expenses += e.amountCents;
+    byCategory[e.category] += e.amountCents;
+    if (!e.receipts.length) withoutReceipt++;
+  }
+
+  const nowYm = ymOf(now);
+  const keys = [...byMonth.keys(), nowYm].sort();
+  const months: FinanceRow[] = [];
+  let cumulative = 0;
+  if (keys.length) {
+    let [y, m] = keys[0].split('-').map(Number);
+    for (;;) {
+      const ym = `${y}-${String(m).padStart(2, '0')}`;
+      const c = byMonth.get(ym) ?? { income: 0, expenses: 0 };
+      const result = c.income - c.expenses;
+      cumulative += result;
+      months.push({ month: ym, income: c.income, expenses: c.expenses, result, cumulative });
+      if (ym >= keys[keys.length - 1]) break;
+      if (++m > 12) {
+        m = 1;
+        y++;
+      }
+    }
+  }
+  const sum = (rows: FinanceRow[]) => {
+    const income = rows.reduce((a, r) => a + r.income, 0);
+    const exp = rows.reduce((a, r) => a + r.expenses, 0);
+    return { income, expenses: exp, result: income - exp };
+  };
+  return {
+    allTime: sum(months),
+    year: sum(months.filter((r) => r.month.startsWith(nowYm.slice(0, 4)))),
+    month: sum(months.filter((r) => r.month === nowYm)),
+    months,
+    byCategory,
+    withoutReceipt,
+    undatedRefunds,
+  };
+}
+
+/** One line per money movement (sales, refunds, expenses) by date, for the CSV the Steuerberater gets. Amounts in cents, income positive. */
+export function financeLedger(orders: OOrder[], expenses: OExpense[], catLabel: (c: ExpenseCategory) => string) {
+  const rows: { date: string; kind: 'Einnahme' | 'Erstattung' | 'Ausgabe'; category: string; who: string; text: string; invoiceNo: string; cents: number; receipt: string }[] = [];
+  for (const o of orders) {
+    if (!o.paidAt) continue;
+    rows.push({ date: berlinDay(o.paidAt), kind: 'Einnahme', category: 'Verkauf', who: o.no, text: '', invoiceNo: o.invoiceNo ?? '', cents: o.totalCents, receipt: '' });
+    if (o.refundedCents) rows.push({ date: berlinDay(o.refundedAt ?? o.paidAt), kind: 'Erstattung', category: 'Verkauf', who: o.no, text: o.refundedAt ? '' : 'Teilerstattung ohne Datum: Zahlungsdatum verwendet', invoiceNo: '', cents: -o.refundedCents, receipt: '' });
+  }
+  for (const e of expenses) rows.push({ date: e.paidOn, kind: 'Ausgabe', category: catLabel(e.category), who: e.vendor, text: e.description, invoiceNo: e.invoiceNo, cents: -e.amountCents, receipt: e.receipts.length ? 'ja' : 'nein' });
+  return rows.sort((a, b) => a.date.localeCompare(b.date));
+}

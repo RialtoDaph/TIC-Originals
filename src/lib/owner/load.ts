@@ -2,7 +2,7 @@ import 'server-only';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { mapSettings, DEFAULT_SETTINGS } from '@/lib/catalog';
 import { mapCode } from '@/lib/checkout';
-import type { OActivity, OCart, ODrop, OOrder, OProduct, OwnerData } from './types';
+import type { ExpenseCategory, OActivity, OCart, ODrop, OExpense, OOrder, OProduct, OwnerData } from './types';
 
 type Row = Record<string, unknown>;
 
@@ -100,6 +100,36 @@ export async function loadOwnerData(supabase: SupabaseClient): Promise<OwnerData
   ]);
 
   const orderList = check(orders).map(mapOrder);
+
+  // Finanzen: paid orders hidden from the dashboard still belong in the books, and the expenses
+  // are loaded on their own so a missing table (migration not applied yet) cannot break the other tabs.
+  const hiddenPaid = check(await supabase.from('orders').select('*').not('deleted_at', 'is', null).not('paid_at', 'is', null)) as Row[];
+  const financeOrders = [...orderList, ...hiddenPaid.map(mapOrder)];
+  let expenses: OExpense[] = [];
+  let financeReady = true;
+  const exp = await supabase
+    .from('expenses')
+    .select('*, expense_receipts(id, original_name, mime, size_bytes, uploaded_at)')
+    .is('deleted_at', null)
+    .order('paid_on', { ascending: false })
+    .order('created_at', { ascending: false });
+  if (exp.error) {
+    financeReady = false;
+    console.error('[owner] expenses unavailable', exp.error);
+  } else {
+    expenses = (exp.data as Row[]).map((r) => ({
+      id: r.id as string,
+      paidOn: r.paid_on as string,
+      category: r.category as ExpenseCategory,
+      vendor: r.vendor as string,
+      invoiceNo: r.vendor_invoice_no as string,
+      description: r.description as string,
+      amountCents: r.amount_cents as number,
+      receipts: ((r.expense_receipts as Row[]) ?? [])
+        .sort((a, b) => String(a.uploaded_at).localeCompare(String(b.uploaded_at)))
+        .map((x) => ({ id: x.id as string, name: x.original_name as string, mime: x.mime as string, sizeBytes: x.size_bytes as number, uploadedAt: x.uploaded_at as string })),
+    }));
+  }
 
   const waitMap = new Map<string, Record<string, number>>();
   for (const w of check(waitlist) as Row[]) {
@@ -232,5 +262,8 @@ export async function loadOwnerData(supabase: SupabaseClient): Promise<OwnerData
     activity: act,
     vipSent: (check(vip) as Row[]).map((v) => (v.email as string).toLowerCase()),
     kuAcked: (check(kuAck) as Row[]).length > 0,
+    expenses,
+    financeReady,
+    financeOrders,
   };
 }
