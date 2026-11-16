@@ -46,4 +46,4 @@ tests/dev/down-mac.sh                             # stop the stack
 ```
 
 Demo logins (fixture only): `owner@tic.test` / `owner-pass-123` (owner), `kunde@tic.test` / `kunde-pass-123`.
-The sign-up OTP code in the mock is always `123456`.
+The sign-up OTP code in the mock is always `12345678` (8 digits, like the hosted Supabase project).

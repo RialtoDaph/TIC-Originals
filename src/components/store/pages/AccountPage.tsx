@@ -17,6 +17,7 @@ const GOOGLE_LOGIN = process.env.NEXT_PUBLIC_GOOGLE_LOGIN === 'true';
 import { SITE_IMAGES, img } from '@/lib/images';
 import { STORE_STATUS_BG } from '@/lib/tokens';
 import { LINK_LABELS } from '@/i18n/storefront';
+import { isValidOtp } from '@/lib/otp';
 import { deleteAccount, makeDefaultAddress, saveAddress, type AddressForm } from '@/app/(store)/account/actions';
 import s from './Account.module.css';
 
@@ -55,6 +56,7 @@ function AuthForm() {
   const [f, setF] = useState({ email: '', pw: '', pw2: '', first: '', last: '', otp: '' });
   const [tried, setTried] = useState(false);
   const [sent, setSent] = useState(false);
+  const [resent, setResent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [authError, setAuthError] = useState(params.get('error') ? t.genericError : '');
 
@@ -62,6 +64,7 @@ function AuthForm() {
     setModeState(m);
     setTried(false);
     setSent(false);
+    setResent(false);
     setAuthError('');
   };
 
@@ -80,7 +83,7 @@ function AuthForm() {
     if (!f.pw2) e.pw2 = 'req';
     else if (f.pw2 !== f.pw) e.pw2 = 'mismatch';
   }
-  if (mode === 'otp' && !/^\d{6}$/.test(f.otp.trim())) e.otp = 'badOtp';
+  if (mode === 'otp' && !isValidOtp(f.otp)) e.otp = 'badOtp';
 
   const fld = (k: keyof typeof f, label: string, type: string, ac: string, span: 1 | 2) => {
     const err = tried && e[k];
@@ -117,6 +120,7 @@ function AuthForm() {
     const email = f.email.trim();
     setBusy(true);
     setAuthError('');
+    setResent(false);
     try {
       if (mode === 'forgot') {
         await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${location.origin}/auth/callback?next=/account/reset-password` });
@@ -132,13 +136,28 @@ function AuthForm() {
         else setMode('otp');
       } else if (mode === 'otp') {
         const { error } = await supabase.auth.verifyOtp({ email, token: f.otp.trim(), type: 'signup' });
-        if (error) setAuthError(t.badOtp);
+        if (error) setAuthError(error.status === 429 || error.code === 'over_request_rate_limit' ? t.otpTooMany : t.otpWrong);
         else router.refresh();
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password: f.pw });
         if (error) setAuthError(t.authFailed);
         else router.refresh();
       }
+    } catch {
+      setAuthError(t.genericError);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function resend() {
+    setBusy(true);
+    setAuthError('');
+    setResent(false);
+    try {
+      const { error } = await createClient().auth.resend({ type: 'signup', email: f.email.trim() });
+      if (error) setAuthError(error.status === 429 || error.code?.includes('rate_limit') ? t.otpTooMany : t.genericError);
+      else setResent(true);
     } catch {
       setAuthError(t.genericError);
     } finally {
@@ -231,6 +250,11 @@ function AuthForm() {
               {t.sent}
             </span>
           )}
+          {resent && (
+            <span className={s.ok} role="status">
+              {t.otpResent}
+            </span>
+          )}
           {authError && (
             <span className={s.bad} role="alert">
               {authError}
@@ -239,6 +263,11 @@ function AuthForm() {
           <button type="submit" className={s.submit} disabled={busy} aria-busy={busy}>
             {busy ? t.loading : submitLabel}
           </button>
+          {mode === 'otp' && (
+            <button type="button" className={s.linkBtn} disabled={busy} onClick={() => void resend()}>
+              {t.otpResend}
+            </button>
+          )}
           {mode === 'forgot' && (
             <button type="button" className={s.linkBtn} onClick={() => setMode('login')}>
               ← {t.backLogin}

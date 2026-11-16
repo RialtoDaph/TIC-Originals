@@ -15,7 +15,7 @@ const POSTGREST = process.env.POSTGREST_URL || 'http://127.0.0.1:3001';
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-token-with-at-least-32-characters-long';
 const APP_URL = process.env.APP_URL || 'http://localhost:3000';
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || 'whsec_test';
-const OTP = '123456';
+const OTP = '12345678';
 
 const db = new pg.Pool({ connectionString: process.env.DATABASE_URL || 'postgres://postgres@127.0.0.1:54322/tic' });
 // The tests drop and recreate the database; idle connections are then terminated. Don't crash.
@@ -108,6 +108,7 @@ async function auth(req, res, path, url) {
     pending.delete(String(body.email).toLowerCase());
     return send(res, 200, session(rows[0]));
   }
+  if (path === '/resend') return send(res, 200, { message_id: crypto.randomUUID() });
   if (path === '/recover') return send(res, 200, {});
   if (path === '/logout') return send(res, 204);
   if (path === '/user') {
