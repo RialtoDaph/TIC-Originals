@@ -17,6 +17,7 @@ import { TodayTab } from './tabs/TodayTab';
 import { OrdersTab } from './tabs/OrdersTab';
 import { ProductsTab } from './tabs/ProductsTab';
 import { InsightsTab } from './tabs/InsightsTab';
+import { FinanceTab } from './tabs/FinanceTab';
 import { PromoTab } from './tabs/PromoTab';
 import { SettingsTab } from './tabs/SettingsTab';
 
@@ -211,6 +212,7 @@ export function OwnerApp({ data, initialLang }: { data: OwnerData; initialLang: 
           {tab === 'orders' && <OrdersTab />}
           {tab === 'products' && <ProductsTab />}
           {tab === 'insights' && <InsightsTab />}
+          {tab === 'finance' && <FinanceTab />}
           {tab === 'promo' && <PromoTab countdown={cd?.long ?? t.noDrop} />}
           {tab === 'settings' && <SettingsTab />}
         </div>

@@ -14,8 +14,11 @@ import {
   statusOf,
   toCsv,
   withdrawalClock,
+  parseEuroCents,
+  financeSummary,
+  financeLedger,
 } from '@/lib/owner/derive';
-import type { OOrder, OProduct } from '@/lib/owner/types';
+import type { OExpense, OOrder, OProduct } from '@/lib/owner/types';
 
 const NOW = new Date('2026-10-20T12:00:00Z');
 const day = (n: number, h = 10) => new Date(NOW.getTime() - n * 864e5 + (h - 12) * 36e5).toISOString();
@@ -211,5 +214,73 @@ describe('withdrawalClock', () => {
   it('is null without a withdrawal or once refunded', () => {
     expect(withdrawalClock(paid(null), now)).toBeNull();
     expect(withdrawalClock(paid(new Date(now - day).toISOString(), 'refunded'), now)).toBeNull();
+  });
+});
+
+describe('parseEuroCents', () => {
+  it('reads German and English money input', () => {
+    expect(parseEuroCents('1.234,56')).toBe(123456);
+    expect(parseEuroCents('1234.56')).toBe(123456);
+    expect(parseEuroCents('12,5 €')).toBe(1250);
+    expect(parseEuroCents('1.234')).toBe(123400);
+    expect(parseEuroCents('7')).toBe(700);
+    expect(parseEuroCents('-45,90')).toBe(-4590);
+  });
+  it('rejects junk, zero and more than two decimals', () => {
+    expect(parseEuroCents('')).toBeNull();
+    expect(parseEuroCents('abc')).toBeNull();
+    expect(parseEuroCents('0')).toBeNull();
+    expect(parseEuroCents('1,234,567.891')).toBeNull();
+    expect(parseEuroCents('12,345')).toBe(1234500);
+  });
+});
+
+describe('financeSummary', () => {
+  const exp = (p: Partial<OExpense> = {}): OExpense => ({ id: 'e' + ++seq, paidOn: '2026-10-05', category: 'production', vendor: 'X', invoiceNo: '', description: '', amountCents: 5000, receipts: [], ...p });
+  it('is deeply negative when only money went out', () => {
+    const r = financeSummary([], [exp({ amountCents: 300000 })], NOW);
+    expect(r.allTime).toEqual({ income: 0, expenses: 300000, result: -300000 });
+    expect(r.months.at(-1)?.cumulative).toBe(-300000);
+  });
+  it('counts income on the paid day and a refund on its own (later) month, shipping once', () => {
+    const o = order({ totalCents: 10000, shippingCents: 495, paidAt: '2026-09-28T10:00:00Z', refundedCents: 10000, refundedAt: '2026-10-03T10:00:00Z' });
+    const r = financeSummary([o], [], NOW);
+    expect(r.months.find((m) => m.month === '2026-09')?.income).toBe(10000);
+    expect(r.months.find((m) => m.month === '2026-10')?.income).toBe(-10000);
+    expect(r.allTime.income).toBe(0);
+  });
+  it('subtracts a partial refund without a date in the paid month and reports it', () => {
+    const o = order({ totalCents: 10000, paidAt: '2026-09-28T10:00:00Z', refundedCents: 2500, refundedAt: null });
+    const r = financeSummary([o], [], NOW);
+    expect(r.allTime.income).toBe(7500);
+    expect(r.undatedRefunds).toBe(1);
+  });
+  it('keeps paid orders that were hidden, ignores unpaid ones', () => {
+    const r = financeSummary([order({ totalCents: 8000 }), order({ paidAt: null, payment: 'pending', totalCents: 9999 })], [], NOW);
+    expect(r.allTime.income).toBe(8000);
+  });
+  it('buckets by Berlin time at New Year and fills empty months', () => {
+    const o = order({ totalCents: 1000, paidAt: '2026-12-31T23:30:00Z' }); // 00:30 on 1 Jan in Berlin
+    const r = financeSummary([o], [exp({ paidOn: '2026-08-10', amountCents: 2000 })], new Date('2027-02-10T12:00:00Z'));
+    expect(r.months[0].month).toBe('2026-08');
+    expect(r.months.find((m) => m.month === '2027-01')?.income).toBe(1000);
+    expect(r.months.find((m) => m.month === '2026-12')?.income).toBe(0);
+    expect(r.months.at(-1)?.month).toBe('2027-02');
+    expect(r.year.income).toBe(1000);
+  });
+  it('treats a credit note as money back, groups by category and counts missing receipts', () => {
+    const r = financeSummary([], [exp({ amountCents: 10000, category: 'shipping' }), exp({ amountCents: -2000, category: 'shipping', receipts: [{ id: 'r', name: 'a.pdf', mime: 'application/pdf', sizeBytes: 1, uploadedAt: '' }] })], NOW);
+    expect(r.byCategory.shipping).toBe(8000);
+    expect(r.withoutReceipt).toBe(1);
+  });
+});
+
+describe('financeLedger', () => {
+  it('lists sales, refunds and expenses by date with money out negative', () => {
+    const o = order({ totalCents: 10000, paidAt: '2026-09-28T10:00:00Z', refundedCents: 10000, refundedAt: '2026-10-03T10:00:00Z' });
+    const e: OExpense = { id: 'x', paidOn: '2026-09-01', category: 'shipping', vendor: 'DHL', invoiceNo: 'R-1', description: 'Oktober', amountCents: 4000, receipts: [] };
+    const l = financeLedger([o, order({ paidAt: null, payment: 'pending' })], [e], () => 'Versand');
+    expect(l.map((r) => [r.date, r.kind, r.cents])).toEqual([['2026-09-01', 'Ausgabe', -4000], ['2026-09-28', 'Einnahme', 10000], ['2026-10-03', 'Erstattung', -10000]]);
+    expect(l[0].receipt).toBe('nein');
   });
 });

@@ -130,6 +130,30 @@ export interface ONotif {
   events: string[];
 }
 
+export const EXPENSE_CATEGORIES = ['production', 'shipping', 'packaging', 'marketing', 'software', 'fees', 'other'] as const;
+export type ExpenseCategory = (typeof EXPENSE_CATEGORIES)[number];
+
+export interface OReceipt {
+  id: string;
+  name: string;
+  mime: string;
+  sizeBytes: number;
+  uploadedAt: string;
+}
+
+/** A business expense. Cash basis: counted on `paidOn` (YYYY-MM-DD, the day the money left the account). */
+export interface OExpense {
+  id: string;
+  paidOn: string;
+  category: ExpenseCategory;
+  vendor: string;
+  invoiceNo: string;
+  description: string;
+  /** Gross EUR cents. Negative = credit note. */
+  amountCents: number;
+  receipts: OReceipt[];
+}
+
 export interface OwnerData {
   now: string;
   orders: OOrder[];
@@ -144,7 +168,12 @@ export interface OwnerData {
   activity: OActivity[];
   vipSent: string[];
   kuAcked: boolean;
+  expenses: OExpense[];
+  /** False when the expenses table is missing (migration not applied yet): the Finanzen tab then shows a notice. */
+  financeReady: boolean;
+  /** Every order that was ever paid, including ones hidden from the dashboard: they stay in the books (GoBD). */
+  financeOrders: OOrder[];
 }
 
-export type Tab = 'today' | 'orders' | 'products' | 'insights' | 'promo' | 'settings';
-export const TABS: Tab[] = ['today', 'orders', 'products', 'insights', 'promo', 'settings'];
+export type Tab = 'today' | 'orders' | 'products' | 'insights' | 'finance' | 'promo' | 'settings';
+export const TABS: Tab[] = ['today', 'orders', 'products', 'insights', 'finance', 'promo', 'settings'];
