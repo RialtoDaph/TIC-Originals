@@ -80,7 +80,7 @@ function AuthForm() {
     if (!f.pw2) e.pw2 = 'req';
     else if (f.pw2 !== f.pw) e.pw2 = 'mismatch';
   }
-  if (mode === 'otp' && !/^\d{6}$/.test(f.otp.trim())) e.otp = 'badOtp';
+  if (mode === 'otp' && !/^\d{6,8}$/.test(f.otp.trim())) e.otp = 'badOtp';
 
   const fld = (k: keyof typeof f, label: string, type: string, ac: string, span: 1 | 2) => {
     const err = tried && e[k];
