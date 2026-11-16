@@ -362,15 +362,22 @@ function Dashboard({ data }: { data: AccountData }) {
           <span className={s.eyebrow}>{t.myAcc}</span>
           <h1 className={s.hello}>{t.hi(data.first || data.email.split('@')[0])}</h1>
         </div>
-        <button
-          className={s.logout}
-          onClick={async () => {
-            await createClient().auth.signOut();
-            router.refresh();
-          }}
-        >
-          {t.logout}
-        </button>
+        <div className={s.dashHeadR}>
+          {data.isOwner && (
+            <Link href="/owner" className={s.ownerBtn}>
+              {t.ownerDash}
+            </Link>
+          )}
+          <button
+            className={s.logout}
+            onClick={async () => {
+              await createClient().auth.signOut();
+              router.refresh();
+            }}
+          >
+            {t.logout}
+          </button>
+        </div>
       </div>
       <div className={s.dtabs} role="tablist">
         {t.accTabs.map((label, i) => (
