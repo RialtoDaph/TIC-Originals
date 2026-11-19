@@ -74,15 +74,18 @@ export async function priceCart(
   let codeProblem: CodeProblem | null = null;
   const codeStr = input.code?.trim().toUpperCase();
   if (codeStr) {
-    const { data: row } = await admin.from('discount_codes').select('*').eq('code', codeStr).maybeSingle();
+    const { data: row, error: codeErr } = await admin.from('discount_codes').select('*').eq('code', codeStr).maybeSingle();
+    // A failed lookup is a server problem, not an "unknown code": never tell a customer their valid code is wrong.
+    if (codeErr) throw codeErr;
     code = row ? mapCode(row) : null;
     let isFirstOrder = true;
     if (code?.firstOrderOnly && input.email) {
-      const { count } = await admin
+      const { count, error: countErr } = await admin
         .from('orders')
         .select('id', { count: 'exact', head: true })
         .eq('email', input.email.trim().toLowerCase())
         .in('payment_status', ['paid', 'pending']);
+      if (countErr) throw countErr;
       isFirstOrder = (count ?? 0) === 0;
     }
     codeProblem = checkCode(code, { subtotalCents: subtotal, now: new Date(), isFirstOrder });

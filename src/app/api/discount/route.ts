@@ -9,13 +9,19 @@ import { allowRequest } from '@/lib/rate-limit';
 export async function POST(req: Request) {
   const admin = createAdminClient();
   if (!(await allowRequest(admin, 'discount', req.headers, 60, 600))) {
-    return NextResponse.json({ ok: false, problem: 'unknown' }, { status: 429 });
+    return NextResponse.json({ ok: false, problem: 'rate' }, { status: 429 });
   }
   const body = await req.json().catch(() => ({}));
   const code = typeof body.code === 'string' ? body.code.trim().toUpperCase().slice(0, 40) : '';
   if (!code) return NextResponse.json({ ok: false, problem: 'unknown' });
   const country = COUNTRY_CODES.includes(body.country) ? body.country : 'DE';
-  const result = await priceCart(admin, { items: sanitizeItems(body.items), code, country });
+  let result;
+  try {
+    result = await priceCart(admin, { items: sanitizeItems(body.items), code, country });
+  } catch (e) {
+    console.error('[discount]', e);
+    return NextResponse.json({ ok: false, problem: 'server' }, { status: 500 });
+  }
   if (!result.ok) return NextResponse.json({ ok: false, error: result.error, name: result.name, size: result.size });
   if (result.codeProblem || !result.code) {
     return NextResponse.json({ ok: false, problem: result.codeProblem ?? 'unknown', minCents: result.codeMinCents });
