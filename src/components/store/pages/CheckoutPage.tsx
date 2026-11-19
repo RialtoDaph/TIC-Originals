@@ -240,7 +240,15 @@ function CheckoutForm({
         body: JSON.stringify({ code: c, items, country }),
       });
       const r = await res.json();
-      if (r.ok) {
+      if (!r.ok && (r.problem === 'rate' || r.problem === 'server')) {
+        // Not the customer's fault and not a wrong code: don't say "invalid code".
+        setCode(null);
+        if (!silent) setCodeMsg({ ok: false, text: t.genericError });
+      } else if (!r.ok && r.error) {
+        // The cart itself (empty / out of stock) blocked the quote, not the code.
+        setCode(null);
+        if (!silent) setCodeMsg({ ok: false, text: r.error === 'stock' && r.name ? t.outOfStock(r.name, r.size) : t.pricesChanged });
+      } else if (r.ok) {
         setCode({ code: r.code, isPercent: r.isPercent, value: r.value });
         setCodeMsg({ ok: true, text: t.codeOk(r.code, r.isPercent ? (lang === 'de' ? `${r.value} %` : `${r.value}%`) : money(r.value)) });
       } else {
